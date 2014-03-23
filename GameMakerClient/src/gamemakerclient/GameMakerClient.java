@@ -6,9 +6,11 @@
 
 package gamemakerclient;
 
+import gamemakerclient.gui.ClientFrame;
+
 /**
  *
- * @author Joe_Black
+ * @author Mohiro
  */
 public class GameMakerClient {
 
@@ -16,7 +18,7 @@ public class GameMakerClient {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        ClientFrame mainFrame = new ClientFrame();
     }
     
 }
