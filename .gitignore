@@ -11,3 +11,7 @@
 *.aux
 *.log
 *.gz
+/GameMakerEditor/nbproject/private/
+/GameMakerEditor/build/
+/GameMakerLibrary/nbproject/private/
+/GameMakerClient/nbproject/private/
