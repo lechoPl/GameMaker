@@ -1,6 +1,6 @@
 package gamemakereditor;
 
-import javax.swing.JFrame;
+import gui.EditorFrame;
 
 public class GameMakerEditor {
 

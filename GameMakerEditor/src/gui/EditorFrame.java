@@ -1,12 +1,8 @@
-package gamemakereditor;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridLayout;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.basic.BasicSplitPaneDivider;
-import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 public class EditorFrame extends JFrame {
     
@@ -14,12 +10,12 @@ public class EditorFrame extends JFrame {
     private JMenuItem testItem = new JMenuItem("temp");
     private JMenuBar menu = new JMenuBar();
     
-    private JSplitPane horizontalPane = 
-            new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    private JSplitPane verticalLeftPane = 
-            new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-    private JSplitPane verticalRightPane = 
-            new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+    private CustomJSplitPane horizontalPane = 
+            new CustomJSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    private CustomJSplitPane verticalLeftPane = 
+            new CustomJSplitPane(JSplitPane.VERTICAL_SPLIT);
+    private CustomJSplitPane verticalRightPane = 
+            new CustomJSplitPane(JSplitPane.VERTICAL_SPLIT);
     
     private JPanel gameContent = new JPanel();
     private JPanel gameStructure = new JPanel();
@@ -41,25 +37,25 @@ public class EditorFrame extends JFrame {
         this.add(menu, BorderLayout.PAGE_START);
         
         this.add(horizontalPane, BorderLayout.CENTER);
-        
         horizontalPane.add(verticalLeftPane);
         horizontalPane.add(verticalRightPane);
         
         // --- STRUCTURE ---
-        gameStructure.setBackground(Color.yellow);
+        gameStructure.add(new JLabel("project tree"));
+        gameStructure.add(new JTree());
         verticalLeftPane.add(gameStructure);
         gameStructure.setSize(500, 200);
         
         // --- GAME CONTENT ---
-        gameContent.setBackground(Color.blue);
+        gameContent.add(new JLabel("game preview"));
         verticalRightPane.add(gameContent);
         
         // --- PROPERTIES ---
-        gameProperties.setBackground(Color.green);
+        gameProperties.add(new JLabel("selected object properties"));
         verticalLeftPane.add(gameProperties);
         
         // --- TOOLBOX ---
-        gameToolbox.setBackground(Color.red);
+        gameToolbox.add(new JLabel("toolbox"));
         verticalRightPane.add(gameToolbox);
     }
 }
