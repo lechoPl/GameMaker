@@ -15,3 +15,6 @@
 /GameMakerEditor/build/
 /GameMakerLibrary/nbproject/private/
 /GameMakerClient/nbproject/private/
+/GameMakerClient/build/
+/GameMakerLibrary/build/
+/GameMakerLibrary/dist/
