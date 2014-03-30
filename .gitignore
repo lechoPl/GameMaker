@@ -15,4 +15,10 @@
 /GameMakerEditor/build/
 /GameMakerLibrary/nbproject/private/
 /GameMakerClient/nbproject/private/
+<<<<<<< HEAD
 /GameMakerClient/build/
+=======
+/GameMakerClient/build/
+/GameMakerLibrary/build/
+/GameMakerLibrary/dist/
+>>>>>>> origin/library
