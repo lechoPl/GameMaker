@@ -1,5 +1,6 @@
 package gamemakereditor;
 
+import gamemakerlibrary.Game;
 import gui.EditorFrame;
 
 public class GameMakerEditor {

@@ -1,5 +1,7 @@
 package gamemakerlibrary;
 
-public class Background {
+import java.io.Serializable;
+
+public class Background implements Serializable {
     
 }
