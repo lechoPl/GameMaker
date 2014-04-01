@@ -1,6 +1,5 @@
 package gui;
 
-import gamemakereditor.GameMakerEditor;
 import gamemakerlibrary.Game;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -13,7 +12,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class EditorFrame extends JFrame {
-    private Game game = new Game();
+    private Game game = new Game("Gra testowa");
     private EditorFrame frame = this;
     private String filePath;
     

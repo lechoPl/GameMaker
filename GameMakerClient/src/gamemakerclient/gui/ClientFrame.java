@@ -6,9 +6,16 @@
 
 package gamemakerclient.gui;
 
+import gamemakerlibrary.Game;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -16,6 +23,7 @@ import javax.swing.*;
  */
 public class ClientFrame extends JFrame {
     private ClientFrame clientFrame = this;
+    private Game game;
     
     // Main menu bar
     private JMenuBar clientMenu = new JMenuBar();
@@ -70,6 +78,32 @@ public class ClientFrame extends JFrame {
         validate();
     }
     
+    private void showOpenDialog( Component parent ) {
+        final JFileChooser finder = new JFileChooser();
+            finder.setFileFilter(new FileNameExtensionFilter("GameMaker file", Game.FILE_EXTENSION));
+            int returnVal = finder.showSaveDialog(null);
+            if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
+                File file = finder.getSelectedFile();
+                String filePath = file.toString();
+                filePath = (filePath.endsWith(Game.FILE_EXTENSION_DOT)) ? filePath : filePath + Game.FILE_EXTENSION_DOT;  
+                openFile(filePath);
+            }
+    }
+    
+    private void openFile(String filePath) {
+        JOptionPane.showMessageDialog(null, filePath + " opened successfully.", "Open game", JOptionPane.INFORMATION_MESSAGE);
+        try {
+            FileInputStream fin = new FileInputStream(filePath);
+            try (ObjectInputStream ois = new ObjectInputStream(fin)) {
+                game = (Game) ois.readObject();
+            }
+            System.out.println("Otworzono grę: " + game.getName());
+            clientFrame.setTitle(game.getName());
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
     private class ExitAction extends AbstractAction {
         public ExitAction(String label) {
             super(label);
@@ -86,7 +120,7 @@ public class ClientFrame extends JFrame {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            // TODO: Action for opening game
+            showOpenDialog(clientFrame);
         }
     }
     
