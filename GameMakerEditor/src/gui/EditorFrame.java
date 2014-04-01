@@ -1,14 +1,18 @@
 package gui;
 
+import gamemakerlibrary.Background;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import javax.swing.*;
 
 public class EditorFrame extends JFrame {
     
-    private JMenu testMenu = new JMenu("File");
-    private JMenuItem testItem = new JMenuItem("temp");
     private JMenuBar menu = new JMenuBar();
+    
+    private JMenu menuFile = new JMenu("File");
+    private JMenuItem newGameItem = new JMenuItem("New game...");
+    private JMenuItem saveGameItem = new JMenuItem("Save as...");
+    private JMenuItem exitItem = new JMenuItem("Exit");
     
     private CustomJSplitPane horizontalPane = 
             new CustomJSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -32,9 +36,7 @@ public class EditorFrame extends JFrame {
         this.setLayout(new BorderLayout());
         
         // --- MENU ---
-        menu.add(testMenu);
-        testMenu.add(testItem);
-        this.add(menu, BorderLayout.PAGE_START);
+        createMenu();        
         
         this.add(horizontalPane, BorderLayout.CENTER);
         horizontalPane.add(verticalLeftPane);
@@ -57,5 +59,13 @@ public class EditorFrame extends JFrame {
         // --- TOOLBOX ---
         gameToolbox.add(new JLabel("toolbox"));
         verticalRightPane.add(gameToolbox);
+    }
+    
+    private void createMenu(){
+        menu.add(menuFile);
+        menuFile.add(newGameItem);
+        menuFile.add(saveGameItem);
+        menuFile.add(exitItem);
+        this.add(menu, BorderLayout.PAGE_START);
     }
 }
