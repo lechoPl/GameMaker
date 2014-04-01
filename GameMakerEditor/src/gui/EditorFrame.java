@@ -1,6 +1,7 @@
 package gui;
 
 import gamemakerlibrary.Game;
+import gamemakerlibrary.GameFileManager;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -13,13 +14,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class EditorFrame extends JFrame {
     private Game game = new Game("Gra testowa");
-    private EditorFrame frame = this;
-    private String filePath;
+    private GameFileManager gameFileManager = new GameFileManager (game);
+    
+    private EditorFrame editorFrame = this;
     
     private JMenuBar menu = new JMenuBar();
     
     private JMenu menuFile = new JMenu("File");
     private JMenuItem newGameItem = new JMenuItem("New game...");
+    private JMenuItem openGameItem = new JMenuItem("Open game...");
     private JMenuItem saveGameAsItem = new JMenuItem("Save as...");
     private JMenuItem saveGameItem = new JMenuItem("Save");
     private JMenuItem exitItem = new JMenuItem("Exit");
@@ -71,12 +74,15 @@ public class EditorFrame extends JFrame {
         menu.add(menuFile);
         menuFile.add(newGameItem);
         
+        menuFile.add(openGameItem);
+        openGameItem.setAction(new OpenGameAction("Open game..."));
+        
         menuFile.add(saveGameAsItem);
-        saveGameAsItem.setAction(new SaveAction("Save as..."));
+        saveGameAsItem.setAction(new SaveGameAction("Save as..."));
         saveGameAsItem.setActionCommand("saveAs");
         
         menuFile.add(saveGameItem);
-        saveGameItem.setAction(new SaveAction("Save"));
+        saveGameItem.setAction(new SaveGameAction("Save"));
         saveGameItem.setActionCommand("save");
         saveGameItem.setEnabled(false);
         
@@ -118,45 +124,36 @@ public class EditorFrame extends JFrame {
         }
     }
     
-    private class SaveAction extends AbstractAction {
-        public SaveAction(String label) {
+    private class SaveGameAction extends AbstractAction {
+        public SaveGameAction(String label) {
             super(label);
         }
         @Override
         public void actionPerformed(ActionEvent e) {
             switch (e.getActionCommand()) {
                 case "saveAs":
-                    showSaveDialog(saveGameItem);
+                    gameFileManager.showSaveDialog(editorFrame);
+                    if(gameFileManager.getFilePath() != null)
+                        saveGameItem.setEnabled(true);
                     break;
                 case "save":
-                    saveToFile();
+                    gameFileManager.saveToFile();
                     break;
             }
         }
     }
     
-    private void showSaveDialog( Component parent ) {
-        final JFileChooser finder = new JFileChooser();
-            finder.setFileFilter(new FileNameExtensionFilter("GameMaker file", Game.FILE_EXTENSION));
-            int returnVal = finder.showSaveDialog(null);
-            if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
-                File file = finder.getSelectedFile();
-                filePath = file.toString();
-                filePath = (filePath.endsWith(Game.FILE_EXTENSION_DOT)) ? filePath : filePath + Game.FILE_EXTENSION_DOT;  
-                saveToFile();
+    private class OpenGameAction extends AbstractAction {
+        public OpenGameAction(String label) {
+            super(label);
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            game = gameFileManager.showOpenDialog(editorFrame);
+            if(gameFileManager.getFilePath() != null) {
+                saveGameItem.setEnabled(true);
+                editorFrame.setTitle(game.getName());
             }
-    }
-    
-    private void saveToFile() {
-        JOptionPane.showMessageDialog(null, "Game saved to " + filePath , "Save file", JOptionPane.INFORMATION_MESSAGE);
-        try {
-            FileOutputStream fout = new FileOutputStream(filePath);
-            ObjectOutputStream oos = new ObjectOutputStream(fout);   
-            oos.writeObject(game);
-            oos.close();
-            if(filePath != null) saveGameItem.setEnabled(true);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
         }
     }
 }
