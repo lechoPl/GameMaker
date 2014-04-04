@@ -1,7 +1,7 @@
 package gui;
 
-import gamemakerlibrary.Game;
-import gamemakerlibrary.GameFileManager;
+import logic.Game;
+import managers.GameFileManager;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;

@@ -1,4 +1,4 @@
-package gamemakerlibrary;
+package logic;
 
 import java.io.Serializable;
 

@@ -1,30 +1,26 @@
-package gamemakerlibrary;
+package logic;
 
 import java.io.Serializable;
 
 public class Game implements Serializable {
+
+    // constants
     public static final String FILE_EXTENSION = "gmf";
     public static final String FILE_EXTENSION_DOT = ".gmf";
 
+    // fields
     private String gameName;
-    private Background background;
-    
+
+    // constructors
     public Game(String gameName) {
         this.gameName = gameName;
     }
 
-    public Background getBackground() {
-        return this.background;
-    }
-
-    public void setBackground(Background background) {
-        this.background = background;
-    }
-    
+    // setters and getters
     public void setName(String name) {
         this.gameName = name;
     }
-    
+
     public String getName() {
         return gameName;
     }

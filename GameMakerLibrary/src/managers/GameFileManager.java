@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package gamemakerlibrary;
+package managers;
 
+import logic.Game;
 import java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;

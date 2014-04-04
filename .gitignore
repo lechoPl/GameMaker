@@ -22,3 +22,5 @@
 /GameMakerLibrary/build/
 /GameMakerLibrary/dist/
 >>>>>>> origin/library
+/GameMakerEditor/dist/
+/GameMakerClient/dist/
