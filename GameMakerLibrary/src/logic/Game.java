@@ -1,6 +1,7 @@
 package logic;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 
 public class Game implements Serializable {
 
@@ -10,10 +11,12 @@ public class Game implements Serializable {
 
     // fields
     private String gameName;
+    private LinkedList<Level> levels;
 
     // constructors
     public Game(String gameName) {
         this.gameName = gameName;
+        this.levels = new LinkedList();
     }
 
     // setters and getters
