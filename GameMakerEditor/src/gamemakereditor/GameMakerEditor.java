@@ -1,6 +1,5 @@
 package gamemakereditor;
 
-import logic.Game;
 import gui.EditorFrame;
 
 public class GameMakerEditor {
