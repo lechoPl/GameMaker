@@ -28,7 +28,10 @@ public class Game implements Serializable, IViewable {
     
     public Game(String gameName) {
         this.gameName = gameName;
+        
         this.levels = new LinkedList();
+        levels.add(new Level("New level1"));
+        levels.add(new Level("New level2"));
     }
 
     
@@ -39,8 +42,7 @@ public class Game implements Serializable, IViewable {
     public String getName() {
         return gameName;
     }
-    
-    
+
     public void setCurrentLevel(Level lvl) {
         currentLevel = lvl;
     }
@@ -55,11 +57,14 @@ public class Game implements Serializable, IViewable {
     public Dimension getWindowSize() {
         return new Dimension(WIDTH, HEIGHT);
     }
-
     
     @Override
     public void render(Graphics g) {
         if(currentLevel != null)
             currentLevel.render(g);
+    }
+    
+    public LinkedList<Level> getLevels() {
+        return levels;
     }
 }

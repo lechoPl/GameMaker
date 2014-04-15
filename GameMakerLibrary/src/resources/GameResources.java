@@ -23,6 +23,8 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import logic.Game;
+import logic.objects.GameObject;
+import logic.objects.StaticObject;
 
 /**
  *
@@ -43,6 +45,8 @@ public class GameResources {
     private static HashMap<String, BufferedImage> backgrounds = new HashMap<String, BufferedImage>();
 
     private static HashMap<String, Sound> sounds = new HashMap<String, Sound>();
+    
+    private static HashMap<String, GameObject> objects = new HashMap<String, GameObject>();
 
     private enum RES_TYPE {
 
@@ -192,11 +196,23 @@ public class GameResources {
     public static HashMap<String, BufferedImage> getImages() {
         return images;
     }
+    
+    public static HashMap<String, BufferedImage> getBackgrounds() {
+        return backgrounds;
+    }
+    
+    public static HashMap<String, GameObject> getObjects() {
+        return objects;
+    }
 
     public static void resetResources() {
         images.clear();
         backgrounds.clear();
         sounds.clear();
         game = new Game();
+    }
+    
+    public static void addObject(String name, String imageId) {
+        objects.put(name, new StaticObject(name, imageId));
     }
 }

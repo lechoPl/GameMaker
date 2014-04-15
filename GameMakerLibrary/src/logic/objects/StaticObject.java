@@ -17,12 +17,15 @@ import resources.GameResources;
  */
 public class StaticObject extends GameObject {
     private BufferedImage image;
+    private String objectName;
     
-    public StaticObject(String imageId) {
+    public StaticObject(String objectName, String imageId) {
+        this.objectName = objectName;
         loadImage(imageId);
     }
 
-    public StaticObject(Pos p, String imageId) {
+    public StaticObject(String objectName, Pos p, String imageId) {
+        this.objectName = objectName;
         loadImage(imageId);
     }
     
@@ -35,5 +38,15 @@ public class StaticObject extends GameObject {
         g.drawImage(image, this.getPos().getX(), this.getPos().getY(), null);
     }
     
+    public String getName() {
+        return objectName;
+    }
     
+    public BufferedImage getImage() {
+        return image;
+    }
+    
+    public void setPosition(Pos pos) {
+        this.position = pos;
+    }
 }
