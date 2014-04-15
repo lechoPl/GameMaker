@@ -16,7 +16,10 @@ public class Game implements Serializable {
     // constructors
     public Game(String gameName) {
         this.gameName = gameName;
+        
         this.levels = new LinkedList();
+        levels.add(new Level("New level"));
+        levels.add(new Level("New level"));
     }
 
     // setters and getters
@@ -26,5 +29,9 @@ public class Game implements Serializable {
 
     public String getName() {
         return gameName;
+    }
+
+    public LinkedList<Level> getLevels() {
+        return levels;
     }
 }
