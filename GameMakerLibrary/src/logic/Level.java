@@ -1,10 +1,11 @@
 package logic;
 
 import java.awt.Color;
-import logic.objects.Object;
 import java.awt.Graphics;
+import java.awt.List;
 import java.io.Serializable;
 import java.util.ArrayList;
+import logic.objects.GameObject;
 import logic.objects.SampleObject;
 import view.IViewable;
 
@@ -20,13 +21,13 @@ public class Level implements Serializable, IViewable {
     private Color bgColor;
     
     private Background levelBackground;
-    private ArrayList<Object> objects;     //should be dictionary or hashmap
+    private ArrayList<GameObject> objects;     //should be dictionary or hashmap
     
     // constructors
     public Level(String levelName) {
         this.levelName = levelName;
         
-        this.objects = new ArrayList<Object>();
+        objects = new ArrayList<GameObject>();
     }
 
     // setters and getters
@@ -58,11 +59,30 @@ public class Level implements Serializable, IViewable {
         return this.levelBackground;
     }
     
-    public void addObject(Object obj) {
+    public void addObject(GameObject obj) {
         objects.add(obj);
     }
-    // objects dictionary:
-    //public Object getObject(int id) { ... }
+    public GameObject getObject(int x, int y) {
+        for(int i=0; i<objects.size(); i++) {
+            GameObject temp = objects.get(i);
+            
+            if(temp.getPos().getX() < x && temp.getPos().getX() + temp.getWidth() > x &&
+               temp.getPos().getY() < y && temp.getPos().getY() + temp.getHeight()> y)
+                return temp;
+        }
+        
+        return null;
+    }
+    public GameObject getObject(int id) {
+        for(int i=0; i<objects.size(); i++) {
+            
+            if(objects.get(i).getId() == id)
+                return objects.get(i);
+        }
+        
+        return null;
+    }
+    
     
     public Color getBackGroudColor() {
         return bgColor;

@@ -52,6 +52,7 @@ public class Game implements Serializable, IViewable {
         return new Dimension(WIDTH, HEIGHT);
     }
 
+    
     @Override
     public void redner(Graphics g) {
         if(currentLevel != null)
