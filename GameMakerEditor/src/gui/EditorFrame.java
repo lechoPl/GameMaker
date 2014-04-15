@@ -2,20 +2,24 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
-import java.util.LinkedList;
 import javax.swing.*;
-import javax.swing.border.LineBorder;
 import logic.Game;
 import logic.Level;
 import managers.GameFileManager;
+import view.GameView;
 
 public class EditorFrame extends JFrame {
-
-    private Game game = new Game("New game");
-    private GameFileManager gameFileManager = new GameFileManager(game);
-
+    private Game game = new Game("Gra testowa");
+    private GameFileManager gameFileManager = new GameFileManager (game);
+    
+    // val 0-1
+    private double defaultPreviewWidth = 0.8;
+    private double defaultPreviewHeight = 0.7;
+    
     private EditorFrame editorFrame = this;
 
     private JMenuBar menu = new JMenuBar();
@@ -26,15 +30,16 @@ public class EditorFrame extends JFrame {
     private JMenuItem saveGameAsItem = new JMenuItem("Save as...");
     private JMenuItem saveGameItem = new JMenuItem("Save");
     private JMenuItem exitItem = new JMenuItem("Exit");
+    
+    private CustomJSplitPane horizontalPane = 
+            new CustomJSplitPane(JSplitPane.HORIZONTAL_SPLIT);
+    private CustomJSplitPane verticalLeftPane = 
+            new CustomJSplitPane(JSplitPane.VERTICAL_SPLIT);
+    private CustomJSplitPane verticalRightPane = 
+            new CustomJSplitPane(JSplitPane.VERTICAL_SPLIT);
+    
+    private JPanel gamePreview;
 
-    private CustomJSplitPane horizontalPane
-            = new CustomJSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    private CustomJSplitPane verticalLeftPane
-            = new CustomJSplitPane(JSplitPane.VERTICAL_SPLIT);
-    private CustomJSplitPane verticalRightPane
-            = new CustomJSplitPane(JSplitPane.VERTICAL_SPLIT);
-
-    private JPanel gameContent = new JPanel();
     private JPanel gameStructure = new JPanel();
     private JPanel gameProperties = new JPanel();
     private JPanel gameToolbox = new JPanel();
@@ -59,8 +64,8 @@ public class EditorFrame extends JFrame {
         createStructureWindow();
 
         // --- GAME CONTENT ---
-        createGameContentWindow();
-
+        createGamePreviewPanel();
+        
         // --- PROPERTIES ---
         createPropertiesWindow();
 
@@ -103,10 +108,24 @@ public class EditorFrame extends JFrame {
         gameStructure.setAlignmentX(RIGHT_ALIGNMENT);
         gameStructure.setSize(500, 200);
     }
+    
+    private void createGamePreviewPanel(){
+        Level level = Level.getSampleLevel();
+        game.addNewLevel( level );
+        game.setCurrentLevel( level );
+        
+        gamePreview = new EditorGameView(game);
+        gamePreview.setPreferredSize(new Dimension(level.getWidth(), level.getHeight()));
 
-    private void createGameContentWindow() {
-        gameContent.add(new JLabel("game preview"));
-        verticalRightPane.add(gameContent);
+        JScrollPane scrolPane = new JScrollPane(gamePreview);
+        
+        Dimension windowSize = this.getSize();
+        Dimension size = new Dimension(
+                (int) (windowSize.width * defaultPreviewWidth),
+                (int) (windowSize.height * defaultPreviewHeight));
+        scrolPane.setPreferredSize(size);
+        
+        verticalRightPane.add(scrolPane);
     }
 
     private void createPropertiesWindow() {
