@@ -1,9 +1,10 @@
 package logic.objects;
 
+import java.io.Serializable;
 import logic.Pos;
 import view.IViewable;
 
-public abstract class GameObject implements IViewable {
+public abstract class GameObject implements IViewable, Serializable {
 
     protected static int IdCount = 0;
     protected final int id;

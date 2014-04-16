@@ -1,6 +1,8 @@
 package logic;
 
-public class Pos {
+import java.io.Serializable;
+
+public class Pos implements Serializable {
     
     protected int x;
     protected int y;

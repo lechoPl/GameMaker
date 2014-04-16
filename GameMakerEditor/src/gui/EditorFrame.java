@@ -1,10 +1,9 @@
 package gui;
 
+import gui.controler.MenuActions;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import javax.swing.*;
 import logic.Game;
 import logic.Level;
@@ -12,7 +11,10 @@ import managers.GameFileManager;
 import resources.GameResources;
 
 public class EditorFrame extends JFrame {
-    private Game game;
+    private static final String frameTitle = "GameMaker Editor";
+    
+    private Game game = new Game("Gra testowa");
+    
     // val 0-1
     private double defaultPreviewWidth = 0.8;
     private double defaultPreviewHeight = 0.7;
@@ -36,7 +38,7 @@ public class EditorFrame extends JFrame {
     private CustomJSplitPane verticalRightPane = 
             new CustomJSplitPane(JSplitPane.VERTICAL_SPLIT);
     
-    private JPanel gamePreview;
+    private EditorGameView gamePreview;
 
     private JPanel gameStructure = new JPanel();
     private JPanel gameProperties = new JPanel();
@@ -45,8 +47,8 @@ public class EditorFrame extends JFrame {
     private CustomTabbedPane customTabbedPane = new CustomTabbedPane();
     
     public EditorFrame() {
-        super("GameMaker Editor");
-        
+        super(frameTitle);
+    
         GameResources.resetResources();
         game = GameResources.getGame();
 
@@ -81,22 +83,22 @@ public class EditorFrame extends JFrame {
     private void createMenu() {
         menu.add(menuFile);
         menuFile.add(newGameItem);
-        newGameItem.setAction(new NewGameAction("New game..."));
+        newGameItem.setAction(new MenuActions.NewGameAction(this, "New game..."));
 
         menuFile.add(openGameItem);
-        openGameItem.setAction(new OpenGameAction("Open game..."));
+        openGameItem.setAction(new MenuActions.OpenGameAction(this,"Open game..."));
 
         menuFile.add(saveGameAsItem);
-        saveGameAsItem.setAction(new SaveGameAction("Save as..."));
+        saveGameAsItem.setAction(new MenuActions.SaveGameAction(this, "Save as..."));
         saveGameAsItem.setActionCommand("saveAs");
 
         menuFile.add(saveGameItem);
-        saveGameItem.setAction(new SaveGameAction("Save"));
+        saveGameItem.setAction(new MenuActions.SaveGameAction(this, "Save"));
         saveGameItem.setActionCommand("save");
         saveGameItem.setEnabled(false);
 
         menuFile.add(exitItem);
-        exitItem.setAction(new ExitAction("Exit"));
+        exitItem.setAction(new MenuActions.ExitAction(this, "Exit"));
 
         this.add(menu, BorderLayout.PAGE_START);
     }
@@ -145,65 +147,28 @@ public class EditorFrame extends JFrame {
         verticalRightPane.add(gameToolbox);
     }
 
-    private class ExitAction extends AbstractAction {
-
-        public ExitAction(String label) {
-            super(label);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.exit(0);
-        }
-    }
-
-    private class SaveGameAction extends AbstractAction {
-
-        public SaveGameAction(String label) {
-            super(label);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            switch (e.getActionCommand()) {
-                case "saveAs":
-                    GameFileManager.showSaveDialog(editorFrame);
-                    if(GameFileManager.getFilePath() != null) {
-                        saveGameItem.setEnabled(true);
-                    }
-                    break;
-                case "save":
-                    GameFileManager.saveToFile();
-                    break;
-            }
-        }
-    }
-
-    private class OpenGameAction extends AbstractAction {
-
-        public OpenGameAction(String label) {
-            super(label);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            game = GameFileManager.showOpenDialog(editorFrame);
-            if(GameFileManager.getFilePath() != null) {
-                saveGameItem.setEnabled(true);
-                editorFrame.setTitle(game.getName());
-                customTabbedPane.refreshItems();
-            }
-        }
+    public void loadGame(Game game) {
+        saveGameItem.setEnabled(true);
+        
+        this.game = game;
+        
+        setTitle(frameTitle + " - " + game.getName());
+        gamePreview.setGame(game);
     }
     
-    private class NewGameAction extends AbstractAction {
-        public NewGameAction(String label) {
-            super(label);
-        }
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            GameResources.resetResources();
-            customTabbedPane.refreshItems();
-        }
+    public void saveAs() {
+        saveGameItem.setEnabled(true);
+    }
+    
+    public void refreshToolbox() {
+        customTabbedPane.refreshItems();
+    }
+    
+    public void setGame(Game g) {
+        game = g;
+    }
+    
+    public Game getGame() {
+        return game;
     }
 }

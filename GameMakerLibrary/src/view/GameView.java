@@ -27,6 +27,7 @@ public class GameView extends JPanel {
     public void setGame(Game game) { 
         this.game = game;
         this.setPreferredSize(game.getWindowSize());
+        this.repaint();
     }
     public Game getGame() { return this.game; }
     

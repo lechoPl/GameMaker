@@ -39,6 +39,12 @@ public class EditorGameView extends GameView {
     public void setSelectedObject(GameObject obj) {
         selectedObject = obj;
     }
+    
+    @Override
+    public void setGame(Game game) {
+        super.setGame(game);
+        selectedObject = null;
+    }
 
     @Override
     public void paintComponent(Graphics g) {
