@@ -32,7 +32,7 @@ public class SampleObject extends GameObject {
     }
 
     @Override
-    public void redner(Graphics g) {
+    public void render(Graphics g) {
         g.setColor(color);
         g.fillRect(position.getX(), position.getY(), width, height);
     }

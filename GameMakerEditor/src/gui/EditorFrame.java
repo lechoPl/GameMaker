@@ -9,12 +9,11 @@ import javax.swing.*;
 import logic.Game;
 import logic.Level;
 import managers.GameFileManager;
+import resources.GameResources;
 import view.GameView;
 
 public class EditorFrame extends JFrame {
-    private Game game = new Game("Gra testowa");
-    private GameFileManager gameFileManager = new GameFileManager (game);
-    
+    private Game game;
     // val 0-1
     private double defaultPreviewWidth = 0.8;
     private double defaultPreviewHeight = 0.7;
@@ -41,9 +40,13 @@ public class EditorFrame extends JFrame {
     private JPanel gameStructure = new JPanel();
     private JPanel gameProperties = new JPanel();
     private JPanel gameToolbox = new JPanel();
+    private CustomTabbedPane customTabbedPane = new CustomTabbedPane();
     
     public EditorFrame() {
         super("GameMaker Editor");
+        
+        GameResources.resetResources();
+        game = GameResources.getGame();
         
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(800, 600);
@@ -77,6 +80,7 @@ public class EditorFrame extends JFrame {
     private void createMenu(){
         menu.add(menuFile);
         menuFile.add(newGameItem);
+        newGameItem.setAction(new NewGameAction("New game..."));
         
         menuFile.add(openGameItem);
         openGameItem.setAction(new OpenGameAction("Open game..."));
@@ -129,6 +133,9 @@ public class EditorFrame extends JFrame {
     
     private void createToolboxWindow(){
         gameToolbox.add(new JLabel("toolbox"));
+        CustomTabbedPane tabbedPane = new CustomTabbedPane();
+        gameToolbox.setLayout(new BorderLayout());
+        gameToolbox.add(customTabbedPane, java.awt.BorderLayout.CENTER);
         verticalRightPane.add(gameToolbox);
     }
     
@@ -150,12 +157,12 @@ public class EditorFrame extends JFrame {
         public void actionPerformed(ActionEvent e) {
             switch (e.getActionCommand()) {
                 case "saveAs":
-                    gameFileManager.showSaveDialog(editorFrame);
-                    if(gameFileManager.getFilePath() != null)
+                    GameFileManager.showSaveDialog(editorFrame);
+                    if(GameFileManager.getFilePath() != null)
                         saveGameItem.setEnabled(true);
                     break;
                 case "save":
-                    gameFileManager.saveToFile();
+                    GameFileManager.saveToFile();
                     break;
             }
         }
@@ -167,11 +174,23 @@ public class EditorFrame extends JFrame {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            game = gameFileManager.showOpenDialog(editorFrame);
-            if(gameFileManager.getFilePath() != null) {
+            game = GameFileManager.showOpenDialog(editorFrame);
+            if(GameFileManager.getFilePath() != null) {
                 saveGameItem.setEnabled(true);
                 editorFrame.setTitle(game.getName());
+                customTabbedPane.refreshItems();
             }
+        }
+    }
+    
+    private class NewGameAction extends AbstractAction {
+        public NewGameAction(String label) {
+            super(label);
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            GameResources.resetResources();
+            customTabbedPane.refreshItems();
         }
     }
 }

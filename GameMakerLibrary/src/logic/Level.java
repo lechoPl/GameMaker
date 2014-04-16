@@ -92,13 +92,13 @@ public class Level implements Serializable, IViewable {
     }
     
     @Override
-    public void redner(Graphics g) {
+    public void render(Graphics g) {
         
         //background
         g.fillRect(0, 0, levelWidth, levelHeight);
         
         for(int i=0; i<objects.size(); i++) {
-            objects.get(i).redner(g);
+            objects.get(i).render(g);
         }
     }
     

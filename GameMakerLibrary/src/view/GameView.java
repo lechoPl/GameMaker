@@ -35,6 +35,6 @@ public class GameView extends JPanel {
         super.paintComponent(g);
         
         if(game != null)
-            game.redner(g);
+            game.render(g);
     }
 }

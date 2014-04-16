@@ -22,6 +22,10 @@ public class Game implements Serializable, IViewable {
     private LinkedList<Level> levels;
 
     // constructors
+    public Game() {
+        this("Untitled game");
+    }
+    
     public Game(String gameName) {
         this.gameName = gameName;
         this.levels = new LinkedList();
@@ -54,8 +58,8 @@ public class Game implements Serializable, IViewable {
 
     
     @Override
-    public void redner(Graphics g) {
+    public void render(Graphics g) {
         if(currentLevel != null)
-            currentLevel.redner(g);
+            currentLevel.render(g);
     }
 }
