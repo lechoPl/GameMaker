@@ -3,6 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import javax.swing.*;
 import logic.Game;
@@ -36,9 +37,11 @@ public class EditorFrame extends JFrame {
             new CustomJSplitPane(JSplitPane.VERTICAL_SPLIT);
     
     private JPanel gamePreview;
+
     private JPanel gameStructure = new JPanel();
     private JPanel gameProperties = new JPanel();
     private JPanel gameToolbox = new JPanel();
+
     private CustomTabbedPane customTabbedPane = new CustomTabbedPane();
     
     public EditorFrame() {
@@ -46,7 +49,7 @@ public class EditorFrame extends JFrame {
         
         GameResources.resetResources();
         game = GameResources.getGame();
-        
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setMinimumSize(new Dimension(800, 600));
         this.setVisible(true);

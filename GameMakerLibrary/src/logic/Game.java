@@ -1,6 +1,5 @@
 package logic;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.io.Serializable;
@@ -30,6 +29,7 @@ public class Game implements Serializable, IViewable {
         this.gameName = gameName;
         
         this.levels = new LinkedList();
+        
         levels.add(new Level("New level1"));
         levels.add(new Level("New level2"));
     }
@@ -43,9 +43,14 @@ public class Game implements Serializable, IViewable {
         return gameName;
     }
 
+    public LinkedList<Level> getLevels() {
+        return levels;
+    }
+    
     public void setCurrentLevel(Level lvl) {
         currentLevel = lvl;
     }
+    
     public Level getCurrentLevel() {
         return currentLevel;
     }
@@ -62,9 +67,5 @@ public class Game implements Serializable, IViewable {
     public void render(Graphics g) {
         if(currentLevel != null)
             currentLevel.render(g);
-    }
-    
-    public LinkedList<Level> getLevels() {
-        return levels;
     }
 }
