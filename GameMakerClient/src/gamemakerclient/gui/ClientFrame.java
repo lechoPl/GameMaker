@@ -1,27 +1,16 @@
 package gamemakerclient.gui;
 
+import gamemakerclient.gui.controler.MenuActions;
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import logic.Game;
 import managers.GameFileManager;
-import view.GameView;
 
 /**
  *
  * @author Pawel
  */
 public class ClientFrame extends JFrame {
-
-    private ClientFrame clientFrame = this;
-    private Game game;
-    private GameFileManager gameFileManager = new GameFileManager();
 
     // Main menu bar
     private JMenuBar clientMenu = new JMenuBar();
@@ -31,21 +20,33 @@ public class ClientFrame extends JFrame {
     private JMenuItem openGameItem = new JMenuItem("Open game...");
     private JMenuItem exitItem = new JMenuItem("Exit");
 
+    // View category menus
+    private JMenu menuView = new JMenu("View");
+    private JRadioButtonMenuItem showFpsButtonItem
+            = new JRadioButtonMenuItem("Show FPS");
+
     // Help category menus
     private JMenu menuHelp = new JMenu("Help");
     private JMenuItem aboutItem = new JMenuItem("About");
 
-    private GameView gameContent;
+    private GameClientView gameContent;
+    private Thread gameMainLoop;
 
     public ClientFrame() {
         super("GameMaker Client");
 
         createWindow();
+
         createFileMenu();
+        createViewMenu();
         createHelpMenu();
+
         createGameContent();
 
         validate();
+
+        gameMainLoop = new Thread(gameContent);
+        gameMainLoop.start();
     }
 
     private void createWindow() {
@@ -60,69 +61,51 @@ public class ClientFrame extends JFrame {
 
     private void createFileMenu() {
         menuFile.add(openGameItem);
-        openGameItem.setAction(new OpenGameAction("Open game..."));
+        openGameItem.setAction(new MenuActions.OpenGameAction("Open game...", this));
 
         menuFile.add(exitItem);
-        exitItem.setAction(new ExitAction("Exit"));
+        exitItem.setAction(new MenuActions.ExitAction("Exit", this));
 
         clientMenu.add(menuFile);
-
-        validate();
     }
 
     private void createHelpMenu() {
         menuHelp.add(aboutItem);
-        aboutItem.setAction(new AboutAction("About"));
+        aboutItem.setAction(new MenuActions.AboutAction("About", this));
 
         clientMenu.add(menuHelp);
+    }
 
-        validate();
+    private void createViewMenu() {
+        menuView.add(showFpsButtonItem);
+        showFpsButtonItem
+                .setAction(new MenuActions.ShowFPSAction("ShowFPS", this));
+
+        clientMenu.add(menuView);
     }
 
     private void createGameContent() {
-        gameContent = new GameView();
+        gameContent = new GameClientView();
         this.add(gameContent, BorderLayout.CENTER);
-
     }
 
-    private class ExitAction extends AbstractAction {
+    public synchronized void openGame() {
+        Game game = GameFileManager.showOpenDialog(this);
 
-        public ExitAction(String label) {
-            super(label);
-        }
+        if (game != null) {
+            this.setTitle(game.getName());
 
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            System.exit(0);
+            gameContent.setGame(game);
         }
     }
 
-    private class OpenGameAction extends AbstractAction {
-
-        public OpenGameAction(String label) {
-            super(label);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            game = gameFileManager.showOpenDialog(clientFrame);
-            if (game != null) {
-                clientFrame.setTitle(game.getName());
-                gameContent.setGame(game);
-            }
-        }
+    public void showFPS() {
+        gameContent.showFPS(showFpsButtonItem.isSelected());
     }
 
-    class AboutAction extends AbstractAction {
+    public synchronized void exitGameClient() {
+        gameMainLoop.interrupt();
 
-        public AboutAction(String label) {
-            super(label);
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JOptionPane.showMessageDialog(clientFrame,
-                    "<html><center>Java open source GameMaker 1.0<br><br>Available at: <a href=\"https://github.com/lechoPl/GameMaker\">GitHub</a><br><br>Authors:<br>Paweł Krzywodajć<br>Kamil Kwaśny<br>Michał Lech</center></html>");
-        }
+        System.exit(0);
     }
 }

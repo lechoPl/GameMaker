@@ -24,7 +24,7 @@ public class GameView extends JPanel {
         setPreferredSize(game.getWindowSize());
     }
     
-    public void setGame(Game game) { 
+    public synchronized void setGame(Game game) { 
         this.game = game;
         this.setPreferredSize(game.getWindowSize());
         this.repaint();
