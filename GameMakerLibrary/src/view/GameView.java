@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import javax.swing.JPanel;
 import logic.Game;
+import logic.GameStructure;
 
 public class GameView extends JPanel {
     protected int widthDefault = 100;
@@ -14,19 +15,18 @@ public class GameView extends JPanel {
     
     protected Game game;
     
-    
     public GameView() {
         setPreferredSize(new Dimension(widthDefault, heightDefault));
     }
     
     public GameView(Game game) {
         this.game = game;
-        setPreferredSize(game.getWindowSize());
+        setPreferredSize(game.getGameStructure().getWindowSize());
     }
     
     public synchronized void setGame(Game game) { 
         this.game = game;
-        this.setPreferredSize(game.getWindowSize());
+        this.setPreferredSize(game.getGameStructure().getWindowSize());
         this.repaint();
     }
     public Game getGame() { return this.game; }
@@ -35,7 +35,7 @@ public class GameView extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
-        if(game != null)
-            game.render(g);
+        if(game.getGameStructure() != null)
+            game.getGameStructure().render(g, game.getGameResources());
     }
 }

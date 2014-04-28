@@ -2,70 +2,88 @@ package logic;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.LinkedList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+import static logic.GameStructure.GAME_PATH;
+import resources.GameResources;
 import view.IViewable;
 
-public class Game implements Serializable, IViewable {
-    private  static final int WIDTH = 800;
-    private static final int HEIGHT = 600;
-    
+public class Game {
     // constants
     public static final String FILE_EXTENSION = "gmf";
-    public static final String FILE_EXTENSION_DOT = ".gmf";
-
-    // fields
-    private String gameName;
+    public static final String FILE_EXTENSION_DOT = "." + FILE_EXTENSION;
+    public static final String TEMP_FILE_NAME = "game_maker_temp_file";
     
-    protected Level currentLevel = null;
-    private LinkedList<Level> levels;
-
-    // constructors
+    private GameStructure gameStructure;
+    private GameResources gameResources;
+    
     public Game() {
-        this("Untitled game");
+        this.gameStructure = new GameStructure();
+        this.gameResources = new GameResources();
     }
     
-    public Game(String gameName) {
-        this.gameName = gameName;
-        
-        this.levels = new LinkedList();
-        
-        levels.add(new Level("New level1"));
-        levels.add(new Level("New level2"));
+    public Game(String filePath) throws IOException, ClassNotFoundException {
+        loadGame(filePath);
     }
 
+    public void saveGame(String filePath) throws IOException {
+        ZipOutputStream out = new ZipOutputStream(new FileOutputStream(filePath));
+        gameResources.saveResources(out);
+        saveGameStructure(out);
+        out.close();
+    }
     
-    // setters and getters
-    public void setName(String name) {
-        this.gameName = name;
+    private void saveGameStructure(ZipOutputStream out) throws IOException {
+        out.putNextEntry(new ZipEntry(GAME_PATH));
+        try (ObjectOutputStream oos = new ObjectOutputStream(out)) {
+            oos.writeObject(gameStructure);
+        }
     }
-    public String getName() {
-        return gameName;
-    }
+    
+    private GameStructure loadGameStructure(ZipInputStream in) throws IOException, ClassNotFoundException {
+        BufferedOutputStream dest;
+        int BUFFER = 2048;
+        ZipEntry entry = in.getNextEntry();
+        int count;
+        byte data[] = new byte[BUFFER];
 
-    public LinkedList<Level> getLevels() {
-        return levels;
+        FileOutputStream fos = new FileOutputStream(Game.TEMP_FILE_NAME);
+        dest = new BufferedOutputStream(fos, BUFFER);
+        while ((count = in.read(data, 0, BUFFER)) != -1) {
+            dest.write(data, 0, count);
+        }
+        dest.flush();
+        dest.close();
+
+        FileInputStream fin = new FileInputStream(new File(Game.TEMP_FILE_NAME));
+        try (ObjectInputStream ois = new ObjectInputStream(fin)) {
+            return (GameStructure) ois.readObject();
+        }
     }
     
-    public void setCurrentLevel(Level lvl) {
-        currentLevel = lvl;
+    public void loadGame(String filePath) throws IOException, ClassNotFoundException {
+        ZipInputStream in = new ZipInputStream(new FileInputStream(filePath));
+        gameResources = new GameResources(in);
+        gameStructure = loadGameStructure(in);
+        new File(TEMP_FILE_NAME).delete();
+        in.close();
     }
     
-    public Level getCurrentLevel() {
-        return currentLevel;
+    public GameResources getGameResources(){
+        return this.gameResources;
     }
     
-    public void addNewLevel(Level lvl) {
-        levels.add(lvl);
-    }
-    
-    public Dimension getWindowSize() {
-        return new Dimension(WIDTH, HEIGHT);
-    }
-    
-    @Override
-    public void render(Graphics g) {
-        if(currentLevel != null)
-            currentLevel.render(g);
+    public GameStructure getGameStructure() {
+        return this.gameStructure;
     }
 }

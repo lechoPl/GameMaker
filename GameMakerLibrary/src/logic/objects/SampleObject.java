@@ -3,6 +3,7 @@ package logic.objects;
 import java.awt.Color;
 import java.awt.Graphics;
 import logic.Pos;
+import resources.GameResources;
 
 public class SampleObject extends GameObject {
 
@@ -32,7 +33,7 @@ public class SampleObject extends GameObject {
     }
 
     @Override
-    public void render(Graphics g) {
+    public void render(Graphics g, GameResources gameResources) {
         g.setColor(color);
         g.fillRect(position.getX(), position.getY(), width, height);
     }

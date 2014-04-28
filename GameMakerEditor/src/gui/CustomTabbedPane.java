@@ -57,6 +57,7 @@ import resources.GameResources;
  * @author Pawel
  */
 public class CustomTabbedPane extends JTabbedPane {
+    private EditorFrame frame;
     private CustomTabbedPane thisPane = this;
     
     private GridLayout gridLayout = new GridLayout(1, 1);
@@ -77,8 +78,10 @@ public class CustomTabbedPane extends JTabbedPane {
     
     private int gridWidth = 0;
 
-    public CustomTabbedPane() {
+    public CustomTabbedPane(EditorFrame frame) {
         super();
+        
+        this.frame = frame;
         
         MouseListener popupListener = new PopupListener();
         
@@ -115,8 +118,6 @@ public class CustomTabbedPane extends JTabbedPane {
             @Override
             public void componentHidden(ComponentEvent e) { }
         });
-        
-        
         
         setMenu();
         refreshItems();
@@ -187,7 +188,7 @@ public class CustomTabbedPane extends JTabbedPane {
             public void actionPerformed(ActionEvent e) {
                 if (imageIdTextField.getText() != null && imagePathTextField.getText() != null) {
                     try {
-                        GameResources.addImage(imageIdTextField.getText(), imagePathTextField.getText());
+                        frame.getGame().getGameResources().addImage(imageIdTextField.getText(), imagePathTextField.getText());
                         refreshImages();
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(null,
@@ -229,7 +230,7 @@ public class CustomTabbedPane extends JTabbedPane {
     }
     
     public void showAddObjectDialog() {
-        if(GameResources.getImages().keySet().isEmpty()) {
+        if(frame.getGame().getGameResources().getImages().keySet().isEmpty()) {
             JOptionPane.showMessageDialog(null,
                                 "You must add at least one image before you create object.",
                                 "Error",
@@ -245,7 +246,7 @@ public class CustomTabbedPane extends JTabbedPane {
             objectNameTextField.setBounds(150, 30, 120, 25);
             addItemDialog.add(objectNameTextField);
 
-            final String[] keyArr = GameResources.getImages().keySet().toArray(new String[0]);
+            final String[] keyArr = frame.getGame().getGameResources().getImages().keySet().toArray(new String[0]);
             final JComboBox objectPathComboBox = new JComboBox(keyArr);
             objectPathComboBox.setBounds(150, 60, 120, 25);
             objectPathComboBox.setEditable(false);
@@ -259,7 +260,7 @@ public class CustomTabbedPane extends JTabbedPane {
                 public void actionPerformed(ActionEvent e) {
                     if (objectNameTextField.getText() != null && keyArr.length > 0) {
                         try {
-                            GameResources.addObject(objectNameTextField.getText(), objectPathComboBox.getSelectedItem().toString());
+                            frame.getGame().getGameResources().addObject(objectNameTextField.getText(), objectPathComboBox.getSelectedItem().toString());
 
                             refreshObjects();
                         } catch (Exception ex) {
@@ -324,8 +325,8 @@ public class CustomTabbedPane extends JTabbedPane {
         imagesPanel.removeAll();
         int width = Math.max(getWidth() / ToolbarItem.ITEM_SIZE, 1);
         imagesPanel.setLayout(new GridLayout(0, width));
-        for(Entry<String, BufferedImage> item : GameResources.getImages().entrySet()) {
-            imagesPanel.add(new ToolbarItem(item.getKey()));
+        for(Entry<String, BufferedImage> item : frame.getGame().getGameResources().getImages().entrySet()) {
+            imagesPanel.add(new ToolbarItem(item.getKey(), frame.getGame().getGameResources().getImage(item.getKey())));
         }
         imagesPanel.revalidate();
         imagesScroll.repaint();
@@ -335,8 +336,8 @@ public class CustomTabbedPane extends JTabbedPane {
         backgroundsPanel.removeAll();
         int width = Math.max(getWidth() / ToolbarItem.ITEM_SIZE, 1);
         backgroundsPanel.setLayout(new GridLayout(0, width));
-        for(Entry<String, BufferedImage> item : GameResources.getBackgrounds().entrySet()) {
-            backgroundsPanel.add(new ToolbarItem(item.getKey()));
+        for(Entry<String, BufferedImage> item : frame.getGame().getGameResources().getBackgrounds().entrySet()) {
+            backgroundsPanel.add(new ToolbarItem(item.getKey(), frame.getGame().getGameResources().getImage(item.getKey())));
         }
         backgroundsPanel.revalidate();
     }
@@ -345,8 +346,8 @@ public class CustomTabbedPane extends JTabbedPane {
         objectsPanel.removeAll();
         int width = Math.max(getWidth() / ToolbarItem.ITEM_SIZE, 1);
         objectsPanel.setLayout(new GridLayout(0, width));
-        for(Entry<String, GameObject> item : GameResources.getObjects().entrySet()) {
-            objectsPanel.add(new ToolbarItem((StaticObject)item.getValue()));
+        for(Entry<String, GameObject> item : frame.getGame().getGameResources().getObjects().entrySet()) {
+            objectsPanel.add(new ToolbarItem((StaticObject)item.getValue(), frame.getGame().getGameResources().getImage(item.getKey())));
         }
         objectsPanel.revalidate();
         objectsScroll.repaint();

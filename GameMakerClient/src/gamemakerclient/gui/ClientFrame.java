@@ -5,15 +5,18 @@ import java.awt.BorderLayout;
 import javax.swing.*;
 import logic.Game;
 import managers.GameFileManager;
+import view.GameFrame;
 
 /**
  *
  * @author Pawel
  */
-public class ClientFrame extends JFrame {
+public class ClientFrame extends JFrame implements GameFrame {
 
     // Main menu bar
     private JMenuBar clientMenu = new JMenuBar();
+    
+    private GameFileManager gameFileManager = new GameFileManager();
 
     // File category menus
     private JMenu menuFile = new JMenu("File");
@@ -90,10 +93,10 @@ public class ClientFrame extends JFrame {
     }
 
     public synchronized void openGame() {
-        Game game = GameFileManager.showOpenDialog(this);
+        Game game = gameFileManager.showOpenDialog(this);
 
         if (game != null) {
-            this.setTitle(game.getName());
+            this.setTitle(game.getGameStructure().getName());
 
             gameContent.setGame(game);
         }
@@ -107,5 +110,10 @@ public class ClientFrame extends JFrame {
         gameMainLoop.interrupt();
 
         System.exit(0);
+    }
+
+    @Override
+    public Game getGame() {
+        return gameContent.getGame();
     }
 }

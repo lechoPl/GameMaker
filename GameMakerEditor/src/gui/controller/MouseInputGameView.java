@@ -1,9 +1,10 @@
-package gui.controler;
+package gui.controller;
 
 import gui.EditorGameView;
 import java.awt.event.MouseEvent;
 import javax.swing.event.MouseInputAdapter;
 import logic.Game;
+import logic.GameStructure;
 import logic.Pos;
 import logic.objects.GameObject;
 
@@ -26,10 +27,10 @@ public class MouseInputGameView extends MouseInputAdapter {
     private int distanceToY;
 
     private void selectObject(MouseEvent e) {
-        Game game = view.getGame();
+        GameStructure gameStructure = view.getGame().getGameStructure();
 
-        if (game != null && game.getCurrentLevel() != null) {
-            GameObject obj = game.getCurrentLevel()
+        if (gameStructure != null && gameStructure.getCurrentLevel() != null) {
+            GameObject obj = gameStructure.getCurrentLevel()
                     .getObject(e.getX(), e.getY());
             view.setSelectedObject(obj);
 

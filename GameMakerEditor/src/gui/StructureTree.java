@@ -47,9 +47,9 @@ public class StructureTree extends JTree {
     }
 
     public void reload() {
-        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(game.getName());
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(game.getGameStructure().getName());
 
-        for (Level level : game.getLevels()) {
+        for (Level level : game.getGameStructure().getLevels()) {
             DefaultMutableTreeNode levelNode = new DefaultMutableTreeNode(level.getName());
             rootNode.add(levelNode);
         }

@@ -16,36 +16,38 @@ import resources.GameResources;
  * @author Pawel
  */
 public class StaticObject extends GameObject {
-    private BufferedImage image;
     private String objectName;
+    private String imageId;
     
     public StaticObject(String objectName, String imageId) {
+        super();
         this.objectName = objectName;
-        loadImage(imageId);
+        this.imageId = imageId;
     }
 
     public StaticObject(String objectName, Pos p, String imageId) {
+        super(p);
         this.objectName = objectName;
-        loadImage(imageId);
+        this.imageId = imageId;
     }
     
-    private void loadImage(String imageId) {
-        image = GameResources.getImage(imageId);
+    private String getImageId() {
+        return imageId;
+    }
+    
+    private void setImageId(String imageId) {
+        this.imageId = imageId;
     }
     
     @Override
-    public void render(Graphics g) {
-        g.drawImage(image, this.getPos().getX(), this.getPos().getY(), null);
+    public void render(Graphics g, GameResources gameResources) {
+        g.drawImage(gameResources.getImage(imageId), this.getPos().getX(), this.getPos().getY(), null);
     }
     
     public String getName() {
         return objectName;
     }
-    
-    public BufferedImage getImage() {
-        return image;
-    }
-    
+
     public void setPosition(Pos pos) {
         this.position = pos;
     }

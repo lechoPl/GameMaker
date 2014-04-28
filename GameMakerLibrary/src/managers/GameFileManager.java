@@ -13,6 +13,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import logic.Game;
 import resources.GameResources;
+import view.GameFrame;
 
 /**
  *
@@ -20,13 +21,12 @@ import resources.GameResources;
  */
 public class GameFileManager {
 
-    private static String gameFilePath;
+    private String gameFilePath;
 
     public GameFileManager() {
-
     }
 
-    public static void showSaveDialog(Component parent) {
+    public void showSaveDialog(GameFrame parent) {
         final JFileChooser finder = new JFileChooser();
         finder.setFileFilter(new FileNameExtensionFilter("GameMaker file", Game.FILE_EXTENSION));
         int returnVal = finder.showSaveDialog(null);
@@ -34,41 +34,44 @@ public class GameFileManager {
             File file = finder.getSelectedFile();
             gameFilePath = file.toString();
             gameFilePath = (gameFilePath.endsWith(Game.FILE_EXTENSION_DOT)) ? gameFilePath : gameFilePath + Game.FILE_EXTENSION_DOT;
-            saveToFile();
+            saveToFile(parent.getGame());
         }
     }
 
-    public static void saveToFile() {
-        JOptionPane.showMessageDialog(null, "Game saved to " + gameFilePath, "Save file", JOptionPane.INFORMATION_MESSAGE);
+    public void saveToFile(Game game) {
         try {
-            GameResources.saveResources(gameFilePath);
+            game.saveGame(gameFilePath);
+            JOptionPane.showMessageDialog(null, "Game saved to " + gameFilePath, "Save file", JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Wystąpił problem podczas zapisywania pliku!", "Save file", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public static Game showOpenDialog(Component parent) {
+    public Game showOpenDialog(Component parent) {
         final JFileChooser finder = new JFileChooser();
         finder.setFileFilter(new FileNameExtensionFilter("GameMaker file", Game.FILE_EXTENSION));
         int returnVal = finder.showOpenDialog(null);
         if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
             File file = finder.getSelectedFile();
             gameFilePath = file.getPath();
-            openFile();
+            return openFile();
         }
-        return GameResources.getGame();
+        return null;
     }
 
-    private static void openFile() {
-        JOptionPane.showMessageDialog(null, gameFilePath + " opened successfully.", "Open game", JOptionPane.INFORMATION_MESSAGE);
+    private Game openFile() {
         try {
-            GameResources.openResources(gameFilePath);
+            Game game = new Game(gameFilePath);
+            JOptionPane.showMessageDialog(null, gameFilePath + " opened successfully.", "Open game", JOptionPane.INFORMATION_MESSAGE);
+            return game;
         } catch (IOException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
+            JOptionPane.showMessageDialog(null, "Wystąpił problem podczas otwierania pliku!", "Save file", JOptionPane.ERROR_MESSAGE);
+            return null;
         }
     }
 
-    public static String getFilePath() {
+    public String getFilePath() {
         return gameFilePath;
     }
 }

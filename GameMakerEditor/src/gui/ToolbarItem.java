@@ -11,6 +11,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
@@ -30,10 +31,10 @@ import resources.GameResources;
 public class ToolbarItem extends JPanel {
     public static final int ITEM_SIZE = 120;
     
-    public ToolbarItem(String id) {
+    public ToolbarItem(String id, BufferedImage image) {
         //this.setLayout(new GridLayout(1, 2));
         ImageIcon icon = new ImageIcon();
-        icon.setImage(GameResources.getImage(id).getScaledInstance(100, 100, Image.SCALE_FAST));
+        icon.setImage(image.getScaledInstance(100, 100, Image.SCALE_FAST));
         
         JLabel label = new JLabel(icon);
         label.setText(id);
@@ -45,10 +46,10 @@ public class ToolbarItem extends JPanel {
         setSize(ITEM_SIZE, ITEM_SIZE);
     }
     
-    public ToolbarItem(StaticObject object) {
+    public ToolbarItem(StaticObject object, BufferedImage image) {
         //this.setLayout(new GridLayout(1, 2));
         ImageIcon icon = new ImageIcon();
-        icon.setImage(object.getImage().getScaledInstance(100, 100, Image.SCALE_FAST));
+        icon.setImage(image.getScaledInstance(100, 100, Image.SCALE_FAST));
         
         JLabel label = new JLabel(icon);
         label.setText(object.getName());

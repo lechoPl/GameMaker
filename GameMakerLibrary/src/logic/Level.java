@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import logic.objects.GameObject;
 import logic.objects.SampleObject;
+import resources.GameResources;
 import view.IViewable;
 
 public class Level implements Serializable, IViewable {
@@ -92,13 +93,13 @@ public class Level implements Serializable, IViewable {
     }
     
     @Override
-    public void render(Graphics g) {
+    public void render(Graphics g, GameResources gameResources) {
         
         //background
         g.fillRect(0, 0, levelWidth, levelHeight);
         
         for(int i=0; i<objects.size(); i++) {
-            objects.get(i).render(g);
+            objects.get(i).render(g, gameResources);
         }
     }
     

@@ -8,6 +8,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import logic.Game;
+import logic.GameStructure;
 import logic.Level;
 import managers.GameFileManager;
 import view.GameView;
@@ -15,8 +16,6 @@ import view.GameView;
 public class GameClientView extends JPanel implements Runnable {
 
     private CustomGameView gamePanel = new CustomGameView();
-
-    private GameFileManager gameFileManager = new GameFileManager();
 
     public GameClientView() {
         setBackground(Color.BLACK);
@@ -100,7 +99,7 @@ public class GameClientView extends JPanel implements Runnable {
             super.setGame(game);
 
             if (game != null) {
-                Dimension dim = game.getWindowSize();
+                Dimension dim = game.getGameStructure().getWindowSize();
 
                 setPreferredSize(dim);
                 setMaximumSize(dim);
@@ -126,10 +125,14 @@ public class GameClientView extends JPanel implements Runnable {
             Game gameTemp = new Game();
 
             Level level = Level.getSampleLevel();
-            gameTemp.addNewLevel(level);
-            gameTemp.setCurrentLevel(level);
+            gameTemp.getGameStructure().addNewLevel(level);
+            gameTemp.getGameStructure().setCurrentLevel(level);
 
             this.setGame(gameTemp);
         }
+    }
+    
+    public Game getGame(){
+        return this.gamePanel.getGame();
     }
 }

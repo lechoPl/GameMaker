@@ -1,6 +1,6 @@
 package gui;
 
-import gui.controler.MenuActions;
+import gui.controller.MenuActions;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -9,17 +9,18 @@ import logic.Game;
 import logic.Level;
 import managers.GameFileManager;
 import resources.GameResources;
+import view.GameFrame;
 
-public class EditorFrame extends JFrame {
+public class EditorFrame extends JFrame implements GameFrame {
     private static final String frameTitle = "GameMaker Editor";
     
-    private Game game = new Game("Gra testowa");
+    private Game game = new Game();
+    private GameFileManager gameFileManager = new GameFileManager();
     
     // val 0-1
     private double defaultPreviewWidth = 0.8;
     private double defaultPreviewHeight = 0.7;
     
-
     private EditorFrame editorFrame = this;
 
     private JMenuBar menu = new JMenuBar();
@@ -44,13 +45,10 @@ public class EditorFrame extends JFrame {
     private JPanel gameProperties = new JPanel();
     private JPanel gameToolbox = new JPanel();
 
-    private CustomTabbedPane customTabbedPane = new CustomTabbedPane();
+    private CustomTabbedPane customTabbedPane = new CustomTabbedPane(this);
     
     public EditorFrame() {
         super(frameTitle);
-    
-        GameResources.resetResources();
-        game = GameResources.getGame();
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setMinimumSize(new Dimension(800, 600));
@@ -117,8 +115,8 @@ public class EditorFrame extends JFrame {
 
     private void createGamePreviewPanel(){
         Level level = Level.getSampleLevel();
-        game.addNewLevel( level );
-        game.setCurrentLevel( level );
+        game.getGameStructure().addNewLevel( level );
+        game.getGameStructure().setCurrentLevel( level );
         
         gamePreview = new EditorGameView(game);
         gamePreview.setPreferredSize(new Dimension(level.getWidth(), level.getHeight()));
@@ -141,21 +139,11 @@ public class EditorFrame extends JFrame {
 
     private void createToolboxWindow() {
         gameToolbox.add(new JLabel("toolbox"));
-        CustomTabbedPane tabbedPane = new CustomTabbedPane();
         gameToolbox.setLayout(new BorderLayout());
         gameToolbox.add(customTabbedPane, java.awt.BorderLayout.CENTER);
         verticalRightPane.add(gameToolbox);
     }
 
-    public void loadGame(Game game) {
-        saveGameItem.setEnabled(true);
-        
-        this.game = game;
-        
-        setTitle(frameTitle + " - " + game.getName());
-        gamePreview.setGame(game);
-    }
-    
     public void saveAs() {
         saveGameItem.setEnabled(true);
     }
@@ -164,11 +152,21 @@ public class EditorFrame extends JFrame {
         customTabbedPane.refreshItems();
     }
     
-    public void setGame(Game g) {
-        game = g;
+    public void setGame(Game game) {
+        saveGameItem.setEnabled(true);
+        
+        this.game = game;
+        
+        setTitle(frameTitle + " - " + game.getGameStructure().getName());
+        gamePreview.setGame(game);
     }
     
+    @Override
     public Game getGame() {
-        return game;
+        return this.game;
+    }
+    
+    public GameFileManager getGameFileManager() {
+        return this.gameFileManager;
     }
 }

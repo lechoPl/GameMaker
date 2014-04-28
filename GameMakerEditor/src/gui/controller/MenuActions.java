@@ -1,11 +1,9 @@
-package gui.controler;
+package gui.controller;
 
 import gui.EditorFrame;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import logic.Game;
-import managers.GameFileManager;
-import resources.GameResources;
 
 public class MenuActions {
     public static class NewGameAction extends AbstractAction {
@@ -22,8 +20,7 @@ public class MenuActions {
         
         @Override
         public void actionPerformed(ActionEvent e) {
-            GameResources.resetResources();
-            frame.refreshToolbox();
+            frame.setGame(new Game());
         }
     }
 
@@ -65,13 +62,13 @@ public class MenuActions {
         public void actionPerformed(ActionEvent e) {
             switch (e.getActionCommand()) {
                 case "saveAs":
-                    GameFileManager.showSaveDialog(frame);
-                    if (GameFileManager.getFilePath() != null) {
+                    frame.getGameFileManager().showSaveDialog(frame);
+                    if (frame.getGameFileManager().getFilePath() != null) {
                         frame.saveAs();
                     }
                     break;
                 case "save":
-                    GameFileManager.saveToFile();
+                    frame.getGameFileManager().saveToFile(frame.getGame());
                     break;
             }
         }
@@ -94,10 +91,9 @@ public class MenuActions {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Game game = GameFileManager.showOpenDialog(frame);
-            if (GameFileManager.getFilePath() != null) {
-
-                frame.loadGame(game);
+            Game game = frame.getGameFileManager().showOpenDialog(frame);
+            if (frame.getGameFileManager().getFilePath() != null) {
+                frame.setGame(game);
             }
         }
     }

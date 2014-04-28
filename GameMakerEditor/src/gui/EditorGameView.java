@@ -1,10 +1,11 @@
 package gui;
 
-import gui.controler.MouseInputGameView;
+import gui.controller.MouseInputGameView;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import logic.Game;
+import logic.GameStructure;
 import logic.objects.GameObject;
 import view.GameView;
 
@@ -27,7 +28,7 @@ public class EditorGameView extends GameView {
 
     public EditorGameView(Game game) {
         this.game = game;
-        setPreferredSize(game.getWindowSize());
+        setPreferredSize(game.getGameStructure().getWindowSize());
 
         initControler();
     }
