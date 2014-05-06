@@ -77,6 +77,8 @@ public class CustomTabbedPane extends JTabbedPane {
     private GridBagConstraints gridBagConstraints = new GridBagConstraints();
     
     private int gridWidth = 0;
+    
+    private ObjectMouseListener objectMouseListener = new ObjectMouseListener();
 
     public CustomTabbedPane(EditorFrame frame) {
         super();
@@ -242,8 +244,16 @@ public class CustomTabbedPane extends JTabbedPane {
             addItemDialog.setSize(300, 200);
             addItemDialog.setTitle("Add new object");
 
+            JLabel idLabel = new JLabel("Object name: ");
+            idLabel.setBounds(20, 20, 80, 25);
+            addItemDialog.add(idLabel);
+
+            JLabel pathLabel = new JLabel("Image: ");
+            pathLabel.setBounds(20, 60, 80, 25);
+            addItemDialog.add(pathLabel);
+            
             final JTextField objectNameTextField = new JTextField();
-            objectNameTextField.setBounds(150, 30, 120, 25);
+            objectNameTextField.setBounds(150, 20, 120, 25);
             addItemDialog.add(objectNameTextField);
 
             final String[] keyArr = frame.getGame().getGameResources().getImages().keySet().toArray(new String[0]);
@@ -264,6 +274,7 @@ public class CustomTabbedPane extends JTabbedPane {
 
                             refreshObjects();
                         } catch (Exception ex) {
+                            ex.printStackTrace();
                             JOptionPane.showMessageDialog(null,
                                     "Problem occured while adding object. Try again.",
                                     "Error",
@@ -280,16 +291,7 @@ public class CustomTabbedPane extends JTabbedPane {
                     addItemDialog.dispose();
                 }
             });
-
-            JLabel idLabel = new JLabel("Object name: ");
-            idLabel.setBounds(20, 20, 80, 25);
-            addItemDialog.add(idLabel);
-
-            JLabel pathLabel = new JLabel("Image: ");
-            pathLabel.setBounds(20, 60, 80, 25);
-            addItemDialog.add(pathLabel);
-            addItemDialog.add(objectPathComboBox);
-
+            
             addButton.setBounds(20, 100, 120, 25);
             addItemDialog.add(addButton);
             cancelButton.setBounds(150, 100, 120, 25);
@@ -347,8 +349,12 @@ public class CustomTabbedPane extends JTabbedPane {
         int width = Math.max(getWidth() / ToolbarItem.ITEM_SIZE, 1);
         objectsPanel.setLayout(new GridLayout(0, width));
         for(Entry<String, GameObject> item : frame.getGame().getGameResources().getObjects().entrySet()) {
-            objectsPanel.add(new ToolbarItem((StaticObject)item.getValue(), frame.getGame().getGameResources().getImage(item.getKey())));
+            StaticObject obj = (StaticObject) item.getValue();
+            ToolbarObject to = new ToolbarObject((StaticObject)item.getValue(), frame.getGame().getGameResources().getImage(obj.getImageId()));
+            to.addMouseListener(objectMouseListener);
+            objectsPanel.add(to);
         }
+        
         objectsPanel.revalidate();
         objectsScroll.repaint();
     }
@@ -397,5 +403,45 @@ public class CustomTabbedPane extends JTabbedPane {
                     break;
             }
         }
+    }
+    
+    private GameObject selectObject(ToolbarObject toolbarObject) {
+        GameObject obj = null;
+        for(Component component : objectsPanel.getComponents()) {
+            ToolbarObject to = (ToolbarObject) component;
+            to.setSelected(to.equals(toolbarObject));
+            if(to.equals(toolbarObject)) obj = to.getObject();
+        }
+        return obj;
+    }
+    
+    private class ObjectMouseListener implements MouseListener {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            frame.setObjectToAdd(((ToolbarObject) e.getSource()).getObject());
+            selectObject((ToolbarObject) e.getSource());
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            
+        }
+        
     }
 }

@@ -5,19 +5,20 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import logic.Game;
-import logic.GameStructure;
 import logic.objects.GameObject;
 import view.GameView;
 
 public class EditorGameView extends GameView {
 
     protected GameObject selectedObject;
+    protected GameObject objectToAdd;
     
     private void initControler() {
         MouseInputGameView mouseList = new MouseInputGameView(this);
         
         this.addMouseListener(mouseList);
         this.addMouseMotionListener(mouseList);
+        this.addMouseWheelListener(mouseList);
     }
     
     public EditorGameView() {
@@ -39,6 +40,14 @@ public class EditorGameView extends GameView {
 
     public void setSelectedObject(GameObject obj) {
         selectedObject = obj;
+    }
+    
+    public GameObject getObjectToAdd() {
+        return objectToAdd;
+    }
+
+    public void setObjectToAdd(GameObject obj) {
+        objectToAdd = obj;
     }
     
     @Override

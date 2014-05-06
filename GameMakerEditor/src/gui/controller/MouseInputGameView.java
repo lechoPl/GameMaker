@@ -2,13 +2,18 @@ package gui.controller;
 
 import gui.EditorGameView;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 import logic.Game;
 import logic.GameStructure;
 import logic.Pos;
 import logic.objects.GameObject;
 
-public class MouseInputGameView extends MouseInputAdapter {
+public class MouseInputGameView extends MouseInputAdapter implements MouseWheelListener {
 
     protected EditorGameView view;
 
@@ -40,6 +45,29 @@ public class MouseInputGameView extends MouseInputAdapter {
             }
         }
     }
+    
+    private void addObject(MouseEvent e) {
+        GameStructure gameStructure = view.getGame().getGameStructure();
+
+        if (gameStructure != null && gameStructure.getCurrentLevel() != null) {
+            GameObject obj;
+            try {
+                obj = view.getObjectToAdd().copy();
+                obj.setPos(new Pos(e.getX(), e.getY()));
+                gameStructure.getCurrentLevel().addObject(obj);
+                view.setSelectedObject(obj);
+            } catch (CloneNotSupportedException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
+    private void scaleObject(int scaleRatio) {
+        int width = view.getSelectedObject().getWidth();
+        int height = view.getSelectedObject().getHeight();
+        view.getSelectedObject().setWidth((int)(width * (1 + 0.2 * scaleRatio)));
+        view.getSelectedObject().setHeight((int)(height * (1 + 0.2 * scaleRatio)));
+    }
 
     private void moveSelectedObj(MouseEvent e) {
         view.getSelectedObject().setPos(new Pos(
@@ -52,8 +80,10 @@ public class MouseInputGameView extends MouseInputAdapter {
         preX = e.getX();
         preY = e.getY();
 
-        if (e.getButton() == MouseEvent.BUTTON1) {
+        if (SwingUtilities.isLeftMouseButton(e)) {
             selectObject(e);
+        } else if(SwingUtilities.isMiddleMouseButton(e)){ 
+            addObject(e);
         }
 
         view.repaint();
@@ -67,10 +97,21 @@ public class MouseInputGameView extends MouseInputAdapter {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        if (view.getSelectedObject() != null) {
-            moveSelectedObj(e);
-        }
+        if (SwingUtilities.isLeftMouseButton(e)) {
+            if (view.getSelectedObject() != null) {
+                moveSelectedObj(e);
+            }
+        } 
 
+        view.repaint();
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        super.mouseWheelMoved(e);
+        
+        scaleObject(e.getWheelRotation());
+        
         view.repaint();
     }
 }

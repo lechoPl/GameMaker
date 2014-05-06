@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import javax.swing.*;
 import logic.Game;
 import logic.Level;
+import logic.objects.GameObject;
 import managers.GameFileManager;
 import resources.GameResources;
 import view.GameFrame;
@@ -168,5 +169,13 @@ public class EditorFrame extends JFrame implements GameFrame {
     
     public GameFileManager getGameFileManager() {
         return this.gameFileManager;
+    }
+    
+    public GameObject getObjectToAdd() {
+        return gamePreview.getObjectToAdd();
+    }
+
+    public void setObjectToAdd(GameObject obj) {
+        gamePreview.setObjectToAdd(obj);
     }
 }

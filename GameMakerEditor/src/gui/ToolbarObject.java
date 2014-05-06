@@ -6,11 +6,11 @@
 
 package gui;
 
-import com.sun.java.swing.plaf.motif.MotifBorders;
-import java.awt.BorderLayout;
+import static gui.ToolbarItem.ITEM_SIZE;
 import java.awt.Color;
-import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -19,36 +19,44 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicBorders;
 import logic.objects.GameObject;
 import logic.objects.StaticObject;
-import resources.GameResources;
 
 /**
  *
  * @author Pawel
  */
-public class ToolbarItem extends JPanel {
-    public static final int ITEM_SIZE = 120;
-    private String itemId;
+public class ToolbarObject extends JPanel {
+    private StaticObject gameObject;
+    private boolean selected = false;
     
-    public ToolbarItem(String id, BufferedImage image) {
-        this.itemId = id;
+    public ToolbarObject(StaticObject object, BufferedImage image) {
+        this.gameObject = object;
         
         ImageIcon icon = new ImageIcon();
         icon.setImage(image.getScaledInstance(100, 100, Image.SCALE_FAST));
         
         JLabel label = new JLabel(icon);
-        label.setText(id);
+        label.setText(object.getName());
         label.setVerticalTextPosition(SwingConstants.BOTTOM);
         label.setHorizontalTextPosition(SwingConstants.CENTER);
         add(label);
+        
         setBorder(BorderFactory.createLineBorder(Color.black));
         setBorder(new CompoundBorder(new EmptyBorder(10, 10, 10, 10), getBorder()));
         setSize(ITEM_SIZE, ITEM_SIZE);
     }
     
-    public String getItemId() {
-        return itemId;
+    public StaticObject getObject() {
+        return gameObject;
+    }
+    
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+        if(this.selected) {
+            setBackground(Color.ORANGE);
+        } else{
+            setBackground(null);
+        }
     }
 }

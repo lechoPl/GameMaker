@@ -4,7 +4,7 @@ import java.io.Serializable;
 import logic.Pos;
 import view.IViewable;
 
-public abstract class GameObject implements IViewable, Serializable {
+public abstract class GameObject implements IViewable, Serializable, Cloneable {
 
     protected static int IdCount = 0;
     protected final int id;
@@ -66,5 +66,9 @@ public abstract class GameObject implements IViewable, Serializable {
 
     public int getHeight() {
         return this.height;
+    }
+    
+    public GameObject copy() throws CloneNotSupportedException {
+        return (GameObject) clone();
     }
 }

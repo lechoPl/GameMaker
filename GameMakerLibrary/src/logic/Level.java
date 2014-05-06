@@ -96,7 +96,10 @@ public class Level implements Serializable, IViewable {
     public void render(Graphics g, GameResources gameResources) {
         
         //background
+        g.setColor(bgColor);
         g.fillRect(0, 0, levelWidth, levelHeight);
+        
+        
         
         for(int i=0; i<objects.size(); i++) {
             objects.get(i).render(g, gameResources);

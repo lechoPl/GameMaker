@@ -142,6 +142,6 @@ public class GameResources {
     }
 
     public void addObject(String name, String imageId) {
-        objects.put(name, new StaticObject(name, imageId));
+        objects.put(name, new StaticObject(name, imageId, getImage(imageId).getWidth(), getImage(imageId).getHeight()));
     }
 }
