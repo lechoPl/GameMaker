@@ -66,6 +66,7 @@ public class GameFileManager {
             JOptionPane.showMessageDialog(null, gameFilePath + " opened successfully.", "Open game", JOptionPane.INFORMATION_MESSAGE);
             return game;
         } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Wystąpił problem podczas otwierania pliku!", "Save file", JOptionPane.ERROR_MESSAGE);
             return null;
         }

@@ -37,5 +37,4 @@ public class SampleObject extends GameObject {
         g.setColor(color);
         g.fillRect(position.getX(), position.getY(), width, height);
     }
-
 }

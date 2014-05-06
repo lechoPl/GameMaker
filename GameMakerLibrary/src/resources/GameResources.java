@@ -33,8 +33,8 @@ import logic.objects.StaticObject;
 public class GameResources {
     public static final String IMAGE_EXTENSION = "png";
 
-    private static final String IMAGES_PATH = "data/images/";
-    private static final String BACKGROUNDS_PATH = "data/backgrounds/";
+    public static final String IMAGES_PATH = "data/images/";
+    public static final String BACKGROUNDS_PATH = "data/backgrounds/";
 
     private HashMap<String, BufferedImage> images = new HashMap<String, BufferedImage>();
     private HashMap<String, BufferedImage> backgrounds = new HashMap<String, BufferedImage>();
@@ -51,10 +51,6 @@ public class GameResources {
     public GameResources() {
     }
     
-    public GameResources(ZipInputStream in) throws IOException {
-        loadImages(RES_TYPE.img, in);
-    }
-
     private HashMap<String, BufferedImage> getImagesCollection(RES_TYPE img) {
         switch (img) {
             case bg:
@@ -73,9 +69,6 @@ public class GameResources {
         }
     }
 
-    private String getImageId(String fileName) {
-        return fileName.subSequence(IMAGES_PATH.length(), fileName.length() - IMAGE_EXTENSION.length() - 1).toString();
-    }
 
     private void addImg(HashMap<String, BufferedImage> imgs, String id, String filePath) throws IOException {
         BufferedImage image = ImageIO.read(new File(filePath));
@@ -83,13 +76,23 @@ public class GameResources {
             imgs.put(id, image);
         }
     }
-
-    public void addImage(String id, String filePath) throws IOException {
-        addImg(images, id, filePath);
+    
+    
+    private String getImageId(String fileName) {
+        System.out.println(fileName + ", " + IMAGES_PATH.length() + ", " + (fileName.length() - IMAGE_EXTENSION.length() ));
+        return fileName.subSequence(IMAGES_PATH.length(), fileName.length() - IMAGE_EXTENSION.length() - 1).toString();
+    }
+    
+    public void loadImage(String entryPath, String filePath) throws IOException {
+        addImage(getImageId(entryPath), filePath);
     }
 
-    public void addBackground(String id, String filePath) throws IOException {
-        addImg(backgrounds, id, filePath);
+    public void addImage(String fileName, String filePath) throws IOException {
+        addImg(images, fileName, filePath);
+    }
+
+    public void addBackground(String fileName, String filePath) throws IOException {
+        addImg(backgrounds, fileName, filePath);
     }
 
     public BufferedImage getImage(String id) {
@@ -124,26 +127,6 @@ public class GameResources {
 
     public void saveResources(ZipOutputStream out) throws IOException {
         saveImages(RES_TYPE.img, out);
-    }
-
-    private void loadImages(RES_TYPE img, ZipInputStream in) throws IOException {
-        BufferedOutputStream dest;
-        int BUFFER = 2048;
-        ZipEntry entry;
-        HashMap<String, BufferedImage> imgs = getImagesCollection(img);
-        while ((entry = in.getNextEntry()) != null) {
-            int count;
-            byte data[] = new byte[BUFFER];
-
-            FileOutputStream fos = new FileOutputStream(Game.TEMP_FILE_NAME);
-            dest = new BufferedOutputStream(fos, BUFFER);
-            while ((count = in.read(data, 0, BUFFER)) != -1) {
-                dest.write(data, 0, count);
-            }
-            dest.flush();
-            dest.close();
-            addImage(getImageId(entry.getName()), Game.TEMP_FILE_NAME);
-        }
     }
 
     public HashMap<String, BufferedImage> getImages() {
