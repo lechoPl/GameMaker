@@ -20,17 +20,17 @@ import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import logic.objects.GameObject;
-import logic.objects.StaticObject;
+import logic.objects.ImageObject;
 
 /**
  *
  * @author Pawel
  */
 public class ToolbarObject extends JPanel {
-    private StaticObject gameObject;
+    private ImageObject gameObject;
     private boolean selected = false;
     
-    public ToolbarObject(StaticObject object, BufferedImage image) {
+    public ToolbarObject(ImageObject object, BufferedImage image) {
         this.gameObject = object;
         
         ImageIcon icon = new ImageIcon();
@@ -47,7 +47,7 @@ public class ToolbarObject extends JPanel {
         setSize(ITEM_SIZE, ITEM_SIZE);
     }
     
-    public StaticObject getObject() {
+    public ImageObject getObject() {
         return gameObject;
     }
     

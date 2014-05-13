@@ -1,36 +1,18 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package resources;
 
 import java.awt.image.BufferedImage;
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
-import logic.Game;
 import logic.objects.GameObject;
-import logic.objects.StaticObject;
+import logic.objects.ImageObject;
 
-/**
- *
- * @author Pawel
- */
 public class GameResources {
+
     public static final String IMAGE_EXTENSION = "png";
 
     public static final String IMAGES_PATH = "data/images/";
@@ -50,7 +32,7 @@ public class GameResources {
 
     public GameResources() {
     }
-    
+
     private HashMap<String, BufferedImage> getImagesCollection(RES_TYPE img) {
         switch (img) {
             case bg:
@@ -69,20 +51,18 @@ public class GameResources {
         }
     }
 
-
     private void addImg(HashMap<String, BufferedImage> imgs, String id, String filePath) throws IOException {
         BufferedImage image = ImageIO.read(new File(filePath));
         if (image != null) {
             imgs.put(id, image);
         }
     }
-    
-    
+
     private String getImageId(String fileName) {
-        System.out.println(fileName + ", " + IMAGES_PATH.length() + ", " + (fileName.length() - IMAGE_EXTENSION.length() ));
+        System.out.println(fileName + ", " + IMAGES_PATH.length() + ", " + (fileName.length() - IMAGE_EXTENSION.length()));
         return fileName.subSequence(IMAGES_PATH.length(), fileName.length() - IMAGE_EXTENSION.length() - 1).toString();
     }
-    
+
     public void loadImage(String entryPath, String filePath) throws IOException {
         addImage(getImageId(entryPath), filePath);
     }
@@ -142,6 +122,6 @@ public class GameResources {
     }
 
     public void addObject(String name, String imageId) {
-        objects.put(name, new StaticObject(name, imageId, getImage(imageId).getWidth(), getImage(imageId).getHeight()));
+        objects.put(name, new ImageObject(name, imageId, getImage(imageId).getWidth(), getImage(imageId).getHeight()));
     }
 }

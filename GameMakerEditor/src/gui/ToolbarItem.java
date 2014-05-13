@@ -1,15 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package gui;
 
-import com.sun.java.swing.plaf.motif.MotifBorders;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import javax.swing.BorderFactory;
@@ -19,25 +10,18 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.basic.BasicBorders;
-import logic.objects.GameObject;
-import logic.objects.StaticObject;
-import resources.GameResources;
 
-/**
- *
- * @author Pawel
- */
 public class ToolbarItem extends JPanel {
+
     public static final int ITEM_SIZE = 120;
     private String itemId;
-    
+
     public ToolbarItem(String id, BufferedImage image) {
         this.itemId = id;
-        
+
         ImageIcon icon = new ImageIcon();
         icon.setImage(image.getScaledInstance(100, 100, Image.SCALE_FAST));
-        
+
         JLabel label = new JLabel(icon);
         label.setText(id);
         label.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -47,7 +31,7 @@ public class ToolbarItem extends JPanel {
         setBorder(new CompoundBorder(new EmptyBorder(10, 10, 10, 10), getBorder()));
         setSize(ITEM_SIZE, ITEM_SIZE);
     }
-    
+
     public String getItemId() {
         return itemId;
     }
