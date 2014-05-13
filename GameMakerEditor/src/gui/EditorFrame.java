@@ -1,15 +1,16 @@
 package gui;
 
 import gui.controller.MenuActions;
+import gui.properties.DefaultPropertiesPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
 import javax.swing.*;
 import logic.Game;
 import logic.Level;
 import logic.objects.GameObject;
 import managers.GameFileManager;
-import resources.GameResources;
 import view.GameFrame;
 
 public class EditorFrame extends JFrame implements GameFrame {
@@ -45,6 +46,8 @@ public class EditorFrame extends JFrame implements GameFrame {
     private JPanel gameStructure = new JPanel();
     private JPanel gameProperties = new JPanel();
     private JPanel gameToolbox = new JPanel();
+    
+    private StructureTree structureTree = new StructureTree(this);
 
     private CustomTabbedPane customTabbedPane = new CustomTabbedPane(this);
     
@@ -76,6 +79,8 @@ public class EditorFrame extends JFrame implements GameFrame {
         // --- TOOLBOX ---
         createToolboxWindow();
 
+        refreshStructureTree();
+        
         validate();
     }
 
@@ -105,7 +110,6 @@ public class EditorFrame extends JFrame implements GameFrame {
     private void createStructureWindow() {
         gameStructure.setLayout(new FlowLayout(FlowLayout.LEFT));
         
-        StructureTree structureTree = new StructureTree(game);
         gameStructure.add(structureTree);
         structureTree.reload();
         
@@ -134,7 +138,9 @@ public class EditorFrame extends JFrame implements GameFrame {
     }
 
     private void createPropertiesWindow() {
-        gameProperties.add(new JLabel("selected object properties"));
+        gameProperties.setMinimumSize(new Dimension(300, 150));
+        gameProperties.setLayout(new GridLayout(1, 1));
+        this.changePropertiesPanel(new DefaultPropertiesPanel());
         verticalLeftPane.add(gameProperties);
     }
 
@@ -143,6 +149,17 @@ public class EditorFrame extends JFrame implements GameFrame {
         gameToolbox.setLayout(new BorderLayout());
         gameToolbox.add(customTabbedPane, java.awt.BorderLayout.CENTER);
         verticalRightPane.add(gameToolbox);
+    }
+    
+    public void changePropertiesPanel(JPanel propertiesPanel) {
+        gameProperties.removeAll();
+        gameProperties.add(propertiesPanel);
+        gameProperties.repaint();
+        gameProperties.revalidate();
+    }
+    
+    public void refreshStructureTree() {
+        structureTree.reload();
     }
 
     public void saveAs() {
