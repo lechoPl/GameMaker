@@ -9,7 +9,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
 import logic.objects.GameObject;
-import logic.objects.ImageObject;
+import logic.objects.StaticObject;
 
 public class GameResources {
 
@@ -122,6 +122,6 @@ public class GameResources {
     }
 
     public void addObject(String name, String imageId) {
-        objects.put(name, new ImageObject(name, imageId, getImage(imageId).getWidth(), getImage(imageId).getHeight()));
+        objects.put(name, new StaticObject(name, imageId, getImage(imageId).getWidth(), getImage(imageId).getHeight()));
     }
 }
