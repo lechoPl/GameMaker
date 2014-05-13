@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import javax.swing.JPanel;
 import logic.Game;
-import logic.GameStructure;
 
 public class GameView extends JPanel {
     protected int widthDefault = 100;

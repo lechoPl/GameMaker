@@ -1,16 +1,16 @@
 package gamemakerclient.gui;
 
+import controller.PlayerController;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.KeyListener;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import logic.Game;
-import logic.GameStructure;
 import logic.Level;
-import managers.GameFileManager;
 import view.GameView;
 
 public class GameClientView extends JPanel implements Runnable {
@@ -18,6 +18,7 @@ public class GameClientView extends JPanel implements Runnable {
     private CustomGameView gamePanel = new CustomGameView();
 
     public GameClientView() {
+
         setBackground(Color.BLACK);
         setLayout(new BorderLayout());
 
@@ -47,6 +48,9 @@ public class GameClientView extends JPanel implements Runnable {
         double time = 0;
 
         while (true) {
+            //need to use keylistener
+            this.setFocusOnGamePanel();
+
             currentTime = System.nanoTime();
             delta = currentTime - lastTime;
 
@@ -59,13 +63,19 @@ public class GameClientView extends JPanel implements Runnable {
                 time = 0;
                 frameCount = 0;
             }
-            // ---
 
+            //update game state
+            double deltaInSecods = (double) delta / 10000000.0;
+            //System.out.println(deltaInSecods);
+            this.getGame().getGameStructure().getCurrentLevel().update(deltaInSecods);
+
+            //update game view
             gamePanel.repaint();
 
-            while (System.nanoTime() - currentTime  <= TARGET_TIME_BETWEEN_RENDERS) {
+            //pause to get right fps
+            while (System.nanoTime() - currentTime <= TARGET_TIME_BETWEEN_RENDERS) {
                 Thread.yield();
-                
+
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException ex) {
@@ -78,10 +88,19 @@ public class GameClientView extends JPanel implements Runnable {
 
     public void setGame(Game g) {
         gamePanel.setGame(g);
+
+        if (g.getPlayerController() != null) {
+            gamePanel.addKeyListener(g.getPlayerController());
+        }
     }
 
     public void showFPS(boolean val) {
         gamePanel.setShowFPS(val);
+    }
+
+    public void setFocusOnGamePanel() {
+        gamePanel.setFocusable(true);
+        gamePanel.requestFocusInWindow();
     }
 
     private class CustomGameView extends GameView {
@@ -104,6 +123,12 @@ public class GameClientView extends JPanel implements Runnable {
                 setPreferredSize(dim);
                 setMaximumSize(dim);
                 setMinimumSize(dim);
+
+                for (KeyListener oldKeyList : this.getKeyListeners()) {
+                    this.removeKeyListener(oldKeyList);
+                }
+
+                this.addKeyListener(game.getPlayerController());
             }
         }
 
@@ -128,11 +153,17 @@ public class GameClientView extends JPanel implements Runnable {
             gameTemp.getGameStructure().addNewLevel(level);
             gameTemp.getGameStructure().setCurrentLevel(level);
 
+            PlayerController pc = new PlayerController();
+            pc.setControlledObject(gameTemp.getGameStructure().getCurrentLevel().getPlayer());
+
+            gameTemp.setPlayerController(pc);
+            this.addKeyListener(pc);
+
             this.setGame(gameTemp);
         }
     }
-    
-    public Game getGame(){
+
+    public Game getGame() {
         return this.gamePanel.getGame();
     }
 }

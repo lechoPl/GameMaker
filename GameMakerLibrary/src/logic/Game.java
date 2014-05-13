@@ -1,8 +1,7 @@
 package logic;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import controller.GameController;
+import controller.PlayerController;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,16 +9,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import static logic.GameStructure.GAME_PATH;
 import resources.GameResources;
-import static resources.GameResources.IMAGE_EXTENSION;
-import view.IViewable;
 
 public class Game {
 
@@ -30,6 +24,8 @@ public class Game {
 
     private GameStructure gameStructure;
     private GameResources gameResources;
+    private PlayerController playerContorller;
+    private GameController gameController; // to implementet - controll game menu, etc.
 
     public Game() {
         init();
@@ -39,7 +35,7 @@ public class Game {
         init();
         loadGame(filePath);
     }
-    
+
     private void init() {
         this.gameStructure = new GameStructure();
         this.gameResources = new GameResources();
@@ -96,7 +92,7 @@ public class Game {
             dest.flush();
             dest.close();
 
-                System.out.println("Name = " + entry.getName().toString());
+            System.out.println("Name = " + entry.getName().toString());
             if (entry.getName().endsWith(GAME_PATH)) {
                 System.out.println(entry.getName());
                 FileInputStream fin = new FileInputStream(new File(Game.TEMP_FILE_NAME));
@@ -122,5 +118,13 @@ public class Game {
 
     public GameStructure getGameStructure() {
         return this.gameStructure;
+    }
+
+    public PlayerController getPlayerController() {
+        return playerContorller;
+    }
+
+    public void setPlayerController(PlayerController controller) {
+        playerContorller = controller;
     }
 }
