@@ -6,6 +6,7 @@
 
 package view;
 
+import javax.swing.JPanel;
 import logic.Game;
 
 /**
