@@ -5,9 +5,9 @@ import java.awt.BorderLayout;
 import javax.swing.*;
 import logic.Game;
 import managers.GameFileManager;
-import view.GameFrame;
+import view.IGameFrame;
 
-public class ClientFrame extends JFrame implements GameFrame {
+public class ClientFrame extends JFrame implements IGameFrame {
 
     // Main menu bar
     private JMenuBar clientMenu = new JMenuBar();

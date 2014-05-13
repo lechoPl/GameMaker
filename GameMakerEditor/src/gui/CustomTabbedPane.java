@@ -48,7 +48,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import logic.objects.GameObject;
-import logic.objects.ImageObject;
+import logic.objects.StaticObject;
 import managers.GameFileManager;
 import resources.GameResources;
 
@@ -349,8 +349,8 @@ public class CustomTabbedPane extends JTabbedPane {
         int width = Math.max(getWidth() / ToolbarItem.ITEM_SIZE, 1);
         objectsPanel.setLayout(new GridLayout(0, width));
         for(Entry<String, GameObject> item : frame.getGame().getGameResources().getObjects().entrySet()) {
-            ImageObject obj = (ImageObject) item.getValue();
-            ToolbarObject to = new ToolbarObject((ImageObject)item.getValue(), frame.getGame().getGameResources().getImage(obj.getImageId()));
+            StaticObject obj = (StaticObject) item.getValue();
+            ToolbarObject to = new ToolbarObject((StaticObject)item.getValue(), frame.getGame().getGameResources().getImage(obj.getImageId()));
             to.addMouseListener(objectMouseListener);
             objectsPanel.add(to);
         }

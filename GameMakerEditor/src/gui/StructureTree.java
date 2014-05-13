@@ -13,7 +13,7 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import logic.Game;
 import logic.Level;
-import view.GameFrame;
+import view.IGameFrame;
 
 public class StructureTree extends JTree {
 

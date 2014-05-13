@@ -4,12 +4,12 @@ import java.awt.Graphics;
 import logic.Pos;
 import resources.GameResources;
 
-public class ImageObject extends GameObject {
+public class StaticObject extends GameObject {
 
     private String objectName;
     private String imageId;
 
-    public ImageObject(String objectName, String imageId, int width, int height) {
+    public StaticObject(String objectName, String imageId, int width, int height) {
         super();
         this.objectName = objectName;
         this.imageId = imageId;
@@ -17,7 +17,7 @@ public class ImageObject extends GameObject {
         this.height = height;
     }
 
-    public ImageObject(String objectName, Pos p, String imageId, int width, int height) {
+    public StaticObject(String objectName, Pos p, String imageId, int width, int height) {
         super(p);
         this.objectName = objectName;
         this.imageId = imageId;

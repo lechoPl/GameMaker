@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import logic.Game;
-import view.GameFrame;
+import view.IGameFrame;
 
 public class GamePropertiesPanel extends AbstractPropertiesPanel {
     

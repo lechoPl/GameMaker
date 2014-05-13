@@ -11,9 +11,9 @@ import logic.Game;
 import logic.Level;
 import logic.objects.GameObject;
 import managers.GameFileManager;
-import view.GameFrame;
+import view.IGameFrame;
 
-public class EditorFrame extends JFrame implements GameFrame {
+public class EditorFrame extends JFrame implements IGameFrame {
     private static final String frameTitle = "GameMaker Editor";
     
     private Game game = new Game();
@@ -126,19 +126,18 @@ public class EditorFrame extends JFrame implements GameFrame {
         gamePreview = new EditorGameView(game);
         gamePreview.setPreferredSize(new Dimension(level.getWidth(), level.getHeight()));
 
-        JScrollPane scrolPane = new JScrollPane(gamePreview);
+        JScrollPane scrollPane = new JScrollPane(gamePreview);
         
         Dimension windowSize = this.getSize();
         Dimension size = new Dimension(
                 (int) (windowSize.width * defaultPreviewWidth),
                 (int) (windowSize.height * defaultPreviewHeight));
-        scrolPane.setPreferredSize(size);
+        scrollPane.setPreferredSize(size);
         
-        verticalRightPane.add(scrolPane);
+        verticalRightPane.add(scrollPane);
     }
 
     private void createPropertiesWindow() {
-        gameProperties.setMinimumSize(new Dimension(300, 150));
         gameProperties.setLayout(new GridLayout(1, 1));
         this.changePropertiesPanel(new DefaultPropertiesPanel());
         verticalLeftPane.add(gameProperties);

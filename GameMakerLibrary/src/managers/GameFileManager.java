@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package managers;
 
 import java.awt.Component;
@@ -12,21 +7,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import logic.Game;
-import resources.GameResources;
-import view.GameFrame;
+import view.IGameFrame;
 
-/**
- *
- * @author Pawel
- */
 public class GameFileManager {
 
     private String gameFilePath;
 
-    public GameFileManager() {
-    }
-
-    public void showSaveDialog(GameFrame parent) {
+    public void showSaveDialog(IGameFrame parent) {
         final JFileChooser finder = new JFileChooser();
         finder.setFileFilter(new FileNameExtensionFilter("GameMaker file", Game.FILE_EXTENSION));
         int returnVal = finder.showSaveDialog(null);

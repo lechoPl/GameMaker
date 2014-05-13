@@ -6,7 +6,7 @@ import java.awt.Graphics;
 import logic.Pos;
 import resources.GameResources;
 
-public class PlayerObject
+public class DynamicObject
         extends GameObject
         implements IMovable, IKeyControlled {
 
@@ -17,11 +17,11 @@ public class PlayerObject
     protected double ay = 0;
     protected boolean jumpAllowed = false;
 
-    public PlayerObject(Pos p) {
+    public DynamicObject(Pos p) {
         super(p);
     }
 
-    public PlayerObject(Pos p, int width, int height) {
+    public DynamicObject(Pos p, int width, int height) {
         super(p, width, height);
     }
 

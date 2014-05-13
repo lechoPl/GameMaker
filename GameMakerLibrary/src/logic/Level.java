@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
 import logic.objects.GameObject;
-import logic.objects.PlayerObject;
+import logic.objects.DynamicObject;
 import logic.objects.SampleObject;
 import resources.GameResources;
 import view.IViewable;
@@ -23,7 +23,7 @@ public class Level implements Serializable, IViewable {
 
     private Background levelBackground;
     private ArrayList<GameObject> objects;     //should be dictionary or hashmap to beter get objects
-    private PlayerObject player;
+    private DynamicObject player;
 
     // constructors
     public Level(String levelName) {
@@ -93,11 +93,11 @@ public class Level implements Serializable, IViewable {
         return null;
     }
 
-    public PlayerObject getPlayer() {
+    public DynamicObject getPlayer() {
         return player;
     }
 
-    public void setPlayer(PlayerObject p) {
+    public void setPlayer(DynamicObject p) {
         player = p;
     }
 
@@ -140,7 +140,7 @@ public class Level implements Serializable, IViewable {
         level.addObject(obj1);
         level.addObject(obj2);
 
-        level.setPlayer(new PlayerObject(new Pos(50, 80), 50, 50));
+        level.setPlayer(new DynamicObject(new Pos(50, 80), 50, 50));
 
         return level;
     }
