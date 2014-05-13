@@ -1,14 +1,19 @@
 package gui;
 
+import gui.properties.DefaultPropertiesPanel;
+import gui.properties.GamePropertiesPanel;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.JTree;
-import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import logic.Game;
 import logic.Level;
+import view.GameFrame;
 
 public class StructureTree extends JTree {
 
@@ -31,22 +36,58 @@ public class StructureTree extends JTree {
         }
     }
 
-    private Game game;
-    
+    private class StructureTreeMouseListener implements MouseListener {
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            TreePath selPath = getPathForLocation(e.getX(), e.getY());
+            
+            if(e.getClickCount() == 1) {
+                if(selPath.getPathCount() == 1) {
+                    frame.changePropertiesPanel(new GamePropertiesPanel(frame));
+                } else {
+                    frame.changePropertiesPanel(new DefaultPropertiesPanel());
+                }
+            }
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+        }
+
+    }
+
+    private EditorFrame frame;
+
     private Color backgroundColor;
 
     public StructureTree() {
         super();
     }
 
-    public StructureTree(Game game) {
+    public StructureTree(EditorFrame frame) {
         super();
-        this.game = game;
+        this.frame = frame;
 
+        this.addMouseListener(new StructureTreeMouseListener());
         this.setCellRenderer(new StructureTreeCellRenderer());
     }
 
     public void reload() {
+        Game game = frame.getGame();
+
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(game.getGameStructure().getName());
 
         for (Level level : game.getGameStructure().getLevels()) {
