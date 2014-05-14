@@ -10,11 +10,12 @@ public class DynamicObject
         extends GameObject
         implements IMovable, IKeyControlled {
 
-    protected int moveSpeed = 2; // per milisecond
+    protected double moveSpeed = 2; // per milisecond
+    protected double jumpSpeed = 3;
     protected PlayerState objectState = PlayerState.FALL;
     protected double vx = 0;
     protected double vy = 0;
-    protected double ay = 0;
+    protected double ay = 0.05;
     protected boolean jumpAllowed = false;
 
     public DynamicObject(Pos p) {
@@ -33,12 +34,28 @@ public class DynamicObject
         objectState = val;
     }
 
-    public int getMoveSpeed() {
+    public double getMoveSpeed() {
         return moveSpeed;
     }
 
-    public void setMoveSpeed(int val) {
+    public void setMoveSpeed(double val) {
         moveSpeed = val;
+    }
+
+    public boolean getJumpAllowed() {
+        return jumpAllowed;
+    }
+
+    public void setJumpAllowed(boolean val) {
+        jumpAllowed = val;
+    }
+    
+    public double getJumpSpeed() {
+        return jumpSpeed;
+    }
+    
+    public void setJumpSpeed(double val) {
+        jumpSpeed = val;
     }
 
     @Override
@@ -49,12 +66,12 @@ public class DynamicObject
 
     @Override
     public int getNextXPosition(double dt) {
-        return position.getX() + (int)(vx * dt);
+        return position.getX() + (int) (vx * dt);
     }
 
     @Override
     public int getNextYPosition(double dt) {
-        return  position.getY() + (int)((vy + ay * dt) * dt);
+        return position.getY() + (int) ((vy + ay * dt) * dt);
     }
 
     @Override
@@ -79,6 +96,7 @@ public class DynamicObject
 
         objectState = PlayerState.JUMP;
         jumpAllowed = false;
+        vy = -jumpSpeed;
     }
 
     @Override
@@ -93,6 +111,35 @@ public class DynamicObject
         int tempX = getNextXPosition(dt);
         int tempY = getNextYPosition(dt);
 
+        vy = vy + ay * dt;
+
         this.setPos(new Pos(tempX, tempY));
+    }
+
+    @Override
+    public void updateX(double dt) {
+        int tempX = getNextXPosition(dt);
+
+        this.setPos(new Pos(tempX, this.getPos().getY()));
+    }
+
+    @Override
+    public void updateY(double dt) {
+        int tempY = getNextYPosition(dt);
+
+        vy = vy + ay * dt;
+
+        this.setPos(new Pos(this.getPos().getX(), tempY));
+    }
+
+    /* olny for test, remove it later*/
+    @Override
+    public void moveUp() {
+        vy = -moveSpeed;
+    }
+
+    @Override
+    public void moveDown() {
+        vy = moveSpeed;
     }
 }
