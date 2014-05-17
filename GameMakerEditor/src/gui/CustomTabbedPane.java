@@ -31,6 +31,7 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -139,10 +140,19 @@ public class CustomTabbedPane extends JTabbedPane {
         menuAddBackground.setActionCommand("background");
         sectionsMenu.add(menuAddBackground);
         
-        JMenuItem menuAddObject = new JMenuItem("Object");
-        menuAddObject.addActionListener(dialogAction);
-        menuAddObject.setActionCommand("object");
-        sectionsMenu.add(menuAddObject);
+        JMenu objectsSectionMenu = new JMenu("Object");
+        
+        JMenuItem menuAddSimpleObject = new JMenuItem("Simple object");
+        menuAddSimpleObject.addActionListener(dialogAction);
+        menuAddSimpleObject.setActionCommand("simple_object");
+        objectsSectionMenu.add(menuAddSimpleObject);
+        
+        JMenuItem menuAddAnimatedObject = new JMenuItem("Animated object");
+        menuAddAnimatedObject.addActionListener(dialogAction);
+        menuAddAnimatedObject.setActionCommand("animated_object");
+        objectsSectionMenu.add(menuAddAnimatedObject);
+        
+        sectionsMenu.add(objectsSectionMenu);
         
         JMenuItem menuAddSound = new JMenuItem("Sound");
         menuAddSound.addActionListener(dialogAction);
@@ -231,7 +241,7 @@ public class CustomTabbedPane extends JTabbedPane {
         addItemDialog.setLocationRelativeTo(null);
     }
     
-    public void showAddObjectDialog() {
+    public void showAddStaticObjectDialog() {
         if(frame.getGame().getGameResources().getImages().keySet().isEmpty()) {
             JOptionPane.showMessageDialog(null,
                                 "You must add at least one image before you create object.",
@@ -241,7 +251,7 @@ public class CustomTabbedPane extends JTabbedPane {
             addItemDialog.dispose();
             addItemDialog = new JDialog();
             addItemDialog.setLayout(null);
-            addItemDialog.setSize(300, 200);
+            addItemDialog.setSize(300, 250);
             addItemDialog.setTitle("Add new object");
 
             JLabel idLabel = new JLabel("Object name: ");
@@ -270,8 +280,7 @@ public class CustomTabbedPane extends JTabbedPane {
                 public void actionPerformed(ActionEvent e) {
                     if (objectNameTextField.getText() != null && keyArr.length > 0) {
                         try {
-                            frame.getGame().getGameResources().addObject(objectNameTextField.getText(), objectPathComboBox.getSelectedItem().toString());
-
+                                frame.getGame().getGameResources().addStaticObject(objectNameTextField.getText(), objectPathComboBox.getSelectedItem().toString());   
                             refreshObjects();
                         } catch (Exception ex) {
                             ex.printStackTrace();
@@ -292,9 +301,100 @@ public class CustomTabbedPane extends JTabbedPane {
                 }
             });
             
-            addButton.setBounds(20, 100, 120, 25);
+            addButton.setBounds(20, 140, 120, 25);
             addItemDialog.add(addButton);
-            cancelButton.setBounds(150, 100, 120, 25);
+            cancelButton.setBounds(150, 140, 120, 25);
+            addItemDialog.add(cancelButton);
+
+            addItemDialog.validate();
+
+            addItemDialog.setResizable(false);
+            addItemDialog.setVisible(true);
+            addItemDialog.setLocationRelativeTo(null);
+        }
+    }
+    
+    public void showAddAnimatedObjectDialog() {
+        if(frame.getGame().getGameResources().getImages().keySet().isEmpty()) {
+            JOptionPane.showMessageDialog(null,
+                                "You must add at least one image before you create object.",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE);
+        } else {
+            addItemDialog.dispose();
+            addItemDialog = new JDialog();
+            addItemDialog.setLayout(null);
+            addItemDialog.setSize(300, 250);
+            addItemDialog.setTitle("Add new object");
+
+            JLabel idLabel = new JLabel("Object name: ");
+            idLabel.setBounds(20, 20, 80, 25);
+            addItemDialog.add(idLabel);
+
+            JLabel pathLabel = new JLabel("Image: ");
+            pathLabel.setBounds(20, 60, 80, 25);
+            addItemDialog.add(pathLabel);
+            
+            JLabel framesLabel = new JLabel("Frames: ");
+            framesLabel.setBounds(20, 100, 80, 25);
+            addItemDialog.add(framesLabel);
+            
+            JLabel frequencyLabel = new JLabel("Frame duration (ms): ");
+            frequencyLabel.setBounds(20, 140, 80, 25);
+            addItemDialog.add(frequencyLabel);
+            
+            final JTextField objectNameTextField = new JTextField();
+            objectNameTextField.setBounds(150, 20, 120, 25);
+            addItemDialog.add(objectNameTextField);
+
+            final String[] keyArr = frame.getGame().getGameResources().getImages().keySet().toArray(new String[0]);
+            final JComboBox objectPathComboBox = new JComboBox(keyArr);
+            objectPathComboBox.setBounds(150, 60, 120, 25);
+            objectPathComboBox.setEditable(false);
+            addItemDialog.add(objectPathComboBox);
+            
+            final JTextField framesTextField = new JTextField();
+            framesTextField.setBounds(150, 100, 120, 25);
+            addItemDialog.add(framesTextField);
+            
+            final JTextField frequencyTextField = new JTextField();
+            frequencyTextField.setBounds(150, 140, 120, 25);
+            addItemDialog.add(frequencyTextField);
+
+            final JButton addButton = new JButton("Add");
+            JButton cancelButton = new JButton("Cancel");
+
+            addButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if (objectNameTextField.getText() != null && keyArr.length > 0) {
+                        try {
+                            int frames = Integer.parseInt(framesTextField.getText());
+                            int frequency = Integer.parseInt(frequencyTextField.getText());
+                            frame.getGame().getGameResources().addAnimatedObject(objectNameTextField.getText(), objectPathComboBox.getSelectedItem().toString(), frequency, frames);   
+                            refreshObjects();
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            JOptionPane.showMessageDialog(null,
+                                    "Problem occured while adding object. Try again.",
+                                    "Error",
+                                    JOptionPane.ERROR_MESSAGE);
+                        }
+                        addItemDialog.dispose();
+                    }
+                }
+            });
+
+            cancelButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    addItemDialog.dispose();
+                }
+            });
+            
+            addButton.setBounds(20, 180, 120, 25);
+            addItemDialog.add(addButton);
+            cancelButton.setBounds(150, 180, 120, 25);
             addItemDialog.add(cancelButton);
 
             addItemDialog.validate();
@@ -349,8 +449,7 @@ public class CustomTabbedPane extends JTabbedPane {
         int width = Math.max(getWidth() / ToolbarItem.ITEM_SIZE, 1);
         objectsPanel.setLayout(new GridLayout(0, width));
         for(Entry<String, GameObject> item : frame.getGame().getGameResources().getObjects().entrySet()) {
-            StaticObject obj = (StaticObject) item.getValue();
-            ToolbarObject to = new ToolbarObject((StaticObject)item.getValue(), frame.getGame().getGameResources().getImage(obj.getImageId()));
+            ToolbarObject to = new ToolbarObject(item.getValue(), item.getKey(), frame.getGame().getGameResources().getImage(item.getValue().getImageId()));
             to.addMouseListener(objectMouseListener);
             objectsPanel.add(to);
         }
@@ -394,8 +493,11 @@ public class CustomTabbedPane extends JTabbedPane {
                     break;
                 case("background"):
                     break;
-                case("object"):
-                    showAddObjectDialog();
+                case("simple_object"):
+                    showAddStaticObjectDialog();
+                    break;
+                case("animated_object"):
+                    showAddAnimatedObjectDialog();
                     break;
                 case("sound"):
                     break;
