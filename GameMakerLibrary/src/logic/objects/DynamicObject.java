@@ -17,6 +17,10 @@ public class DynamicObject
     protected double vy = 0;
     protected double ay = 0.05;
     protected boolean jumpAllowed = false;
+    
+    public DynamicObject() {
+        super();
+    }
 
     public DynamicObject(Pos p) {
         super(p);

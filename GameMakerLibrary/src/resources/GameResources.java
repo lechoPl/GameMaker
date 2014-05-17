@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
+import logic.objects.AnimatedDynamicObject;
+import logic.objects.DynamicObject;
 import logic.objects.GameObject;
 import logic.objects.StaticObject;
 
@@ -121,7 +123,11 @@ public class GameResources {
         return objects;
     }
 
-    public void addObject(String name, String imageId) {
+    public void addStaticObject(String name, String imageId) {
         objects.put(name, new StaticObject(name, imageId, getImage(imageId).getWidth(), getImage(imageId).getHeight()));
+    }
+    
+    public void addAnimatedObject(String name, String imageId, int frequency, int frames) {
+        objects.put(name, new AnimatedDynamicObject(name, imageId, getImage(imageId).getWidth(), getImage(imageId).getHeight(), frequency, frames));
     }
 }

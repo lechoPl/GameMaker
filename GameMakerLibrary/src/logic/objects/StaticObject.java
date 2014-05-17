@@ -6,9 +6,6 @@ import resources.GameResources;
 
 public class StaticObject extends GameObject {
 
-    private String objectName;
-    private String imageId;
-
     public StaticObject(String objectName, String imageId, int width, int height) {
         super();
         this.objectName = objectName;
@@ -19,7 +16,6 @@ public class StaticObject extends GameObject {
 
     public StaticObject(String objectName, Pos p, String imageId, int width, int height) {
         super(p);
-        this.objectName = objectName;
         this.imageId = imageId;
         this.width = width;
         this.height = height;
@@ -37,11 +33,7 @@ public class StaticObject extends GameObject {
     public void render(Graphics g, GameResources gameResources) {
         g.drawImage(gameResources.getImage(imageId), this.getPos().getX(), this.getPos().getY(), width, height, null);
     }
-
-    public String getName() {
-        return objectName;
-    }
-
+    
     public void setPosition(Pos pos) {
         this.position = pos;
     }

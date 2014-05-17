@@ -49,7 +49,7 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
     private void addObject(MouseEvent e) {
         GameStructure gameStructure = view.getGame().getGameStructure();
 
-        if (gameStructure != null && gameStructure.getCurrentLevel() != null) {
+        if (gameStructure != null && gameStructure.getCurrentLevel() != null && view.getObjectToAdd() != null) {
             GameObject obj;
             try {
                 obj = view.getObjectToAdd().copy();

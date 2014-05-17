@@ -27,17 +27,17 @@ import logic.objects.StaticObject;
  * @author Pawel
  */
 public class ToolbarObject extends JPanel {
-    private StaticObject gameObject;
+    private GameObject gameObject;
     private boolean selected = false;
     
-    public ToolbarObject(StaticObject object, BufferedImage image) {
+    public ToolbarObject(GameObject object, String name, BufferedImage image) {
         this.gameObject = object;
         
         ImageIcon icon = new ImageIcon();
         icon.setImage(image.getScaledInstance(100, 100, Image.SCALE_FAST));
         
         JLabel label = new JLabel(icon);
-        label.setText(object.getName());
+        label.setText(name);
         label.setVerticalTextPosition(SwingConstants.BOTTOM);
         label.setHorizontalTextPosition(SwingConstants.CENTER);
         add(label);
@@ -47,7 +47,7 @@ public class ToolbarObject extends JPanel {
         setSize(ITEM_SIZE, ITEM_SIZE);
     }
     
-    public StaticObject getObject() {
+    public GameObject getObject() {
         return gameObject;
     }
     

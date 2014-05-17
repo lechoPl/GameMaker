@@ -8,6 +8,9 @@ public abstract class GameObject implements IViewable, Serializable, Cloneable {
 
     protected static int IdCount = 0;
     protected final int id;
+    
+    protected String objectName;
+    protected String imageId;
 
     protected Pos position;
     protected int width;
@@ -50,6 +53,22 @@ public abstract class GameObject implements IViewable, Serializable, Cloneable {
 
     public void setPos(Pos p) {
         position = p;
+    }
+    
+    public String getObjectName() {
+        return imageId;
+    }
+    
+    public void setObjectName(String objectName){
+        this.objectName = objectName;
+    }
+    
+    public String getImageId() {
+        return imageId;
+    }
+    
+    public void setImageId(String imageId){
+        this.imageId = imageId;
     }
 
     public void setWidth(int val) {
