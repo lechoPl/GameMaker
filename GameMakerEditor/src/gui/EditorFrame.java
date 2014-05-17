@@ -1,5 +1,6 @@
 package gui;
 
+import gui.structure.StructureTree;
 import gui.controller.MenuActions;
 import gui.properties.DefaultPropertiesPanel;
 import java.awt.BorderLayout;
