@@ -11,6 +11,10 @@ public class PlayerController extends KeyAdapter {
     protected int jumpKey = KeyEvent.VK_SPACE;
     protected int rightKey = KeyEvent.VK_RIGHT;
     protected int leftKey = KeyEvent.VK_LEFT;
+    
+    /* olny for test, remove it later*/
+    protected int upKey = KeyEvent.VK_UP;
+    protected int downKey = KeyEvent.VK_DOWN;
 
     public IKeyControlled getControlledObject() {
         return controlledObject;
@@ -58,6 +62,14 @@ public class PlayerController extends KeyAdapter {
         
         if (ke.getKeyCode() == leftKey) {
             controlledObject.moveLeft();
+        }
+        
+        /* olny for test, remove it later*/
+        if (ke.getKeyCode() == upKey) {
+            controlledObject.moveUp();
+        }
+        if (ke.getKeyCode() == downKey) {
+            controlledObject.moveDown();
         }
     }
 

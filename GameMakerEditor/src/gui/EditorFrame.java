@@ -160,6 +160,10 @@ public class EditorFrame extends JFrame implements IGameFrame {
     public void refreshStructureTree() {
         structureTree.reload();
     }
+    
+    public void refreshGamePreview() {
+        gamePreview.repaint();
+    }
 
     public void saveAs() {
         saveGameItem.setEnabled(true);

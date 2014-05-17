@@ -122,11 +122,63 @@ public class Level implements Serializable, IViewable {
 
         player.render(g, gameResources);
     }
-    
+
     public void update(double deltaTime) {
-        player.update(deltaTime);
+        if (!checkCollisionX(player, deltaTime)) {
+            player.updateX(deltaTime);
+        }
+
+        if (!checkCollisionY(player, deltaTime)) {
+            player.updateY(deltaTime);
+        }
+        else {
+            player.setJumpAllowed(true);
+        }
+    }
+
+    public boolean checkCollisionX(DynamicObject obj, double deltaTime) {
+
+        int objX1 = obj.getNextXPosition(deltaTime);
+        int objY1 = obj.getPos().getY();
+        int objX2 = objX1 + obj.getWidth();
+        int objY2 = objY1 + obj.getHeight();
+
+        return checkCollision(objX1, objY1, objX2, objY2);
+    }
+
+    public boolean checkCollisionY(DynamicObject obj, double deltaTime) {
+
+        int objX1 = obj.getPos().getX();
+        int objY1 = obj.getNextYPosition(deltaTime);
+        int objX2 = objX1 + obj.getWidth();
+        int objY2 = objY1 + obj.getHeight();
+
+        return checkCollision(objX1, objY1, objX2, objY2);
+    }
+
+    public boolean checkCollision(int x1, int y1, int x2, int y2) {
+        if(x1 < 1 || x2 > levelWidth)
+            return true;
+        if(y1 < 1 || y2 > levelHeight)
+            return true;
         
-        //and update other movable objects
+        // obj corners: (X1, Y1), (X2, Y2), (X1, Y2), (X2, Y2)
+        for (GameObject tempObj : objects) {
+            int tempX1 = tempObj.getPos().getX();
+            int tempY1 = tempObj.getPos().getY();
+            int tempX2 = tempX1 + tempObj.getWidth();
+            int tempY2 = tempY1 + tempObj.getHeight();
+
+            if (tempY2 <= y1 || tempY1 >= y2) {
+                continue;
+            }
+            if (tempX2 <= x1 || tempX1 >= x2) {
+                continue;
+            }
+            return true;
+        }
+
+        return false;
     }
 
     static public Level getSampleLevel() {
@@ -134,13 +186,18 @@ public class Level implements Serializable, IViewable {
         level.setHeight(400);
         level.setWidth(2000);
 
-        SampleObject obj1 = new SampleObject(new Pos(20, 20), 40, 80, Color.GREEN);
-        SampleObject obj2 = new SampleObject(new Pos(100, 150), 140, 180, Color.RED);
+        SampleObject obj1 = new SampleObject(new Pos(40, 40), 40, 80, Color.GREEN);
+        SampleObject obj2 = new SampleObject(new Pos(0, 380), 2000, 20, Color.RED);
+        SampleObject obj3 = new SampleObject(new Pos(200, 350), 50, 20, Color.RED);
+        SampleObject obj4 = new SampleObject(new Pos(240, 300), 50, 20, Color.RED);
+
 
         level.addObject(obj1);
         level.addObject(obj2);
-
-        level.setPlayer(new DynamicObject(new Pos(50, 80), 50, 50));
+        level.addObject(obj3);
+        level.addObject(obj4);
+        
+        level.setPlayer(new DynamicObject(new Pos(80, 80), 50, 50));
 
         return level;
     }

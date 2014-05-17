@@ -66,7 +66,6 @@ public class GameClientView extends JPanel implements Runnable {
 
             //update game state
             double deltaInSecods = (double) delta / 10000000.0;
-            //System.out.println(deltaInSecods);
             this.getGame().getGameStructure().getCurrentLevel().update(deltaInSecods);
 
             //update game view

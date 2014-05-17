@@ -7,5 +7,11 @@ public interface IMovable {
 
     public int getNextYPosition(double dt);
 
+    
+    /* update <=> updateX and updateY */
     public void update(double dt);
+    
+    public void updateX(double dt);
+    
+    public void updateY(double dt);
 }
