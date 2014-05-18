@@ -57,6 +57,14 @@ public class DynamicObject
     public void setJumpSpeed(double val) {
         jumpSpeed = val;
     }
+    
+    public void setYSpeedValue(double val) {
+        vy = val;
+    }
+    
+    public double getYSpeedValue() {
+        return vy;
+    }
 
     @Override
     public void render(Graphics g, GameResources gameResources) {
