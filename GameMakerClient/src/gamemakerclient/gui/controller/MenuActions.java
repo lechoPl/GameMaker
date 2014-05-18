@@ -1,4 +1,4 @@
-package gamemakerclient.gui.controler;
+package gamemakerclient.gui.controller;
 
 import gamemakerclient.gui.ClientFrame;
 import java.awt.event.ActionEvent;

@@ -63,7 +63,10 @@ public class GameClientView extends JPanel implements Runnable {
                 time = 0;
                 frameCount = 0;
             }
-
+            
+            //pull game controller
+            this.getGame().pullControllers();
+            
             //update game state
             double deltaInSecods = (double) delta / 10000000.0;
             this.getGame().getGameStructure().getCurrentLevel().update(deltaInSecods);
