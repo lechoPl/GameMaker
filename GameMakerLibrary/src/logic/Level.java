@@ -278,7 +278,7 @@ public class Level implements Serializable, IViewable {
     static public Level getSampleLevel() {
         Level level = new Level("Sample level");
         level.setHeight(400);
-        level.setWidth(2000);
+        level.setWidth(400);
 
         SampleObject obj1 = new SampleObject(new Pos(40, 40), 40, 80, Color.GREEN);
         SampleObject obj2 = new SampleObject(new Pos(0, 380), 2000, 20, Color.RED);

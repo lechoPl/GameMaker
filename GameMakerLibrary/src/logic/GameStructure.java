@@ -1,5 +1,6 @@
 package logic;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.io.Serializable;
@@ -16,6 +17,7 @@ public class GameStructure implements IViewable, Serializable {
 
     // fields
     private String gameName;
+    private Color bgDafaultColor = Color.BLACK;
 
     protected Level currentLevel = null;
     private LinkedList<Level> levels;
@@ -60,9 +62,17 @@ public class GameStructure implements IViewable, Serializable {
     public String getName() {
         return this.gameName;
     }
-    
+
     public void setName(String name) {
         this.gameName = name;
+    }
+
+    public void setBgDefaultColor(Color c) {
+        bgDafaultColor = c;
+    }
+
+    public Color getBgDefaultColor() {
+        return bgDafaultColor;
     }
 
     @Override
