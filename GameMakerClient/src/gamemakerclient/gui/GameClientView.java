@@ -142,10 +142,10 @@ public class GameClientView extends JPanel implements Runnable {
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
 
-            if (game.getGameStructure() != null) {
+            int xTranslate = 0;
+            int yTranslate = 0;
 
-                int xTranslate = 0;
-                int yTranslate = 0;
+            if (game.getGameStructure() != null) {
 
                 Dimension size = this.getPreferredSize();
                 int lvlWidth = game.getGameStructure().getCurrentLevel().getWidth();
@@ -168,7 +168,7 @@ public class GameClientView extends JPanel implements Runnable {
 
             if (showFPS) {
                 g.setColor(Color.RED);
-                g.drawString("FPS: " + currentFPS, 5, 15);
+                g.drawString("FPS: " + currentFPS, 5 - xTranslate, 15 - yTranslate);
             }
         }
 
