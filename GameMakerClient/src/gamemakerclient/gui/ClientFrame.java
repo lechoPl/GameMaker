@@ -1,6 +1,6 @@
 package gamemakerclient.gui;
 
-import gamemakerclient.gui.controler.MenuActions;
+import gamemakerclient.gui.controller.MenuActions;
 import java.awt.BorderLayout;
 import javax.swing.*;
 import logic.Game;
