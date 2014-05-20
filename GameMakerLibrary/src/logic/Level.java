@@ -180,13 +180,6 @@ public class Level implements Serializable, IViewable {
         int objX2 = objX1 + obj.getWidth();
         int objY2 = objY1 + obj.getHeight();
 
-        if (objX1 < 0) {
-            return new Collision(CollisionType.BACK, 0);
-        }
-        if (objX2 > levelWidth) {
-            return new Collision(CollisionType.FRONT, levelWidth);
-        }
-
         for (GameObject tempObj : objects) {
             int tempX1 = tempObj.getPos().getX();
             int tempY1 = tempObj.getPos().getY();
@@ -207,6 +200,13 @@ public class Level implements Serializable, IViewable {
                 return new Collision(CollisionType.BACK, tempX2);
             }
         }
+        
+        if (objX1 < 0) {
+            return new Collision(CollisionType.BACK, 0);
+        }
+        if (objX2 > levelWidth) {
+            return new Collision(CollisionType.FRONT, levelWidth);
+        }
 
         return null;
     }
@@ -224,13 +224,6 @@ public class Level implements Serializable, IViewable {
         int objY1 = obj.getNextYPosition(deltaTime);
         int objX2 = objX1 + obj.getWidth();
         int objY2 = objY1 + obj.getHeight();
-
-        if (objY1 < 0) {
-            return new Collision(CollisionType.UP, 0);
-        }
-        if (objY2 > levelHeight) {
-            return new Collision(CollisionType.DONW, levelHeight);
-        }
 
         for (GameObject tempObj : objects) {
             int tempX1 = tempObj.getPos().getX();
@@ -251,6 +244,13 @@ public class Level implements Serializable, IViewable {
             if (objY1 < tempY2 && objY2 > tempY2) {
                 return new Collision(CollisionType.UP, tempY2);
             }
+        }
+        
+        if (objY1 < 0) {
+            return new Collision(CollisionType.UP, 0);
+        }
+        if (objY2 > levelHeight) {
+            return new Collision(CollisionType.DONW, levelHeight);
         }
 
         return null;
