@@ -55,6 +55,14 @@ public class StructureTree extends JTree {
                 } else {
                     frame.changePropertiesPanel(new DefaultPropertiesPanel());
                 }
+            } else if(e.getClickCount() == 2) {
+                if(node instanceof LevelTreeNode) {
+                    LevelTreeNode levelNode = (LevelTreeNode)node;
+                    int nr = levelNode.getLevelNumber();
+                    Level newLevel = frame.getGame().getGameStructure().getLevels().get(nr);
+                    frame.getGame().getGameStructure().setCurrentLevel(newLevel);
+                    frame.refreshGamePreview();
+                }
             }
         }
 

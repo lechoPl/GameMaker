@@ -181,6 +181,8 @@ public class EditorFrame extends JFrame implements IGameFrame {
         
         setTitle(frameTitle + " - " + game.getGameStructure().getName());
         gamePreview.setGame(game);
+        
+        refreshStructureTree();
     }
     
     @Override
