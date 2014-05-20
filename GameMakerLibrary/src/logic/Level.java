@@ -23,7 +23,7 @@ public class Level implements Serializable, IViewable {
     private Color bgColor;
 
     private Background levelBackground;
-    private ArrayList<GameObject> objects;
+    private ArrayList<GameObject> objects;     //should be dictionary or hashmap to beter get objects
     private DynamicObject player;
 
     // constructors
