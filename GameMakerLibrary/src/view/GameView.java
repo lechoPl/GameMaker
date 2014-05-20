@@ -39,11 +39,12 @@ public class GameView extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        if (game.getGameStructure() != null) {
+        if (game.getGameStructure() != null &&
+                game.getGameStructure().getCurrentLevel() != null) {
 
             int xTranslate = 0;
             int yTranslate = 0;
-
+            
             Dimension size = this.getPreferredSize();
             int lvlWidth = game.getGameStructure().getCurrentLevel().getWidth();
             int lvlHeight = game.getGameStructure().getCurrentLevel().getHeight();
