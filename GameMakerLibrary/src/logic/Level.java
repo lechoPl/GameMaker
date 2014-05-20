@@ -112,7 +112,6 @@ public class Level implements Serializable, IViewable {
 
     @Override
     public void render(Graphics g, GameResources gameResources) {
-
         //background
         g.setColor(bgColor);
         g.fillRect(0, 0, levelWidth, levelHeight);
@@ -281,7 +280,7 @@ public class Level implements Serializable, IViewable {
         level.setWidth(400);
 
         SampleObject obj1 = new SampleObject(new Pos(40, 40), 40, 80, Color.GREEN);
-        SampleObject obj2 = new SampleObject(new Pos(0, 380), 2000, 20, Color.RED);
+        SampleObject obj2 = new SampleObject(new Pos(80, 380), 1800, 20, Color.RED);
         SampleObject obj3 = new SampleObject(new Pos(200, 350), 50, 20, Color.RED);
         SampleObject obj4 = new SampleObject(new Pos(240, 300), 50, 20, Color.RED);
 
