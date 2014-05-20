@@ -11,6 +11,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import logic.Game;
 import logic.Level;
+import view.Camera;
 import view.GameView;
 
 public class GameClientView extends JPanel implements Runnable {
@@ -140,12 +141,17 @@ public class GameClientView extends JPanel implements Runnable {
 
         @Override
         public void paintComponent(Graphics g) {
+
+            Camera.setCamera(g, game.getGameStructure());
+
             super.paintComponent(g);
 
             int xTranslate = 0;
             int yTranslate = 0;
-
-            if (game.getGameStructure() != null) {
+            
+            // hide objects when they cross level size
+            if (game.getGameStructure() != null &&
+                    game.getGameStructure().getCurrentLevel() != null) {
 
                 Dimension size = this.getPreferredSize();
                 int lvlWidth = game.getGameStructure().getCurrentLevel().getWidth();
