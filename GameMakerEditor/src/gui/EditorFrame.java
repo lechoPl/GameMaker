@@ -1,5 +1,6 @@
 package gui;
 
+import gui.structure.StructureTree;
 import gui.controller.MenuActions;
 import gui.properties.DefaultPropertiesPanel;
 import java.awt.BorderLayout;
@@ -159,6 +160,10 @@ public class EditorFrame extends JFrame implements IGameFrame {
     
     public void refreshStructureTree() {
         structureTree.reload();
+    }
+    
+    public void refreshGamePreview() {
+        gamePreview.repaint();
     }
 
     public void saveAs() {
