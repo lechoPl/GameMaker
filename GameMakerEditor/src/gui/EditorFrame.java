@@ -1,8 +1,9 @@
 package gui;
 
-import gui.structure.StructureTree;
+import gui.controller.GameActions;
 import gui.controller.MenuActions;
 import gui.properties.DefaultPropertiesPanel;
+import gui.structure.StructureTree;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -29,11 +30,14 @@ public class EditorFrame extends JFrame implements IGameFrame {
     private JMenuBar menu = new JMenuBar();
 
     private JMenu menuFile = new JMenu("File");
-    private JMenuItem newGameItem = new JMenuItem("New game...");
-    private JMenuItem openGameItem = new JMenuItem("Open game...");
-    private JMenuItem saveGameAsItem = new JMenuItem("Save as...");
+    private JMenuItem newGameItem = new JMenuItem("New game");
+    private JMenuItem openGameItem = new JMenuItem("Open game");
+    private JMenuItem saveGameAsItem = new JMenuItem("Save as");
     private JMenuItem saveGameItem = new JMenuItem("Save");
     private JMenuItem exitItem = new JMenuItem("Exit");
+    
+    private JMenu menuGame = new JMenu("Game");
+    private JMenuItem newLevelItem = new JMenuItem("New level");
     
     private CustomJSplitPane horizontalPane = 
             new CustomJSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -87,14 +91,15 @@ public class EditorFrame extends JFrame implements IGameFrame {
 
     private void createMenu() {
         menu.add(menuFile);
+        
         menuFile.add(newGameItem);
-        newGameItem.setAction(new MenuActions.NewGameAction(this, "New game..."));
+        newGameItem.setAction(new MenuActions.NewGameAction(this, "New game"));
 
         menuFile.add(openGameItem);
-        openGameItem.setAction(new MenuActions.OpenGameAction(this,"Open game..."));
+        openGameItem.setAction(new MenuActions.OpenGameAction(this,"Open game"));
 
         menuFile.add(saveGameAsItem);
-        saveGameAsItem.setAction(new MenuActions.SaveGameAction(this, "Save as..."));
+        saveGameAsItem.setAction(new MenuActions.SaveGameAction(this, "Save as"));
         saveGameAsItem.setActionCommand("saveAs");
 
         menuFile.add(saveGameItem);
@@ -104,6 +109,11 @@ public class EditorFrame extends JFrame implements IGameFrame {
 
         menuFile.add(exitItem);
         exitItem.setAction(new MenuActions.ExitAction(this, "Exit"));
+        
+        menu.add(menuGame);
+        
+        menuGame.add(newLevelItem);
+        newLevelItem.setAction(new GameActions.NewLevelAction(this, "New level"));
 
         this.add(menu, BorderLayout.PAGE_START);
     }
@@ -181,6 +191,9 @@ public class EditorFrame extends JFrame implements IGameFrame {
         
         setTitle(frameTitle + " - " + game.getGameStructure().getName());
         gamePreview.setGame(game);
+        
+        refreshStructureTree();
+        changePropertiesPanel(new DefaultPropertiesPanel());
     }
     
     @Override

@@ -120,7 +120,8 @@ public class Level implements Serializable, IViewable {
             objects.get(i).render(g, gameResources);
         }
 
-        player.render(g, gameResources);
+        if(player != null)
+            player.render(g, gameResources);
     }
 
     /**
