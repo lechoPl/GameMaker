@@ -111,4 +111,11 @@ public class Game {
     public void setPlayerController(PlayerController controller) {
         playerContorller = controller;
     }
+
+    public void pullControllers() {
+        
+        if (playerContorller != null) {
+            playerContorller.pull();
+        }
+    }
 }

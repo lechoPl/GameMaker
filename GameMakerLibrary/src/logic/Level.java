@@ -1,5 +1,6 @@
 package logic;
 
+import enums.CollisionType;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.io.Serializable;
@@ -22,7 +23,7 @@ public class Level implements Serializable, IViewable {
     private Color bgColor;
 
     private Background levelBackground;
-    private ArrayList<GameObject> objects;
+    private ArrayList<GameObject> objects;     //should be dictionary or hashmap to beter get objects
     private DynamicObject player;
 
     // constructors
@@ -111,7 +112,6 @@ public class Level implements Serializable, IViewable {
 
     @Override
     public void render(Graphics g, GameResources gameResources) {
-
         //background
         g.setColor(bgColor);
         g.fillRect(0, 0, levelWidth, levelHeight);
@@ -120,83 +120,176 @@ public class Level implements Serializable, IViewable {
             objects.get(i).render(g, gameResources);
         }
 
-        player.render(g, gameResources);
+        if(player != null)
+            player.render(g, gameResources);
     }
 
+    /**
+     * Update position and state movable objects.
+     *
+     * @param deltaTime move time
+     */
     public void update(double deltaTime) {
-        if (!checkCollisionX(player, deltaTime)) {
+        Collision result = checkCollisionX(player, deltaTime);
+
+        if (result == null) {
             player.updateX(deltaTime);
+        } else {
+            switch (result.type) {
+                case BACK:
+                    player.setPos(new Pos(result.pos, player.getPos().getY()));
+                    break;
+                case FRONT:
+                    player.setPos(new Pos(result.pos - player.getWidth(), player.getPos().getY()));
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Wrong collision type: " + result.type + " " + result.pos);
+
+            }
         }
 
-        if (!checkCollisionY(player, deltaTime)) {
+        result = checkCollisionY(player, deltaTime);
+        if (result == null) {
             player.updateY(deltaTime);
-        }
-        else {
-            player.setJumpAllowed(true);
+        } else {
+            switch (result.type) {
+                case UP:
+                    player.setJumpAllowed(false);
+                    player.setYSpeedValue(0);
+                    player.setPos(new Pos(player.getPos().getX(), result.pos));
+                    break;
+                case DONW:
+                    player.setJumpAllowed(true);
+                    player.setPos(new Pos(player.getPos().getX(), result.pos - player.getHeight()));
+                    break;
+                default:
+                    throw new UnsupportedOperationException("Wrong collision type: " + result.type + " " + result.pos);
+            }
         }
     }
 
-    public boolean checkCollisionX(DynamicObject obj, double deltaTime) {
-
+    /**
+     * Check obj collision on axe X
+     *
+     * @param obj
+     * @param deltaTime
+     * @return
+     */
+    public Collision checkCollisionX(DynamicObject obj, double deltaTime) {
         int objX1 = obj.getNextXPosition(deltaTime);
         int objY1 = obj.getPos().getY();
         int objX2 = objX1 + obj.getWidth();
         int objY2 = objY1 + obj.getHeight();
 
-        return checkCollision(objX1, objY1, objX2, objY2);
-    }
-
-    public boolean checkCollisionY(DynamicObject obj, double deltaTime) {
-
-        int objX1 = obj.getPos().getX();
-        int objY1 = obj.getNextYPosition(deltaTime);
-        int objX2 = objX1 + obj.getWidth();
-        int objY2 = objY1 + obj.getHeight();
-
-        return checkCollision(objX1, objY1, objX2, objY2);
-    }
-
-    public boolean checkCollision(int x1, int y1, int x2, int y2) {
-        if(x1 < 1 || x2 > levelWidth)
-            return true;
-        if(y1 < 1 || y2 > levelHeight)
-            return true;
-        
-        // obj corners: (X1, Y1), (X2, Y2), (X1, Y2), (X2, Y2)
         for (GameObject tempObj : objects) {
             int tempX1 = tempObj.getPos().getX();
             int tempY1 = tempObj.getPos().getY();
             int tempX2 = tempX1 + tempObj.getWidth();
             int tempY2 = tempY1 + tempObj.getHeight();
 
-            if (tempY2 <= y1 || tempY1 >= y2) {
+            if (tempY2 <= objY1 || tempY1 >= objY2) {
                 continue;
             }
-            if (tempX2 <= x1 || tempX1 >= x2) {
+            if (tempX2 <= objX1 || tempX1 >= objX2) {
                 continue;
             }
-            return true;
+
+            if (objX2 > tempX1 && objX1 < tempX1) {
+                return new Collision(CollisionType.FRONT, tempX1);
+            }
+            if (objX1 < tempX2 && objX2 > tempX2) {
+                return new Collision(CollisionType.BACK, tempX2);
+            }
+        }
+        
+        if (objX1 < 0) {
+            return new Collision(CollisionType.BACK, 0);
+        }
+        if (objX2 > levelWidth) {
+            return new Collision(CollisionType.FRONT, levelWidth);
         }
 
-        return false;
+        return null;
+    }
+
+    /**
+     * Check obj collision on axe Y
+     *
+     * @param obj
+     * @param deltaTime
+     * @return
+     */
+    public Collision checkCollisionY(DynamicObject obj, double deltaTime) {
+
+        int objX1 = obj.getPos().getX();
+        int objY1 = obj.getNextYPosition(deltaTime);
+        int objX2 = objX1 + obj.getWidth();
+        int objY2 = objY1 + obj.getHeight();
+
+        for (GameObject tempObj : objects) {
+            int tempX1 = tempObj.getPos().getX();
+            int tempY1 = tempObj.getPos().getY();
+            int tempX2 = tempX1 + tempObj.getWidth();
+            int tempY2 = tempY1 + tempObj.getHeight();
+
+            if (tempY2 <= objY1 || tempY1 >= objY2) {
+                continue;
+            }
+            if (tempX2 <= objX1 || tempX1 >= objX2) {
+                continue;
+            }
+
+            if (objY2 > tempY1 && objY1 < tempY1) {
+                return new Collision(CollisionType.DONW, tempY1);
+            }
+            if (objY1 < tempY2 && objY2 > tempY2) {
+                return new Collision(CollisionType.UP, tempY2);
+            }
+        }
+        
+        if (objY1 < 0) {
+            return new Collision(CollisionType.UP, 0);
+        }
+        if (objY2 > levelHeight) {
+            return new Collision(CollisionType.DONW, levelHeight);
+        }
+
+        return null;
+    }
+
+    private class Collision {
+
+        /**
+         * Collision Type
+         */
+        public final CollisionType type;
+
+        /**
+         * x or y coordinate wher collision was detected
+         */
+        public final int pos;
+
+        public Collision(CollisionType t, int p) {
+            type = t;
+            pos = p;
+        }
     }
 
     static public Level getSampleLevel() {
         Level level = new Level("Sample level");
         level.setHeight(400);
-        level.setWidth(2000);
+        level.setWidth(400);
 
         SampleObject obj1 = new SampleObject(new Pos(40, 40), 40, 80, Color.GREEN);
-        SampleObject obj2 = new SampleObject(new Pos(0, 380), 2000, 20, Color.RED);
+        SampleObject obj2 = new SampleObject(new Pos(80, 380), 1800, 20, Color.RED);
         SampleObject obj3 = new SampleObject(new Pos(200, 350), 50, 20, Color.RED);
         SampleObject obj4 = new SampleObject(new Pos(240, 300), 50, 20, Color.RED);
-
 
         level.addObject(obj1);
         level.addObject(obj2);
         level.addObject(obj3);
         level.addObject(obj4);
-        
+
         level.setPlayer(new DynamicObject(new Pos(80, 80), 50, 50));
 
         return level;

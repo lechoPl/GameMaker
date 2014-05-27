@@ -6,12 +6,12 @@ import javax.swing.JPanel;
 import logic.Game;
 
 public class GameView extends JPanel {
+    /*
+     add jpanel to view level look at game clientView 
+     */
 
     protected int widthDefault = 100;
     protected int heightDefault = 100;
-
-    protected int xLeftUpCorner;
-    protected int yLeftUpCorner;
 
     protected Game game;
 
@@ -27,6 +27,7 @@ public class GameView extends JPanel {
     public synchronized void setGame(Game game) {
         this.game = game;
         this.setPreferredSize(game.getGameStructure().getWindowSize());
+        this.setBackground(game.getGameStructure().getBgDefaultColor());
         this.repaint();
     }
 
@@ -39,7 +40,9 @@ public class GameView extends JPanel {
         super.paintComponent(g);
 
         if (game.getGameStructure() != null) {
+
             game.getGameStructure().render(g, game.getGameResources());
         }
+
     }
 }

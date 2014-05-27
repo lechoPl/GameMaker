@@ -6,18 +6,21 @@ import javax.swing.AbstractAction;
 import logic.Game;
 
 public class MenuActions {
+
     public static class NewGameAction extends AbstractAction {
+
         private EditorFrame frame;
+
         public NewGameAction(EditorFrame frame) {
             super();
             this.frame = frame;
         }
-        
+
         public NewGameAction(EditorFrame frame, String label) {
             super(label);
             this.frame = frame;
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             frame.setGame(new Game());
@@ -25,16 +28,16 @@ public class MenuActions {
     }
 
     public static class ExitAction extends AbstractAction {
+
         private EditorFrame frame;
-        
-        public ExitAction(EditorFrame frame)
-        {
+
+        public ExitAction(EditorFrame frame) {
             this.frame = frame;
         }
-        
+
         public ExitAction(EditorFrame frame, String label) {
             super(label);
-            
+
             this.frame = frame;
         }
 
@@ -45,14 +48,14 @@ public class MenuActions {
     }
 
     public static class SaveGameAction extends AbstractAction {
+
         private EditorFrame frame;
-        
-        public SaveGameAction(EditorFrame frame)
-        {
+
+        public SaveGameAction(EditorFrame frame) {
             super();
             this.frame = frame;
         }
-        
+
         public SaveGameAction(EditorFrame frame, String label) {
             super(label);
             this.frame = frame;
@@ -77,13 +80,12 @@ public class MenuActions {
     public static class OpenGameAction extends AbstractAction {
 
         private EditorFrame frame;
-        
-        public OpenGameAction(EditorFrame frame)
-        {
+
+        public OpenGameAction(EditorFrame frame) {
             super();
             this.frame = frame;
         }
-        
+
         public OpenGameAction(EditorFrame frame, String label) {
             super(label);
             this.frame = frame;

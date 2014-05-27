@@ -11,6 +11,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import logic.Game;
 import logic.Level;
+import view.Camera;
 import view.GameView;
 
 public class GameClientView extends JPanel implements Runnable {
@@ -63,6 +64,9 @@ public class GameClientView extends JPanel implements Runnable {
                 time = 0;
                 frameCount = 0;
             }
+
+            //pull game controller
+            this.getGame().pullControllers();
 
             //update game state
             double deltaInSecods = (double) delta / 10000000.0;
@@ -137,16 +141,46 @@ public class GameClientView extends JPanel implements Runnable {
 
         @Override
         public void paintComponent(Graphics g) {
+
+            Camera.setCamera(g, game.getGameStructure());
+
             super.paintComponent(g);
+
+            int xTranslate = 0;
+            int yTranslate = 0;
+            
+            // hide objects when they cross level size
+            if (game.getGameStructure() != null &&
+                    game.getGameStructure().getCurrentLevel() != null) {
+
+                Dimension size = this.getPreferredSize();
+                int lvlWidth = game.getGameStructure().getCurrentLevel().getWidth();
+                int lvlHeight = game.getGameStructure().getCurrentLevel().getHeight();
+
+                if (size.width > lvlWidth) {
+                    xTranslate = (size.width - lvlWidth) / 2;
+                }
+
+                if (size.height > lvlHeight) {
+                    yTranslate = (size.height - lvlHeight) / 2;
+                }
+
+                g.setColor(game.getGameStructure().getBgDefaultColor());
+                g.fillRect(-xTranslate, -yTranslate, size.width, yTranslate);
+                g.fillRect(-xTranslate, lvlHeight, size.width, yTranslate);
+                g.fillRect(-xTranslate, -yTranslate, xTranslate, size.height);
+                g.fillRect(lvlWidth, -yTranslate, xTranslate, size.height);
+            }
 
             if (showFPS) {
                 g.setColor(Color.RED);
-                g.drawString("FPS: " + currentFPS, 5, 15);
+                g.drawString("FPS: " + currentFPS, 5 - xTranslate, 15 - yTranslate);
             }
         }
 
         private void createSampleGame() {
             Game gameTemp = new Game();
+            gameTemp.getGameStructure().setBgDefaultColor(Color.GRAY);
 
             Level level = Level.getSampleLevel();
             gameTemp.getGameStructure().addNewLevel(level);
