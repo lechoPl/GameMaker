@@ -1,8 +1,7 @@
 package enums;
 
 public enum PlayerState {
-    MOVE_RIGHT,
-    MOVE_LEFT,
+    MOVE,
     JUMP,
     FALL,
     STAND

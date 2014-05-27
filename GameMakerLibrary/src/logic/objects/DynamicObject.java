@@ -1,5 +1,6 @@
 package logic.objects;
 
+import enums.Direction;
 import enums.PlayerState;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -12,7 +13,10 @@ public class DynamicObject
 
     protected double moveSpeed = 2; // per milisecond
     protected double jumpSpeed = 3;
-    protected PlayerState objectState = PlayerState.FALL;
+    
+    protected PlayerState objectState = PlayerState.STAND;
+    protected Direction objectDirection = Direction.RIGHT;
+    
     protected double vx = 0;
     protected double vy = 0;
     protected double ay = 0.05;
@@ -32,6 +36,10 @@ public class DynamicObject
 
     public PlayerState getObjectState() {
         return objectState;
+    }
+    
+    public Direction getObjectDirection() {
+        return objectDirection;
     }
 
     public void setObjectState(PlayerState val) {
@@ -78,25 +86,23 @@ public class DynamicObject
 
     @Override
     public int getNextXPosition(double dt) {
+        updateState();
         return position.getX() + (int) (vx * dt);
     }
 
     @Override
     public int getNextYPosition(double dt) {
+        updateState();
         return position.getY() + (int) ((vy + ay * dt) * dt);
     }
 
     @Override
     public void moveLeft() {
-        objectState = PlayerState.MOVE_LEFT;
-
         vx = -moveSpeed;
     }
 
     @Override
     public void moveRight() {
-        objectState = PlayerState.MOVE_RIGHT;
-
         vx = moveSpeed;
     }
 
@@ -106,18 +112,15 @@ public class DynamicObject
             return;
         }
 
-        objectState = PlayerState.JUMP;
         jumpAllowed = false;
         vy = -jumpSpeed;
     }
 
     @Override
     public void moveStop() {
-        objectState = PlayerState.STAND;
-
         vx = 0;
     }
-
+    
     @Override
     public void update(double dt) {
         int tempX = getNextXPosition(dt);
@@ -126,6 +129,8 @@ public class DynamicObject
         vy = vy + ay * dt;
 
         this.setPos(new Pos(tempX, tempY));
+        
+        updateState();
     }
 
     @Override
@@ -133,6 +138,8 @@ public class DynamicObject
         int tempX = getNextXPosition(dt);
 
         this.setPos(new Pos(tempX, this.getPos().getY()));
+        
+        updateState();
     }
 
     @Override
@@ -142,6 +149,8 @@ public class DynamicObject
         vy = vy + ay * dt;
 
         this.setPos(new Pos(this.getPos().getX(), tempY));
+        
+        updateState();
     }
 
     /* olny for test, remove it later*/
@@ -153,5 +162,24 @@ public class DynamicObject
     @Override
     public void moveDown() {
         vy = moveSpeed;
+    }
+    
+    protected void updateState() {
+        if(vx == 0) {
+            if(jumpAllowed)
+                objectState = PlayerState.STAND;
+        } else {
+            if(vx > 0) objectDirection = Direction.RIGHT;
+            else objectDirection = Direction.LEFT;
+            
+            objectState = PlayerState.MOVE;
+        }
+        
+        if(!jumpAllowed) {
+            if(vy > 0)
+                objectState = PlayerState.FALL;
+            else if(vy < 0)
+                objectState = PlayerState.JUMP;
+        }
     }
 }

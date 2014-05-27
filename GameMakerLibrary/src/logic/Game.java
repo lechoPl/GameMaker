@@ -26,7 +26,6 @@ public class Game {
 
     private GameStructure gameStructure;
     private GameResources gameResources;
-    private PlayerController playerContorller;
     private GameController gameController; // to implementet - controll game menu, etc.
 
     public Game() {
@@ -105,17 +104,16 @@ public class Game {
     }
 
     public PlayerController getPlayerController() {
-        return playerContorller;
+        return gameStructure.getPlayerController();
     }
 
     public void setPlayerController(PlayerController controller) {
-        playerContorller = controller;
+        gameStructure.setPlayerController(controller);
     }
 
     public void pullControllers() {
-        
-        if (playerContorller != null) {
-            playerContorller.pull();
+        if (gameStructure.getPlayerController() != null) {
+            gameStructure.getPlayerController().pull();
         }
     }
 }

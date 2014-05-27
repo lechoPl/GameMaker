@@ -1,5 +1,6 @@
 package gui;
 
+import controller.PlayerController;
 import gui.controller.GameActions;
 import gui.controller.MenuActions;
 import gui.properties.DefaultPropertiesPanel;
@@ -131,8 +132,14 @@ public class EditorFrame extends JFrame implements IGameFrame {
 
     private void createGamePreviewPanel(){
         Level level = Level.getSampleLevel();
+        
         game.getGameStructure().addNewLevel( level );
         game.getGameStructure().setCurrentLevel( level );
+        
+        PlayerController pc = new PlayerController();
+        pc.setControlledObject(game.getGameStructure().getCurrentLevel().getPlayer());
+
+        game.setPlayerController(pc);
         
         gamePreview = new EditorGameView(game);
         gamePreview.setPreferredSize(new Dimension(level.getWidth(), level.getHeight()));

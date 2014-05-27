@@ -2,10 +2,11 @@ package controller;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.Serializable;
 import java.util.ArrayList;
 import logic.objects.IKeyControlled;
 
-public class PlayerController extends KeyAdapter {
+public class PlayerController extends KeyAdapter implements Serializable {
 
     protected IKeyControlled controlledObject;
 
