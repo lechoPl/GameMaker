@@ -48,6 +48,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import logic.objects.AnimatedDynamicObject;
 import logic.objects.GameObject;
 import logic.objects.StaticObject;
 import managers.GameFileManager;
@@ -65,12 +66,14 @@ public class CustomTabbedPane extends JTabbedPane {
         
     private JPanel imagesPanel = new JPanel(gridLayout);
     private JScrollPane imagesScroll = new JScrollPane(imagesPanel);
-        
+    
+    private JPanel animationsPanel = new JPanel(gridLayout);
+    private JScrollPane animationsScroll = new JScrollPane(animationsPanel);
+    
+    private JPanel soundsPanel = new JPanel(gridLayout);
+    
     private JPanel objectsPanel = new JPanel(gridLayout);
     private JScrollPane objectsScroll = new JScrollPane(objectsPanel);
-    
-    private JPanel backgroundsPanel = new JPanel(gridLayout);
-    private JPanel soundsPanel = new JPanel(gridLayout);
     
     private JPopupMenu pMenu = new JPopupMenu("Menu");
     private JDialog addItemDialog = new JDialog();
@@ -91,8 +94,8 @@ public class CustomTabbedPane extends JTabbedPane {
         imagesPanel.addMouseListener(popupListener);
         addTab("Images", imagesScroll);
         
-        backgroundsPanel.addMouseListener(popupListener);
-        addTab("Backgrounds", backgroundsPanel);
+        //animationsPanel.addMouseListener(popupListener);
+        //addTab("Animations", animationsScroll);
         
         objectsPanel.addMouseListener(popupListener);
         addTab("Objects", objectsPanel);
@@ -107,8 +110,8 @@ public class CustomTabbedPane extends JTabbedPane {
                 Component c = thisPane.getSelectedComponent();
                 if(c == imagesScroll) {
                     refreshImages();
-                } else if(c == backgroundsPanel) {
-                    refreshBackgrounds();
+                } else if (c == objectsScroll) {
+                    refreshObjects();
                 }
             }
 
@@ -418,7 +421,7 @@ public class CustomTabbedPane extends JTabbedPane {
     
     public void refreshItems() {
         refreshImages();
-        refreshBackgrounds();
+        
         refreshObjects();
         refreshSounds();
     }
@@ -427,21 +430,25 @@ public class CustomTabbedPane extends JTabbedPane {
         imagesPanel.removeAll();
         int width = Math.max(getWidth() / ToolbarItem.ITEM_SIZE, 1);
         imagesPanel.setLayout(new GridLayout(0, width));
+        
         for(Entry<String, BufferedImage> item : frame.getGame().getGameResources().getImages().entrySet()) {
-            imagesPanel.add(new ToolbarItem(item.getKey(), frame.getGame().getGameResources().getImage(item.getKey())));
+            //if(item.getValue() instanceof StaticObject) {
+                imagesPanel.add(new ToolbarItem(item.getKey(), frame.getGame().getGameResources().getImage(item.getKey())));
+            //}
         }
         imagesPanel.revalidate();
         imagesScroll.repaint();
     }
     
-    private void refreshBackgrounds() {
-        backgroundsPanel.removeAll();
+    private void refreshAnimations() {
+        animationsPanel.removeAll();
         int width = Math.max(getWidth() / ToolbarItem.ITEM_SIZE, 1);
-        backgroundsPanel.setLayout(new GridLayout(0, width));
-        for(Entry<String, BufferedImage> item : frame.getGame().getGameResources().getBackgrounds().entrySet()) {
-            backgroundsPanel.add(new ToolbarItem(item.getKey(), frame.getGame().getGameResources().getImage(item.getKey())));
+        animationsPanel.setLayout(new GridLayout(0, width));
+        for(Entry<String, BufferedImage> item : frame.getGame().getGameResources().getImages().entrySet()) {
+            animationsPanel.add(new ToolbarItem(item.getKey(), frame.getGame().getGameResources().getImage(item.getKey())));
         }
-        backgroundsPanel.revalidate();
+        animationsPanel.revalidate();
+        animationsScroll.repaint();
     }
     
     private void refreshObjects() {
