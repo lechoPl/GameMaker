@@ -3,7 +3,7 @@ package enums;
 public enum CollisionType {
 
     UP,
-    DONW,
+    DOWN,
     FRONT,
     BACK,
 }

@@ -1,5 +1,6 @@
 package logic;
 
+import controller.PlayerController;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -21,6 +22,8 @@ public class GameStructure implements IViewable, Serializable {
 
     protected Level currentLevel = null;
     private LinkedList<Level> levels;
+    
+    private PlayerController playerContorller;
 
     // constructors
     public GameStructure() {
@@ -73,6 +76,14 @@ public class GameStructure implements IViewable, Serializable {
 
     public Color getBgDefaultColor() {
         return bgDafaultColor;
+    }
+    
+    public PlayerController getPlayerController() {
+        return playerContorller;
+    }
+
+    public void setPlayerController(PlayerController controller) {
+        playerContorller = controller;
     }
 
     @Override

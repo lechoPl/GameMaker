@@ -158,7 +158,7 @@ public class Level implements Serializable, IViewable {
                     player.setYSpeedValue(0);
                     player.setPos(new Pos(player.getPos().getX(), result.pos));
                     break;
-                case DONW:
+                case DOWN:
                     player.setJumpAllowed(true);
                     player.setPos(new Pos(player.getPos().getX(), result.pos - player.getHeight()));
                     break;
@@ -240,7 +240,7 @@ public class Level implements Serializable, IViewable {
             }
 
             if (objY2 > tempY1 && objY1 < tempY1) {
-                return new Collision(CollisionType.DONW, tempY1);
+                return new Collision(CollisionType.DOWN, tempY1);
             }
             if (objY1 < tempY2 && objY2 > tempY2) {
                 return new Collision(CollisionType.UP, tempY2);
@@ -251,7 +251,7 @@ public class Level implements Serializable, IViewable {
             return new Collision(CollisionType.UP, 0);
         }
         if (objY2 > levelHeight) {
-            return new Collision(CollisionType.DONW, levelHeight);
+            return new Collision(CollisionType.DOWN, levelHeight);
         }
 
         return null;

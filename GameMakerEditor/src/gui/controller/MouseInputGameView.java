@@ -11,6 +11,7 @@ import javax.swing.event.MouseInputAdapter;
 import logic.Game;
 import logic.GameStructure;
 import logic.Pos;
+import logic.objects.DynamicObject;
 import logic.objects.GameObject;
 
 public class MouseInputGameView extends MouseInputAdapter implements MouseWheelListener {
@@ -62,6 +63,24 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
         }
     }
     
+    private void addPlayer(MouseEvent e) {
+        GameStructure gameStructure = view.getGame().getGameStructure();
+
+        if (gameStructure != null && gameStructure.getCurrentLevel() != null && view.getObjectToAdd() != null) {
+            DynamicObject obj;
+            try {
+                obj = (DynamicObject) view.getObjectToAdd().copy();
+                obj.setPos(new Pos(e.getX(), e.getY()));
+                gameStructure.getCurrentLevel().setPlayer(obj);
+                gameStructure.getPlayerController().setControlledObject(obj);
+                
+                view.setSelectedObject(obj);
+            } catch (CloneNotSupportedException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
     private void scaleObject(int scaleRatio) {
         int width = view.getSelectedObject().getWidth();
         int height = view.getSelectedObject().getHeight();
@@ -82,8 +101,10 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
 
         if (SwingUtilities.isLeftMouseButton(e)) {
             selectObject(e);
-        } else if(SwingUtilities.isMiddleMouseButton(e)){ 
+        } else if(SwingUtilities.isRightMouseButton(e)) { 
             addObject(e);
+        } else if(SwingUtilities.isMiddleMouseButton(e)) {
+            addPlayer(e);
         }
 
         view.repaint();

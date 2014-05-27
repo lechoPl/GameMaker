@@ -134,6 +134,6 @@ public class GameResources {
     }
     
     public void addAnimatedObject(String name, String imageId, int frequency, int frames) {
-        objects.put(name, new AnimatedDynamicObject(name, imageId, getImage(imageId).getWidth()/frames, getImage(imageId).getHeight(), frequency, frames));
+        objects.put(name, new AnimatedDynamicObject(name, imageId, getImage(imageId).getWidth()/frames, getImage(imageId).getHeight() / 3, frequency, frames));
     }
 }
