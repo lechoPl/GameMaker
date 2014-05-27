@@ -96,6 +96,7 @@ public class MenuActions {
             Game game = frame.getGameFileManager().showOpenDialog(frame);
             if (frame.getGameFileManager().getFilePath() != null) {
                 frame.setGame(game);
+                frame.refreshToolbox();
             }
         }
     }

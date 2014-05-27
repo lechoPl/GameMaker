@@ -4,17 +4,18 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
+import static logic.GameStructure.GAME_PATH;
 import logic.objects.AnimatedDynamicObject;
 import logic.objects.DynamicObject;
 import logic.objects.GameObject;
 import logic.objects.StaticObject;
 
 public class GameResources {
-
     public static final String IMAGE_EXTENSION = "png";
 
     public static final String IMAGES_PATH = "data/images/";
@@ -94,6 +95,7 @@ public class GameResources {
             byte[] imageInByte = baos.toByteArray();
             out.write(imageInByte);
         }
+        out.closeEntry();
     }
 
     private void saveImages(RES_TYPE img, ZipOutputStream out) throws IOException {
@@ -122,12 +124,16 @@ public class GameResources {
     public HashMap<String, GameObject> getObjects() {
         return objects;
     }
+    
+    public void setObjects(HashMap<String, GameObject> objects) {
+        this.objects = objects;
+    }
 
     public void addStaticObject(String name, String imageId) {
         objects.put(name, new StaticObject(name, imageId, getImage(imageId).getWidth(), getImage(imageId).getHeight()));
     }
     
     public void addAnimatedObject(String name, String imageId, int frequency, int frames) {
-        objects.put(name, new AnimatedDynamicObject(name, imageId, getImage(imageId).getWidth(), getImage(imageId).getHeight(), frequency, frames));
+        objects.put(name, new AnimatedDynamicObject(name, imageId, getImage(imageId).getWidth()/frames, getImage(imageId).getHeight(), frequency, frames));
     }
 }
