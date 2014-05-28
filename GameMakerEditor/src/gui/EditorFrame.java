@@ -6,6 +6,7 @@ import gui.controller.MenuActions;
 import gui.properties.DefaultPropertiesPanel;
 import gui.structure.StructureTree;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -198,6 +199,11 @@ public class EditorFrame extends JFrame implements IGameFrame {
         
         setTitle(frameTitle + " - " + game.getGameStructure().getName());
         gamePreview.setGame(game);
+        
+        PlayerController pc = new PlayerController();
+        pc.setControlledObject(game.getGameStructure().getCurrentLevel().getPlayer());
+
+        game.setPlayerController(pc);
         
         refreshStructureTree();
         changePropertiesPanel(new DefaultPropertiesPanel());

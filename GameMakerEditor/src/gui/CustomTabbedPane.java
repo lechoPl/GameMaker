@@ -98,7 +98,7 @@ public class CustomTabbedPane extends JTabbedPane {
         //addTab("Animations", animationsScroll);
         
         objectsPanel.addMouseListener(popupListener);
-        addTab("Objects", objectsPanel);
+        addTab("Objects", objectsScroll);
         
         soundsPanel.addMouseListener(popupListener);
         addTab("Sounds", soundsPanel);
