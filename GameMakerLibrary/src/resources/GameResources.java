@@ -27,6 +27,7 @@ public class GameResources {
     private HashMap<String, Sound> sounds = new HashMap<String, Sound>();
 
     private HashMap<String, GameObject> objects = new HashMap<String, GameObject>();
+    private HashMap<String, DynamicObject> creatures = new HashMap<String, DynamicObject>();
 
     private enum RES_TYPE {
 

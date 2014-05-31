@@ -9,7 +9,7 @@ import logic.objects.GameObject;
 import view.GameView;
 
 public class EditorGameView extends GameView {
-
+    protected EditorFrame editorFrame;
     protected GameObject selectedObject;
     protected GameObject objectToAdd;
     
@@ -21,13 +21,15 @@ public class EditorGameView extends GameView {
         this.addMouseWheelListener(mouseList);
     }
     
-    public EditorGameView() {
+    public EditorGameView(EditorFrame frame) {
         setPreferredSize(new Dimension(widthDefault, heightDefault));
-
+        editorFrame = frame;
+        
         initControler();        
     }
 
-    public EditorGameView(Game game) {
+    public EditorGameView(EditorFrame frame, Game game) {
+        editorFrame = frame;
         this.game = game;
         setPreferredSize(game.getGameStructure().getWindowSize());
 
@@ -54,6 +56,10 @@ public class EditorGameView extends GameView {
     public void setGame(Game game) {
         super.setGame(game);
         selectedObject = null;
+    }
+    
+    public EditorFrame getFrame() {
+        return editorFrame;
     }
 
     @Override
