@@ -15,6 +15,8 @@ public abstract class GameObject implements IViewable, Serializable, Cloneable {
     protected Pos position;
     protected int width;
     protected int height;
+    
+    protected int zindex = 0;
 
     GameObject() {
         id = IdCount;
@@ -89,5 +91,13 @@ public abstract class GameObject implements IViewable, Serializable, Cloneable {
     
     public GameObject copy() throws CloneNotSupportedException {
         return (GameObject) clone();
+    }
+    
+    public int getZindex() {
+        return zindex;
+    }
+    
+    public void setZindex(int val) {
+        zindex = val;
     }
 }

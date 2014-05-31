@@ -13,31 +13,40 @@ public class DynamicObject
 
     protected double moveSpeed = 2; // per milisecond
     protected double jumpSpeed = 3;
-    
+
     protected PlayerState objectState = PlayerState.STAND;
     protected Direction objectDirection = Direction.RIGHT;
-    
+
     protected double vx = 0;
     protected double vy = 0;
     protected double ay = 0.05;
     protected boolean jumpAllowed = false;
-    
+
+    protected int lives = 1;
+    protected boolean isKilled = false;
+
     public DynamicObject() {
         super();
+
+        this.zindex = 2;
     }
 
     public DynamicObject(Pos p) {
         super(p);
+
+        this.zindex = 2;
     }
 
     public DynamicObject(Pos p, int width, int height) {
         super(p, width, height);
+
+        this.zindex = 2;
     }
 
     public PlayerState getObjectState() {
         return objectState;
     }
-    
+
     public Direction getObjectDirection() {
         return objectDirection;
     }
@@ -61,25 +70,55 @@ public class DynamicObject
     public void setJumpAllowed(boolean val) {
         jumpAllowed = val;
     }
-    
+
     public double getJumpSpeed() {
         return jumpSpeed;
     }
-    
+
     public void setJumpSpeed(double val) {
         jumpSpeed = val;
     }
-    
+
     public void setYSpeedValue(double val) {
         vy = val;
     }
-    
+
     public double getYSpeedValue() {
         return vy;
     }
 
+    //region Lives
+    public void setLives(int val) {
+        lives = val;
+    }
+
+    public int getLives() {
+        return lives;
+    }
+
+    public boolean IsKilled() {
+        return isKilled;
+    }
+
+    public void kill() {
+        if (!isKilled) {
+            lives -= 1;
+            isKilled = true;
+        }
+    }
+
+    public void raise() {
+        if (isKilled && lives > 1) {
+            lives -= 1;
+            isKilled = false;
+        }
+    }
+    //endregion
+
     @Override
     public void render(Graphics g, GameResources gameResources) {
+        if(isKilled) return;
+        
         g.setColor(Color.yellow);
         g.fillRect(position.getX(), position.getY(), width, height);
     }
@@ -120,7 +159,7 @@ public class DynamicObject
     public void moveStop() {
         vx = 0;
     }
-    
+
     @Override
     public void update(double dt) {
         int tempX = getNextXPosition(dt);
@@ -129,7 +168,7 @@ public class DynamicObject
         vy = vy + ay * dt;
 
         this.setPos(new Pos(tempX, tempY));
-        
+
         updateState();
     }
 
@@ -138,7 +177,7 @@ public class DynamicObject
         int tempX = getNextXPosition(dt);
 
         this.setPos(new Pos(tempX, this.getPos().getY()));
-        
+
         updateState();
     }
 
@@ -149,7 +188,7 @@ public class DynamicObject
         vy = vy + ay * dt;
 
         this.setPos(new Pos(this.getPos().getX(), tempY));
-        
+
         updateState();
     }
 
@@ -163,23 +202,28 @@ public class DynamicObject
     public void moveDown() {
         vy = moveSpeed;
     }
-    
+
     protected void updateState() {
-        if(vx == 0) {
-            if(jumpAllowed)
+        if (vx == 0) {
+            if (jumpAllowed) {
                 objectState = PlayerState.STAND;
+            }
         } else {
-            if(vx > 0) objectDirection = Direction.RIGHT;
-            else objectDirection = Direction.LEFT;
-            
+            if (vx > 0) {
+                objectDirection = Direction.RIGHT;
+            } else {
+                objectDirection = Direction.LEFT;
+            }
+
             objectState = PlayerState.MOVE;
         }
-        
-        if(!jumpAllowed) {
-            if(vy > 0)
+
+        if (!jumpAllowed) {
+            if (vy > 0) {
                 objectState = PlayerState.FALL;
-            else if(vy < 0)
+            } else if (vy < 0) {
                 objectState = PlayerState.JUMP;
+            }
         }
     }
 }
