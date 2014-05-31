@@ -13,10 +13,7 @@ public class DynamicObject
 
     protected double moveSpeed = 2; // per milisecond
     protected double jumpSpeed = 3;
-    
-    protected PlayerState objectState = PlayerState.STAND;
-    protected Direction objectDirection = Direction.RIGHT;
-    
+
     protected PlayerState objectState = PlayerState.STAND;
     protected Direction objectDirection = Direction.RIGHT;
 
@@ -24,10 +21,6 @@ public class DynamicObject
     protected double vy = 0;
     protected double ay = 0.05;
     protected boolean jumpAllowed = false;
-    
-    public DynamicObject() {
-        super();
-    }
 
     protected int lives = 1;
     protected boolean isKilled = false;
@@ -52,10 +45,6 @@ public class DynamicObject
 
     public PlayerState getObjectState() {
         return objectState;
-    }
-    
-    public Direction getObjectDirection() {
-        return objectDirection;
     }
 
     public Direction getObjectDirection() {
@@ -128,8 +117,10 @@ public class DynamicObject
 
     @Override
     public void render(Graphics g, GameResources gameResources) {
-        if(isKilled) return;
-        
+        if (isKilled) {
+            return;
+        }
+
         g.setColor(Color.yellow);
         g.fillRect(position.getX(), position.getY(), width, height);
     }
@@ -170,7 +161,7 @@ public class DynamicObject
     public void moveStop() {
         vx = 0;
     }
-    
+
     @Override
     public void update(double dt) {
         int tempX = getNextXPosition(dt);
