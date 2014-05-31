@@ -1,13 +1,17 @@
 package logic;
 
 import enums.CollisionType;
+import enums.PlayerState;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
-import logic.objects.GameObject;
+import java.util.Collections;
+import java.util.Comparator;
 import logic.objects.DynamicObject;
+import logic.objects.GameObject;
 import logic.objects.SampleObject;
+import logic.objects.TestDynamicObject;
 import resources.GameResources;
 import view.IViewable;
 
@@ -23,14 +27,17 @@ public class Level implements Serializable, IViewable {
     private Color bgColor;
 
     private Background levelBackground;
+    //private Background levelFronground; // player show lives etc.
     private ArrayList<GameObject> objects;     //should be dictionary or hashmap to beter get objects
+    private ArrayList<DynamicObject> mobs;
     private DynamicObject player;
 
     // constructors
     public Level(String levelName) {
         this.levelName = levelName;
 
-        objects = new ArrayList<GameObject>();
+        objects = new ArrayList<>();
+        mobs = new ArrayList<>();
     }
 
     // setters and getters
@@ -71,8 +78,7 @@ public class Level implements Serializable, IViewable {
     }
 
     public GameObject getObject(int x, int y) {
-        for (int i = 0; i < objects.size(); i++) {
-            GameObject temp = objects.get(i);
+        for (GameObject temp : getAllObjectsByZindex()) {
 
             if (temp.getPos().getX() < x && temp.getPos().getX() + temp.getWidth() > x
                     && temp.getPos().getY() < y && temp.getPos().getY() + temp.getHeight() > y) {
@@ -83,11 +89,129 @@ public class Level implements Serializable, IViewable {
         return null;
     }
 
-    public GameObject getObject(int id) {
-        for (int i = 0; i < objects.size(); i++) {
+    public ArrayList<GameObject> getObjectsForMobsByPosX() {
+        ArrayList<GameObject> result = new ArrayList<>();
 
-            if (objects.get(i).getId() == id) {
-                return objects.get(i);
+        result.addAll(this.objects);
+        result.add(player);
+
+        Collections.sort(result, new Comparator<GameObject>() {
+            @Override
+            public int compare(GameObject t, GameObject t1) {
+                if (t.getPos().x == t1.getPos().x) {
+                    return 0;
+                }
+
+                return t.getPos().x < t1.getPos().x ? -1 : 1;
+            }
+        });
+
+        return result;
+    }
+
+    public ArrayList<GameObject> getObjectsForMobsByPosY() {
+        ArrayList<GameObject> result = new ArrayList<>();
+
+        result.addAll(this.objects);
+        result.add(player);
+
+        Collections.sort(result, new Comparator<GameObject>() {
+            @Override
+            public int compare(GameObject t, GameObject t1) {
+                if (t.getPos().y == t1.getPos().y) {
+                    return 0;
+                }
+
+                return t.getPos().y < t1.getPos().y ? -1 : 1;
+            }
+        });
+
+        return result;
+    }
+
+    /**
+     * get all object from level without player
+     *
+     * @return object ordered by zindex
+     */
+    public ArrayList<GameObject> getAllObjectsByZindex() {
+        ArrayList<GameObject> result = new ArrayList<>();
+
+        result.addAll(this.objects);
+        result.addAll(this.mobs);
+
+        Collections.sort(result, new Comparator<GameObject>() {
+            @Override
+            public int compare(GameObject t, GameObject t1) {
+                if (t.getZindex() == t1.getZindex()) {
+                    return 0;
+                }
+
+                return t.getZindex() < t1.getZindex() ? -1 : 1;
+            }
+        });
+
+        return result;
+    }
+
+    /**
+     * get all object from level without player
+     *
+     * @return object ordered by pos.x
+     */
+    public ArrayList<GameObject> getAllObjectsByPosX() {
+        ArrayList<GameObject> result = new ArrayList<>();
+
+        result.addAll(this.objects);
+        result.addAll(this.mobs);
+
+        Collections.sort(result, new Comparator<GameObject>() {
+            @Override
+            public int compare(GameObject t, GameObject t1) {
+                if (t.getPos().x == t1.getPos().x) {
+                    return 0;
+                }
+
+                return t.getPos().x < t1.getPos().x ? -1 : 1;
+            }
+        });
+
+        return result;
+    }
+
+    /**
+     * get all object from level without player
+     *
+     * @return object ordered by pos.y
+     */
+    public ArrayList<GameObject> getAllObjectsByPosY() {
+        ArrayList<GameObject> result = new ArrayList<>();
+
+        result.addAll(this.objects);
+        result.addAll(this.mobs);
+
+        Collections.sort(result, new Comparator<GameObject>() {
+            @Override
+            public int compare(GameObject t, GameObject t1) {
+                if (t.getPos().y == t1.getPos().y) {
+                    return 0;
+                }
+
+                return t.getPos().y < t1.getPos().y ? -1 : 1;
+            }
+        });
+
+        return result;
+    }
+
+    public void addMob(DynamicObject obj) {
+        mobs.add(obj);
+    }
+
+    public GameObject getObject(int id) {
+        for (GameObject obj : getAllObjectsByZindex()) {
+            if (obj.getId() == id) {
+                return obj;
             }
         }
 
@@ -116,12 +240,13 @@ public class Level implements Serializable, IViewable {
         g.setColor(bgColor);
         g.fillRect(0, 0, levelWidth, levelHeight);
 
-        for (int i = 0; i < objects.size(); i++) {
-            objects.get(i).render(g, gameResources);
+        for (GameObject obj : this.getAllObjectsByZindex()) {
+            obj.render(g, gameResources);
         }
 
-        if(player != null)
+        if (player != null) {
             player.render(g, gameResources);
+        }
     }
 
     /**
@@ -130,40 +255,134 @@ public class Level implements Serializable, IViewable {
      * @param deltaTime move time
      */
     public void update(double deltaTime) {
-        Collision result = checkCollisionX(player, deltaTime);
+        Collision result;
 
-        if (result == null) {
-            player.updateX(deltaTime);
-        } else {
-            switch (result.type) {
-                case BACK:
-                    player.setPos(new Pos(result.pos, player.getPos().getY()));
-                    break;
-                case FRONT:
-                    player.setPos(new Pos(result.pos - player.getWidth(), player.getPos().getY()));
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Wrong collision type: " + result.type + " " + result.pos);
+        if (!player.IsKilled()) {
+            result = checkCollisionX(player, deltaTime, getAllObjectsByPosX());
+            if (result == null) {
+                player.updateX(deltaTime);
+            } else {
+                switch (result.type) {
+                    case BACK:
+                        player.setPos(new Pos(result.pos, player.getPos().getY()));
+                        if (result.obj != null && DynamicObject.class.isAssignableFrom(result.obj.getClass())) {
+                            player.kill();
+                        }
 
+                        break;
+                    case FRONT:
+                        player.setPos(new Pos(result.pos - player.getWidth(), player.getPos().getY()));
+
+                        if (result.obj != null && DynamicObject.class.isAssignableFrom(result.obj.getClass())) {
+                            player.kill();
+                        }
+                        break;
+                    default:
+                        throw new UnsupportedOperationException("Wrong collision type: " + result.type + " " + result.pos);
+
+                }
+            }
+
+            result = checkCollisionY(player, deltaTime, getAllObjectsByPosY());
+            if (result == null) {
+                player.updateY(deltaTime);
+            } else {
+                switch (result.type) {
+                    case UP:
+                        player.setJumpAllowed(false);
+                        player.setYSpeedValue(0);
+                        player.setPos(new Pos(player.getPos().getX(), result.pos));
+
+                        if (result.obj != null && DynamicObject.class.isAssignableFrom(result.obj.getClass())) {
+                            player.kill();
+                        }
+                        break;
+                    case DOWN:
+                        player.setJumpAllowed(true);
+                        player.setPos(new Pos(player.getPos().getX(), result.pos - player.getHeight()));
+
+                        if (result.obj == null) {
+                            player.kill();
+                        }
+
+                        if (result.obj != null && DynamicObject.class.isAssignableFrom(result.obj.getClass())) {
+                            player.setJumpAllowed(false);
+                            ((DynamicObject) (result.obj)).kill();
+                        }
+                        break;
+                    default:
+                        throw new UnsupportedOperationException("Wrong collision type: " + result.type + " " + result.pos);
+                }
             }
         }
 
-        result = checkCollisionY(player, deltaTime);
-        if (result == null) {
-            player.updateY(deltaTime);
-        } else {
-            switch (result.type) {
-                case UP:
-                    player.setJumpAllowed(false);
-                    player.setYSpeedValue(0);
-                    player.setPos(new Pos(player.getPos().getX(), result.pos));
-                    break;
-                case DOWN:
-                    player.setJumpAllowed(true);
-                    player.setPos(new Pos(player.getPos().getX(), result.pos - player.getHeight()));
-                    break;
-                default:
-                    throw new UnsupportedOperationException("Wrong collision type: " + result.type + " " + result.pos);
+        //move mobs
+        ArrayList<GameObject> objectsByPosX = getObjectsForMobsByPosX();
+        ArrayList<GameObject> objectsByPosY = getObjectsForMobsByPosY();
+
+        for (DynamicObject mob : mobs) {
+            if (mob.IsKilled()) {
+                continue;
+            }
+
+            if (mob.getObjectState() == PlayerState.STAND) {
+                mob.moveLeft();
+            }
+
+            result = checkCollisionX(mob, deltaTime, objectsByPosX);
+            if (result == null) {
+                mob.updateX(deltaTime);
+            } else {
+                switch (result.type) {
+                    case BACK:
+                        mob.setPos(new Pos(result.pos, mob.getPos().getY()));
+                        mob.moveRight();
+
+                        if (result.obj != null && DynamicObject.class.isAssignableFrom(result.obj.getClass())) {
+                            ((DynamicObject) (result.obj)).kill();
+                        }
+                        break;
+                    case FRONT:
+                        mob.setPos(new Pos(result.pos - mob.getWidth(), mob.getPos().getY()));
+                        mob.moveLeft();
+
+                        if (result.obj != null && DynamicObject.class.isAssignableFrom(result.obj.getClass())) {
+                            ((DynamicObject) (result.obj)).kill();
+                        }
+                        break;
+                    default:
+                        throw new UnsupportedOperationException("Wrong collision type: " + result.type + " " + result.pos);
+
+                }
+            }
+
+            result = checkCollisionY(mob, deltaTime, objectsByPosY);
+            if (result == null) {
+                mob.updateY(deltaTime);
+            } else {
+                switch (result.type) {
+                    case UP:
+                        mob.setJumpAllowed(false);
+                        mob.setYSpeedValue(0);
+                        mob.setPos(new Pos(mob.getPos().getX(), result.pos));
+
+                        if (result.obj != null && DynamicObject.class.isAssignableFrom(result.obj.getClass())) {
+                            ((DynamicObject) (result.obj)).kill();
+                        }
+
+                        break;
+                    case DOWN:
+                        mob.setJumpAllowed(true);
+                        mob.setPos(new Pos(mob.getPos().getX(), result.pos - mob.getHeight()));
+
+                        if (result.obj == null) {
+                            mob.kill();
+                        }
+
+                        break;
+                    default:
+                        throw new UnsupportedOperationException("Wrong collision type: " + result.type + " " + result.pos);
+                }
             }
         }
     }
@@ -175,17 +394,27 @@ public class Level implements Serializable, IViewable {
      * @param deltaTime
      * @return
      */
-    public Collision checkCollisionX(DynamicObject obj, double deltaTime) {
+    public Collision checkCollisionX(DynamicObject obj, double deltaTime, ArrayList<GameObject> listObjects) {
         int objX1 = obj.getNextXPosition(deltaTime);
         int objY1 = obj.getPos().getY();
         int objX2 = objX1 + obj.getWidth();
         int objY2 = objY1 + obj.getHeight();
 
-        for (GameObject tempObj : objects) {
+        for (GameObject tempObj : listObjects) {
             int tempX1 = tempObj.getPos().getX();
             int tempY1 = tempObj.getPos().getY();
             int tempX2 = tempX1 + tempObj.getWidth();
             int tempY2 = tempY1 + tempObj.getHeight();
+
+            if (tempX1 > objX2) {
+                break;
+            }
+
+            if (DynamicObject.class.isAssignableFrom(tempObj.getClass())) {
+                if (((DynamicObject) tempObj).IsKilled()) {
+                    continue;
+                }
+            }
 
             if (tempY2 <= objY1 || tempY1 >= objY2) {
                 continue;
@@ -195,18 +424,18 @@ public class Level implements Serializable, IViewable {
             }
 
             if (objX2 > tempX1 && objX1 < tempX1) {
-                return new Collision(CollisionType.FRONT, tempX1);
+                return new Collision(CollisionType.FRONT, tempX1, tempObj);
             }
             if (objX1 < tempX2 && objX2 > tempX2) {
-                return new Collision(CollisionType.BACK, tempX2);
+                return new Collision(CollisionType.BACK, tempX2, tempObj);
             }
         }
-        
+
         if (objX1 < 0) {
-            return new Collision(CollisionType.BACK, 0);
+            return new Collision(CollisionType.BACK, 0, null);
         }
         if (objX2 > levelWidth) {
-            return new Collision(CollisionType.FRONT, levelWidth);
+            return new Collision(CollisionType.FRONT, levelWidth, null);
         }
 
         return null;
@@ -219,18 +448,28 @@ public class Level implements Serializable, IViewable {
      * @param deltaTime
      * @return
      */
-    public Collision checkCollisionY(DynamicObject obj, double deltaTime) {
+    public Collision checkCollisionY(DynamicObject obj, double deltaTime, ArrayList<GameObject> listObjects) {
 
         int objX1 = obj.getPos().getX();
         int objY1 = obj.getNextYPosition(deltaTime);
         int objX2 = objX1 + obj.getWidth();
         int objY2 = objY1 + obj.getHeight();
 
-        for (GameObject tempObj : objects) {
+        for (GameObject tempObj : listObjects) {
             int tempX1 = tempObj.getPos().getX();
             int tempY1 = tempObj.getPos().getY();
             int tempX2 = tempX1 + tempObj.getWidth();
             int tempY2 = tempY1 + tempObj.getHeight();
+
+            if (tempY1 > objY2) {
+                break;
+            }
+
+            if (DynamicObject.class.isAssignableFrom(tempObj.getClass())) {
+                if (((DynamicObject) tempObj).IsKilled()) {
+                    continue;
+                }
+            }
 
             if (tempY2 <= objY1 || tempY1 >= objY2) {
                 continue;
@@ -240,18 +479,18 @@ public class Level implements Serializable, IViewable {
             }
 
             if (objY2 > tempY1 && objY1 < tempY1) {
-                return new Collision(CollisionType.DOWN, tempY1);
+                return new Collision(CollisionType.DOWN, tempY1, tempObj);
             }
             if (objY1 < tempY2 && objY2 > tempY2) {
-                return new Collision(CollisionType.UP, tempY2);
+                return new Collision(CollisionType.UP, tempY2, tempObj);
             }
         }
-        
+
         if (objY1 < 0) {
-            return new Collision(CollisionType.UP, 0);
+            return new Collision(CollisionType.UP, 0, null);
         }
         if (objY2 > levelHeight) {
-            return new Collision(CollisionType.DOWN, levelHeight);
+            return new Collision(CollisionType.DOWN, levelHeight, null);
         }
 
         return null;
@@ -269,9 +508,15 @@ public class Level implements Serializable, IViewable {
          */
         public final int pos;
 
-        public Collision(CollisionType t, int p) {
+        /**
+         * conflicting object
+         */
+        public final GameObject obj;
+
+        public Collision(CollisionType t, int p, GameObject o) {
             type = t;
             pos = p;
+            obj = o;
         }
     }
 
@@ -281,7 +526,7 @@ public class Level implements Serializable, IViewable {
         level.setWidth(400);
 
         SampleObject obj1 = new SampleObject(new Pos(40, 40), 40, 80, Color.GREEN);
-        SampleObject obj2 = new SampleObject(new Pos(80, 380), 1800, 20, Color.RED);
+        SampleObject obj2 = new SampleObject(new Pos(10, 380), 1800, 20, Color.RED);
         SampleObject obj3 = new SampleObject(new Pos(200, 350), 50, 20, Color.RED);
         SampleObject obj4 = new SampleObject(new Pos(240, 300), 50, 20, Color.RED);
 
@@ -290,7 +535,10 @@ public class Level implements Serializable, IViewable {
         level.addObject(obj3);
         level.addObject(obj4);
 
-        level.setPlayer(new DynamicObject(new Pos(80, 80), 50, 50));
+        DynamicObject mob1 = new TestDynamicObject(new Pos(20, 300), 50, 50);
+        level.addMob(mob1);
+
+        level.setPlayer(new DynamicObject(new Pos(300, 80), 50, 50));
 
         return level;
     }
