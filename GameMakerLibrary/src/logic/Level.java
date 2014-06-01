@@ -11,7 +11,6 @@ import java.util.Comparator;
 import logic.objects.DynamicObject;
 import logic.objects.GameObject;
 import logic.objects.SampleObject;
-import logic.objects.TestDynamicObject;
 import resources.GameResources;
 import view.IViewable;
 
@@ -36,6 +35,7 @@ public class Level implements Serializable, IViewable {
     public Level(String levelName) {
         this.levelName = levelName;
 
+        levelBackground = new Background();
         objects = new ArrayList<>();
         mobs = new ArrayList<>();
     }
@@ -77,12 +77,36 @@ public class Level implements Serializable, IViewable {
         objects.add(obj);
     }
 
+    public void addMob(DynamicObject obj) {
+        mobs.add(obj);
+    }
+
+    public void deleteObject(GameObject obj) {
+        if (objects.contains(obj)) {
+            objects.remove(obj);
+        }
+
+        if (mobs.contains(obj)) {
+            mobs.remove(obj);
+        }
+    }
+
     public GameObject getObject(int x, int y) {
         for (GameObject temp : getAllObjectsByZindex()) {
 
             if (temp.getPos().getX() < x && temp.getPos().getX() + temp.getWidth() > x
                     && temp.getPos().getY() < y && temp.getPos().getY() + temp.getHeight() > y) {
                 return temp;
+            }
+        }
+
+        return null;
+    }
+
+    public GameObject getObject(int id) {
+        for (GameObject obj : getAllObjectsByZindex()) {
+            if (obj.getId() == id) {
+                return obj;
             }
         }
 
@@ -204,20 +228,6 @@ public class Level implements Serializable, IViewable {
         return result;
     }
 
-    public void addMob(DynamicObject obj) {
-        mobs.add(obj);
-    }
-
-    public GameObject getObject(int id) {
-        for (GameObject obj : getAllObjectsByZindex()) {
-            if (obj.getId() == id) {
-                return obj;
-            }
-        }
-
-        return null;
-    }
-
     public DynamicObject getPlayer() {
         return player;
     }
@@ -239,6 +249,10 @@ public class Level implements Serializable, IViewable {
         //background
         g.setColor(bgColor);
         g.fillRect(0, 0, levelWidth, levelHeight);
+
+        if (levelBackground != null) {
+            levelBackground.render(g, gameResources);
+        }
 
         for (GameObject obj : this.getAllObjectsByZindex()) {
             obj.render(g, gameResources);
@@ -535,7 +549,7 @@ public class Level implements Serializable, IViewable {
         level.addObject(obj3);
         level.addObject(obj4);
 
-        DynamicObject mob1 = new TestDynamicObject(new Pos(20, 300), 50, 50);
+        DynamicObject mob1 = new DynamicObject(new Pos(20, 300), 50, 50);
         level.addMob(mob1);
 
         level.setPlayer(new DynamicObject(new Pos(300, 80), 50, 50));

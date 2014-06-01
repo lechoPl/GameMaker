@@ -1,4 +1,4 @@
-package logic.objects;
+package controller;
 
 public interface IKeyControlled {
     public void moveLeft();

@@ -3,45 +3,52 @@ package logic;
 import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import logic.objects.GameObject;
 import resources.GameResources;
 import view.IViewable;
 
 public class Background implements Serializable, IViewable {
-    private ArrayList<BackgroundImage> backgroundImages = new ArrayList<BackgroundImage> ();
-    
+
+    protected ArrayList<GameObject> objectList;
+
     public Background() {
-        
+        objectList = new ArrayList<>();
+    }
+
+    public ArrayList<GameObject> getObjectListByZindex() {
+        ArrayList<GameObject> result = new ArrayList<>();
+
+        result.addAll(objectList);
+
+        Collections.sort(result, new Comparator<GameObject>() {
+            @Override
+            public int compare(GameObject t, GameObject t1) {
+                if (t.getZindex() == t1.getZindex()) {
+                    return 0;
+                }
+
+                return t.getZindex() < t1.getZindex() ? -1 : 1;
+            }
+        });
+
+        return result;
+    }
+
+    public void addObject(GameObject obj) {
+        objectList.add(obj);
+    }
+
+    public void deleteObject(GameObject obj) {
+        objectList.remove(obj);
     }
 
     @Override
     public void render(Graphics g, GameResources gameResources) {
-        
-    }
-    
-    public void addImage(String imageId, int posX, int posY){
-        backgroundImages.add(new BackgroundImage(imageId, posX, posY));
-    }
-         
-    private class BackgroundImage {
-        private String imageId;
-        private int posX, posY;
-        
-        public BackgroundImage(String imageId, int posX, int posY) {
-            this.imageId = imageId;
-            this.posX = posX;
-            this.posY = posY;
-        }
-        
-        public String getImageId() {
-            return imageId;
-        }
-        
-        public int getPosX() {
-            return posX;
-        }
-        
-        public int getPosY() {
-            return posY;
+        for (GameObject obj : getObjectListByZindex()) {
+            obj.render(g, gameResources);
         }
     }
+
 }

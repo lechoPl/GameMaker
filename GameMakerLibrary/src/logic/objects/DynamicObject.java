@@ -1,5 +1,7 @@
 package logic.objects;
 
+import controller.IMovable;
+import controller.IKeyControlled;
 import enums.Direction;
 import enums.PlayerState;
 import java.awt.Color;
