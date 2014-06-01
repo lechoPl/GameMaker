@@ -142,7 +142,7 @@ public class EditorFrame extends JFrame implements IGameFrame {
 
         game.setPlayerController(pc);
         
-        gamePreview = new EditorGameView(game);
+        gamePreview = new EditorGameView(this, game);
         gamePreview.setPreferredSize(new Dimension(level.getWidth(), level.getHeight()));
 
         JScrollPane scrollPane = new JScrollPane(gamePreview);

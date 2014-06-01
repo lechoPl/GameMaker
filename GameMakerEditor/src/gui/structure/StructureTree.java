@@ -44,37 +44,48 @@ public class StructureTree extends JTree {
         public void mouseClicked(MouseEvent e) {
             TreePath selPath = getPathForLocation(e.getX(), e.getY());
 
-            Object node = selPath.getLastPathComponent();
-            
-            if(e.getButton() == MouseEvent.BUTTON1) {
-                if (e.getClickCount() == 1) {
+            if (selPath != null) {
+                Object node = selPath.getLastPathComponent();
+
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    if (e.getClickCount() == 1) {
+                        if (node instanceof GameTreeNode) {
+                            frame.changePropertiesPanel(new GamePropertiesPanel(frame));
+                        } else if (node instanceof LevelTreeNode) {
+                            LevelTreeNode levelNode = (LevelTreeNode) node;
+                            Level level = frame.getGame().getGameStructure().getLevels().get(levelNode.getLevelNumber());
+                            frame.changePropertiesPanel(new LevelPropertiesPanel(frame, level));
+                        } else if (node instanceof ScreenTreeNode) {
+                            ScreenTreeNode screenNode = (ScreenTreeNode) node;
+                            Level level = frame.getGame().getGameStructure().getScreens().get(screenNode.getId());
+                            frame.changePropertiesPanel(new LevelPropertiesPanel(frame, level));
+                        } else {
+                            frame.changePropertiesPanel(new DefaultPropertiesPanel());
+                        }
+                    } else if (e.getClickCount() == 2) {
+                        if (node instanceof LevelTreeNode) {
+                            LevelTreeNode levelNode = (LevelTreeNode) node;
+                            int nr = levelNode.getLevelNumber();
+                            Level newLevel = frame.getGame().getGameStructure().getLevels().get(nr);
+                            frame.getGame().getGameStructure().setCurrentLevel(newLevel);
+                            frame.refreshGamePreview();
+                        } else if (node instanceof ScreenTreeNode) {
+                            ScreenTreeNode screenNode = (ScreenTreeNode) node;
+                            Level level = frame.getGame().getGameStructure().getScreens().get(screenNode.getId());
+                            frame.getGame().getGameStructure().setCurrentLevel(level);
+                            frame.refreshGamePreview();
+                        }
+                    }
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
                     if (node instanceof GameTreeNode) {
-                        frame.changePropertiesPanel(new GamePropertiesPanel(frame));
+                        gamePopupMenu.show(e.getComponent(), e.getX(), e.getY());
                     } else if (node instanceof LevelTreeNode) {
                         LevelTreeNode levelNode = (LevelTreeNode) node;
                         int nr = levelNode.getLevelNumber();
-                        frame.changePropertiesPanel(new LevelPropertiesPanel(frame, nr));
-                    } else {
-                        frame.changePropertiesPanel(new DefaultPropertiesPanel());
+
+                        GameActions.selectedLevel = nr;
+                        levelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
                     }
-                } else if (e.getClickCount() == 2) {
-                    if (node instanceof LevelTreeNode) {
-                        LevelTreeNode levelNode = (LevelTreeNode) node;
-                        int nr = levelNode.getLevelNumber();
-                        Level newLevel = frame.getGame().getGameStructure().getLevels().get(nr);
-                        frame.getGame().getGameStructure().setCurrentLevel(newLevel);
-                        frame.refreshGamePreview();
-                    }
-                }
-            } else if(e.getButton() == MouseEvent.BUTTON3) {
-                if(node instanceof GameTreeNode) {
-                    gamePopupMenu.show(e.getComponent(), e.getX(), e.getY());
-                } else if(node instanceof LevelTreeNode) {
-                    LevelTreeNode levelNode = (LevelTreeNode) node;
-                    int nr = levelNode.getLevelNumber();
-                    
-                    GameActions.selectedLevel = nr;
-                    levelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
                 }
             }
         }
@@ -121,16 +132,28 @@ public class StructureTree extends JTree {
         Game game = frame.getGame();
 
         GameTreeNode gameNode = new GameTreeNode(game.getGameStructure().getName());
+        DefaultMutableTreeNode levelsTreeNode = new DefaultMutableTreeNode("Levels");
+        DefaultMutableTreeNode screensTreeNode = new DefaultMutableTreeNode("Screens");
 
         int i = 0;
 
         for (Level level : game.getGameStructure().getLevels()) {
             LevelTreeNode levelNode = new LevelTreeNode(i, level.getName());
-            gameNode.add(levelNode);
+            levelsTreeNode.add(levelNode);
 
             i++;
         }
-
+        
+        i = 0;
+        for(Level level : game.getGameStructure().getScreens()) {
+            ScreenTreeNode screenNode = new ScreenTreeNode(i, level.getName());
+            screensTreeNode.add(screenNode);
+            
+            i++;
+        }
+        
+        gameNode.add(levelsTreeNode);
+        gameNode.add(screensTreeNode);
         DefaultTreeModel model = new DefaultTreeModel(gameNode);
         this.setModel(model);
 

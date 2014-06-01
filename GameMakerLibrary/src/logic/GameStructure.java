@@ -22,6 +22,7 @@ public class GameStructure implements IViewable, Serializable {
 
     protected Level currentLevel = null;
     private LinkedList<Level> levels;
+    private LinkedList<Level> screens;
     
     private PlayerController playerContorller;
 
@@ -40,10 +41,19 @@ public class GameStructure implements IViewable, Serializable {
 
         levels.add(new Level("Level1"));
         levels.add(new Level("Level2"));
+        
+        this.screens = new LinkedList();
+        screens.add(new Level("Main menu"));
+        screens.add(new Level("Start screen"));
+        screens.add(new Level("Finish screen"));
     }
 
     public LinkedList<Level> getLevels() {
         return levels;
+    }
+    
+    public LinkedList<Level> getScreens() {
+        return screens;
     }
 
     public void setCurrentLevel(Level lvl) {

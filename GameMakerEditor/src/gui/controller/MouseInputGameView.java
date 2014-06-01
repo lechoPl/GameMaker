@@ -112,7 +112,6 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
         view.repaint();
     }
 
