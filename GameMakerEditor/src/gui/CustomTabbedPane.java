@@ -6,10 +6,8 @@
 package gui;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
@@ -20,20 +18,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -45,14 +36,12 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
-import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import logic.objects.AnimatedDynamicObject;
+import logic.objects.AnimatedStaticObject;
+import logic.objects.DynamicObject;
 import logic.objects.GameObject;
 import logic.objects.StaticObject;
-import managers.GameFileManager;
-import resources.GameResources;
 
 /**
  *
@@ -67,13 +56,13 @@ public class CustomTabbedPane extends JTabbedPane {
     private JPanel imagesPanel = new JPanel(gridLayout);
     private JScrollPane imagesScroll = new JScrollPane(imagesPanel);
     
-    private JPanel animationsPanel = new JPanel(gridLayout);
-    private JScrollPane animationsScroll = new JScrollPane(animationsPanel);
-    
     private JPanel soundsPanel = new JPanel(gridLayout);
     
     private JPanel objectsPanel = new JPanel(gridLayout);
     private JScrollPane objectsScroll = new JScrollPane(objectsPanel);
+    
+    private JPanel creaturesPanel = new JPanel(gridLayout);
+    private JScrollPane creaturesScroll = new JScrollPane(creaturesPanel);
     
     private JPopupMenu pMenu = new JPopupMenu("Menu");
     private JDialog addItemDialog = new JDialog();
@@ -99,6 +88,9 @@ public class CustomTabbedPane extends JTabbedPane {
         
         objectsPanel.addMouseListener(popupListener);
         addTab("Objects", objectsScroll);
+        
+        creaturesPanel.addMouseListener(popupListener);
+        addTab("Creatures", creaturesScroll);
         
         soundsPanel.addMouseListener(popupListener);
         addTab("Sounds", soundsPanel);
@@ -145,17 +137,31 @@ public class CustomTabbedPane extends JTabbedPane {
         
         JMenu objectsSectionMenu = new JMenu("Object");
         
-        JMenuItem menuAddSimpleObject = new JMenuItem("Simple object");
+        JMenuItem menuAddSimpleObject = new JMenuItem("Simple");
         menuAddSimpleObject.addActionListener(dialogAction);
         menuAddSimpleObject.setActionCommand("simple_object");
         objectsSectionMenu.add(menuAddSimpleObject);
         
-        JMenuItem menuAddAnimatedObject = new JMenuItem("Animated object");
+        JMenuItem menuAddAnimatedObject = new JMenuItem("Animated");
         menuAddAnimatedObject.addActionListener(dialogAction);
         menuAddAnimatedObject.setActionCommand("animated_object");
         objectsSectionMenu.add(menuAddAnimatedObject);
         
         sectionsMenu.add(objectsSectionMenu);
+        
+        JMenu creaturesSectionMenu = new JMenu("Creature");
+        
+        JMenuItem menuAddSimpleCreature = new JMenuItem("Simple");
+        menuAddSimpleCreature.addActionListener(dialogAction);
+        menuAddSimpleCreature.setActionCommand("simple_creature");
+        creaturesSectionMenu.add(menuAddSimpleCreature);
+        
+        JMenuItem menuAddAnimatedCreature = new JMenuItem("Animated");
+        menuAddAnimatedCreature.addActionListener(dialogAction);
+        menuAddAnimatedCreature.setActionCommand("animated_creature");
+        creaturesSectionMenu.add(menuAddAnimatedCreature);
+        
+        sectionsMenu.add(creaturesSectionMenu);
         
         JMenuItem menuAddSound = new JMenuItem("Sound");
         menuAddSound.addActionListener(dialogAction);
@@ -244,7 +250,7 @@ public class CustomTabbedPane extends JTabbedPane {
         addItemDialog.setLocationRelativeTo(null);
     }
     
-    public void showAddStaticObjectDialog() {
+    public void showAddSimpleObjectDialog(final boolean creature) {
         if(frame.getGame().getGameResources().getImages().keySet().isEmpty()) {
             JOptionPane.showMessageDialog(null,
                                 "You must add at least one image before you create object.",
@@ -283,8 +289,19 @@ public class CustomTabbedPane extends JTabbedPane {
                 public void actionPerformed(ActionEvent e) {
                     if (objectNameTextField.getText() != null && keyArr.length > 0) {
                         try {
-                                frame.getGame().getGameResources().addStaticObject(objectNameTextField.getText(), objectPathComboBox.getSelectedItem().toString());   
-                            refreshObjects();
+                            String name = objectNameTextField.getText();
+                            String imageId = objectPathComboBox.getSelectedItem().toString();
+                            int width = frame.getGame().getGameResources().getImage(imageId).getWidth();
+                            int height = frame.getGame().getGameResources().getImage(imageId).getHeight();
+                            if(creature) {
+                                DynamicObject object = new DynamicObject(name, imageId, width, height);
+                                frame.getGame().getGameResources().addDynamicObject(object, name);
+                                refreshCreatures();
+                            } else {
+                                StaticObject object = new StaticObject(name, imageId, width, height);
+                                frame.getGame().getGameResources().addStaticObject(object, name);
+                                refreshObjects();
+                            }
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             JOptionPane.showMessageDialog(null,
@@ -317,7 +334,7 @@ public class CustomTabbedPane extends JTabbedPane {
         }
     }
     
-    public void showAddAnimatedObjectDialog() {
+    public void showAddAnimatedObjectDialog(final boolean creature) {
         if(frame.getGame().getGameResources().getImages().keySet().isEmpty()) {
             JOptionPane.showMessageDialog(null,
                                 "You must add at least one image before you create object.",
@@ -372,10 +389,21 @@ public class CustomTabbedPane extends JTabbedPane {
                 public void actionPerformed(ActionEvent e) {
                     if (objectNameTextField.getText() != null && keyArr.length > 0) {
                         try {
+                            String name = objectNameTextField.getText();
+                            String imageId = objectPathComboBox.getSelectedItem().toString();
+                            int width = frame.getGame().getGameResources().getImage(imageId).getWidth();
+                            int height = frame.getGame().getGameResources().getImage(imageId).getHeight();
                             int frames = Integer.parseInt(framesTextField.getText());
                             int frequency = Integer.parseInt(frequencyTextField.getText());
-                            frame.getGame().getGameResources().addAnimatedObject(objectNameTextField.getText(), objectPathComboBox.getSelectedItem().toString(), frequency, frames);   
-                            refreshObjects();
+                            if(creature) {
+                                AnimatedDynamicObject object = new AnimatedDynamicObject(name, imageId, width / frames, height / AnimatedDynamicObject.ANIM_LINES, frequency, frames);
+                                frame.getGame().getGameResources().addDynamicObject(object, name);
+                                refreshCreatures();
+                            } else {
+                                AnimatedStaticObject object = new AnimatedStaticObject(name, imageId, width / frames, height, frequency, frames);
+                                frame.getGame().getGameResources().addStaticObject(object, name);
+                                refreshObjects();                                
+                            }
                         } catch (Exception ex) {
                             ex.printStackTrace();
                             JOptionPane.showMessageDialog(null,
@@ -423,6 +451,7 @@ public class CustomTabbedPane extends JTabbedPane {
         refreshImages();
         
         refreshObjects();
+        refreshCreatures();
         refreshSounds();
     }
     
@@ -440,22 +469,25 @@ public class CustomTabbedPane extends JTabbedPane {
         imagesScroll.repaint();
     }
     
-    private void refreshAnimations() {
-        animationsPanel.removeAll();
+    private void refreshCreatures() {
+        creaturesPanel.removeAll();
         int width = Math.max(getWidth() / ToolbarItem.ITEM_SIZE, 1);
-        animationsPanel.setLayout(new GridLayout(0, width));
-        for(Entry<String, BufferedImage> item : frame.getGame().getGameResources().getImages().entrySet()) {
-            animationsPanel.add(new ToolbarItem(item.getKey(), frame.getGame().getGameResources().getImage(item.getKey())));
+        creaturesPanel.setLayout(new GridLayout(0, width));
+        for(Entry<String, DynamicObject> item : frame.getGame().getGameResources().getCreatures().entrySet()) {
+            ToolbarObject to = new ToolbarObject(item.getValue(), item.getKey(), frame.getGame().getGameResources().getImage(item.getValue().getImageId()));
+            to.addMouseListener(objectMouseListener);
+            creaturesPanel.add(to);
         }
-        animationsPanel.revalidate();
-        animationsScroll.repaint();
+        
+        creaturesPanel.revalidate();
+        creaturesScroll.repaint();
     }
     
     private void refreshObjects() {
         objectsPanel.removeAll();
         int width = Math.max(getWidth() / ToolbarItem.ITEM_SIZE, 1);
         objectsPanel.setLayout(new GridLayout(0, width));
-        for(Entry<String, GameObject> item : frame.getGame().getGameResources().getObjects().entrySet()) {
+        for(Entry<String, StaticObject> item : frame.getGame().getGameResources().getObjects().entrySet()) {
             ToolbarObject to = new ToolbarObject(item.getValue(), item.getKey(), frame.getGame().getGameResources().getImage(item.getValue().getImageId()));
             to.addMouseListener(objectMouseListener);
             objectsPanel.add(to);
@@ -501,10 +533,16 @@ public class CustomTabbedPane extends JTabbedPane {
                 case("background"):
                     break;
                 case("simple_object"):
-                    showAddStaticObjectDialog();
+                    showAddSimpleObjectDialog(false);
                     break;
                 case("animated_object"):
-                    showAddAnimatedObjectDialog();
+                    showAddAnimatedObjectDialog(false);
+                    break;
+                case("simple_creature"):
+                    showAddSimpleObjectDialog(true);
+                    break;
+                case("animated_creature"):
+                    showAddAnimatedObjectDialog(true);
                     break;
                 case("sound"):
                     break;
@@ -517,6 +555,12 @@ public class CustomTabbedPane extends JTabbedPane {
     private GameObject selectObject(ToolbarObject toolbarObject) {
         GameObject obj = null;
         for(Component component : objectsPanel.getComponents()) {
+            ToolbarObject to = (ToolbarObject) component;
+            to.setSelected(to.equals(toolbarObject));
+            if(to.equals(toolbarObject)) obj = to.getObject();
+        }
+        
+        for(Component component : creaturesPanel.getComponents()) {
             ToolbarObject to = (ToolbarObject) component;
             to.setSelected(to.equals(toolbarObject));
             if(to.equals(toolbarObject)) obj = to.getObject();

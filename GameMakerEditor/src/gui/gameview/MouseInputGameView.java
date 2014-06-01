@@ -9,7 +9,9 @@ import javax.swing.event.MouseInputAdapter;
 import logic.Background;
 import logic.GameStructure;
 import logic.Pos;
+import logic.objects.DynamicObject;
 import logic.objects.GameObject;
+import logic.objects.StaticObject;
 
 public class MouseInputGameView extends MouseInputAdapter implements MouseWheelListener {
 
@@ -53,6 +55,45 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
             if (obj != null) {
                 distanceToX = mousePoint.x - obj.getPos().getX();
                 distanceToY = mousePoint.y - obj.getPos().getY();
+            }
+        }
+    }
+
+    private void addObject(MouseEvent e) {
+        GameStructure gameStructure = view.getGame().getGameStructure();
+        Point mousePoint = getMousePos(e);
+
+        if (gameStructure != null && gameStructure.getCurrentLevel() != null && view.getObjectToAdd() != null) {
+            GameObject obj;
+            try {
+                obj = view.getObjectToAdd().copy();
+                obj.setPos(new Pos(mousePoint.x, mousePoint.y));
+                if(obj instanceof DynamicObject)
+                    gameStructure.getCurrentLevel().addMob((DynamicObject) obj);
+                else
+                    gameStructure.getCurrentLevel().addObject((StaticObject) obj);
+                view.setSelectedObject(obj);
+            } catch (CloneNotSupportedException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    private void addPlayer(MouseEvent e) {
+        GameStructure gameStructure = view.getGame().getGameStructure();
+        Point mousePoint = getMousePos(e);
+
+        if (gameStructure != null && gameStructure.getCurrentLevel() != null && view.getObjectToAdd() != null) {
+            DynamicObject obj;
+            try {
+                obj = (DynamicObject) view.getObjectToAdd().copy();
+                obj.setPos(new Pos(mousePoint.x, mousePoint.y));
+                gameStructure.getCurrentLevel().setPlayer(obj);
+                gameStructure.getPlayerController().setControlledObject(obj);
+
+                view.setSelectedObject(obj);
+            } catch (CloneNotSupportedException ex) {
+                ex.printStackTrace();
             }
         }
     }
@@ -130,7 +171,12 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
         preY = mousePoint.y;
 
         if (SwingUtilities.isLeftMouseButton(e)) {
-            selectObject(e);
+            if(e.getClickCount() == 1)
+                selectObject(e);
+            else if(e.getClickCount() == 2)
+                addObject(e);
+        } else if (SwingUtilities.isMiddleMouseButton(e)) {
+            addPlayer(e);
         }
 
         sellectedEdge = getObjectEdge(view.getSelectedObject(), mousePoint);

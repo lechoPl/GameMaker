@@ -26,7 +26,8 @@ public class GameResources {
 
     private HashMap<String, Sound> sounds = new HashMap<String, Sound>();
 
-    private HashMap<String, GameObject> objects = new HashMap<String, GameObject>();
+    private HashMap<String, StaticObject> objects = new HashMap<String, StaticObject>();
+    private HashMap<String, DynamicObject> creatures = new HashMap<String, DynamicObject>();
 
     private enum RES_TYPE {
 
@@ -121,19 +122,27 @@ public class GameResources {
         return backgrounds;
     }
 
-    public HashMap<String, GameObject> getObjects() {
+    public HashMap<String, StaticObject> getObjects() {
         return objects;
     }
     
-    public void setObjects(HashMap<String, GameObject> objects) {
+    public void setObjects(HashMap<String, StaticObject> objects) {
         this.objects = objects;
     }
-
-    public void addStaticObject(String name, String imageId) {
-        objects.put(name, new StaticObject(name, imageId, getImage(imageId).getWidth(), getImage(imageId).getHeight()));
+    
+    public HashMap<String, DynamicObject> getCreatures() {
+        return creatures;
     }
     
-    public void addAnimatedObject(String name, String imageId, int frequency, int frames) {
-        objects.put(name, new AnimatedDynamicObject(name, imageId, getImage(imageId).getWidth()/frames, getImage(imageId).getHeight() / 3, frequency, frames));
+    public void setCreatures(HashMap<String, DynamicObject> creatures) {
+        this.creatures = creatures;
+    }
+
+    public void addStaticObject(StaticObject object, String name) {
+        objects.put(name, object);
+    }
+    
+    public void addDynamicObject(DynamicObject object, String name) {
+        creatures.put(name, object);
     }
 }

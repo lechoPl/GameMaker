@@ -18,7 +18,6 @@ public class LevelPropertiesPanel extends AbstractPropertiesPanel {
         public void actionPerformed(ActionEvent e) {
             EditorFrame frame = getFrame();
             Game game = frame.getGame();
-            Level level = game.getGameStructure().getLevels().get(levelNumber);
             
             String newName = nameField.getText();
             level.setName(newName);
@@ -37,8 +36,8 @@ public class LevelPropertiesPanel extends AbstractPropertiesPanel {
         
     }
     
-    private int levelNumber;
-
+    private Level level;
+    
     private JLabel nameLabel;
     private JTextField nameField;
     
@@ -53,15 +52,14 @@ public class LevelPropertiesPanel extends AbstractPropertiesPanel {
         return new LevelPropertiesActionListener();
     }
 
-    public LevelPropertiesPanel(EditorFrame frame, int number) {
+    public LevelPropertiesPanel(EditorFrame frame, Level level) {
         super();
 
+        this.level = level;
         this.setPanelName("Level properties");
         this.setFrame(frame);
-        this.levelNumber = number;
 
         Game game = this.getFrame().getGame();
-        Level level = game.getGameStructure().getLevels().get(number);
 
         LinkedList<Property> properties = new LinkedList<Property>();
 

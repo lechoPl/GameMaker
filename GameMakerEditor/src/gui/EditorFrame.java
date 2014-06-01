@@ -143,8 +143,6 @@ public class EditorFrame extends JFrame implements IGameFrame {
         pc.setControlledObject(game.getGameStructure().getCurrentLevel().getPlayer());
 
         game.setPlayerController(pc);
-        //endregion
-
         gamePreview = new EditorGameView(game);
 
         Dimension windowSize = this.getSize();

@@ -276,7 +276,7 @@ public class Level implements Serializable, IViewable {
     public void update(double deltaTime) {
         Collision result;
 
-        if (!player.IsKilled()) {
+        if (!player.isKilled()) {
             result = checkCollisionX(player, deltaTime, getAllObjectsByPosX());
             if (result == null) {
                 player.updateX(deltaTime);
@@ -340,7 +340,7 @@ public class Level implements Serializable, IViewable {
         ArrayList<GameObject> objectsByPosY = getObjectsForMobsByPosY();
 
         for (DynamicObject mob : mobs) {
-            if (mob.IsKilled()) {
+            if (mob.isKilled()) {
                 continue;
             }
 
@@ -430,7 +430,7 @@ public class Level implements Serializable, IViewable {
             }
 
             if (DynamicObject.class.isAssignableFrom(tempObj.getClass())) {
-                if (((DynamicObject) tempObj).IsKilled()) {
+                if (((DynamicObject) tempObj).isKilled()) {
                     continue;
                 }
             }
@@ -485,7 +485,7 @@ public class Level implements Serializable, IViewable {
             }
 
             if (DynamicObject.class.isAssignableFrom(tempObj.getClass())) {
-                if (((DynamicObject) tempObj).IsKilled()) {
+                if (((DynamicObject) tempObj).isKilled()) {
                     continue;
                 }
             }

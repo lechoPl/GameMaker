@@ -26,6 +26,7 @@ public class DynamicObject
 
     protected int lives = 1;
     protected boolean isKilled = false;
+    protected int killedAgoInFrames = 0;
 
     public DynamicObject() {
         super();
@@ -43,6 +44,14 @@ public class DynamicObject
         super(p, width, height);
 
         this.zindex = 2;
+    }
+    
+     public DynamicObject(String objectName, String imageId, int width, int height) {
+        super();
+        this.objectName = objectName;
+        this.imageId = imageId;
+        this.width = width;
+        this.height = height;
     }
 
     public PlayerState getObjectState() {
@@ -98,7 +107,7 @@ public class DynamicObject
         return lives;
     }
 
-    public boolean IsKilled() {
+    public boolean isKilled() {
         return isKilled;
     }
 
