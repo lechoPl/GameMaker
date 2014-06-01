@@ -13,6 +13,7 @@ import logic.GameStructure;
 import logic.Pos;
 import logic.objects.DynamicObject;
 import logic.objects.GameObject;
+import logic.objects.StaticObject;
 
 public class MouseInputGameView extends MouseInputAdapter implements MouseWheelListener {
 
@@ -55,7 +56,10 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
             try {
                 obj = view.getObjectToAdd().copy();
                 obj.setPos(new Pos(e.getX(), e.getY()));
-                gameStructure.getCurrentLevel().addObject(obj);
+                if(obj instanceof DynamicObject)
+                    gameStructure.getCurrentLevel().addMob((DynamicObject) obj);
+                else
+                    gameStructure.getCurrentLevel().addObject((StaticObject) obj);
                 view.setSelectedObject(obj);
             } catch (CloneNotSupportedException ex) {
                 ex.printStackTrace();

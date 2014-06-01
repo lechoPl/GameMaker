@@ -396,11 +396,11 @@ public class CustomTabbedPane extends JTabbedPane {
                             int frames = Integer.parseInt(framesTextField.getText());
                             int frequency = Integer.parseInt(frequencyTextField.getText());
                             if(creature) {
-                                AnimatedDynamicObject object = new AnimatedDynamicObject(name, imageId, width, height, frequency, frames);
+                                AnimatedDynamicObject object = new AnimatedDynamicObject(name, imageId, width / frames, height / AnimatedDynamicObject.ANIM_LINES, frequency, frames);
                                 frame.getGame().getGameResources().addDynamicObject(object, name);
                                 refreshCreatures();
                             } else {
-                                AnimatedStaticObject object = new AnimatedStaticObject(name, imageId, width, height, frequency, frames);
+                                AnimatedStaticObject object = new AnimatedStaticObject(name, imageId, width / frames, height, frequency, frames);
                                 frame.getGame().getGameResources().addStaticObject(object, name);
                                 refreshObjects();                                
                             }
