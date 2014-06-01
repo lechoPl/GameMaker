@@ -106,11 +106,11 @@ public class EditorGameView extends JPanel implements Runnable {
     public void setGame(Game game) {
         levelPreview.setGame(game);
     }
-    
+
     @Override
     public void run() {
         while (true) {
-            
+
             repaint();
             if (levelPreview != null) {
                 levelPreview.refresh();
