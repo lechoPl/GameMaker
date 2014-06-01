@@ -1,15 +1,14 @@
 package gui.gameview;
 
+import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import javax.swing.SwingUtilities;
 import javax.swing.event.MouseInputAdapter;
 import logic.Background;
 import logic.GameStructure;
 import logic.Pos;
-import logic.objects.DynamicObject;
 import logic.objects.GameObject;
 
 public class MouseInputGameView extends MouseInputAdapter implements MouseWheelListener {
@@ -30,6 +29,8 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
     private int distanceToX;
     private int distanceToY;
 
+    protected Edge sellectedEdge;
+
     private Point getMousePos(MouseEvent e) {
         Point p = e.getPoint();
 
@@ -44,7 +45,24 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
         GameStructure gameStructure = view.getGame().getGameStructure();
 
         if (gameStructure != null && gameStructure.getCurrentLevel() != null) {
-            GameObject obj = null;
+            Point mousePoint = getMousePos(e);
+
+            GameObject obj = getObject(e);
+
+            view.setSelectedObject(obj);
+            if (obj != null) {
+                distanceToX = mousePoint.x - obj.getPos().getX();
+                distanceToY = mousePoint.y - obj.getPos().getY();
+            }
+        }
+    }
+
+    private GameObject getObject(MouseEvent e) {
+        GameObject obj = null;
+
+        GameStructure gameStructure = view.getGame().getGameStructure();
+
+        if (gameStructure != null && gameStructure.getCurrentLevel() != null) {
 
             Point mousePoint = getMousePos(e);
 
@@ -58,60 +76,9 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
                     obj = bg.getObject(mousePoint.x, mousePoint.y);
                 }
             }
-
-            view.setSelectedObject(obj);
-            if (obj != null) {
-                distanceToX = mousePoint.x - obj.getPos().getX();
-                distanceToY = mousePoint.y - obj.getPos().getY();
-            }
-        }
-    }
-
-    private void addObject(MouseEvent e) {
-        GameStructure gameStructure = view.getGame().getGameStructure();
-        Point mousePoint = getMousePos(e);
-
-        if (gameStructure != null && gameStructure.getCurrentLevel() != null && view.getObjectToAdd() != null) {
-            GameObject obj;
-            try {
-                obj = view.getObjectToAdd().copy();
-                obj.setPos(new Pos(mousePoint.x, mousePoint.y));
-                gameStructure.getCurrentLevel().addObject(obj);
-                view.setSelectedObject(obj);
-            } catch (CloneNotSupportedException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    private void addPlayer(MouseEvent e) {
-        GameStructure gameStructure = view.getGame().getGameStructure();
-        Point mousePoint = getMousePos(e);
-
-        if (gameStructure != null && gameStructure.getCurrentLevel() != null && view.getObjectToAdd() != null) {
-            DynamicObject obj;
-            try {
-                obj = (DynamicObject) view.getObjectToAdd().copy();
-                obj.setPos(new Pos(mousePoint.x, mousePoint.y));
-                gameStructure.getCurrentLevel().setPlayer(obj);
-                gameStructure.getPlayerController().setControlledObject(obj);
-
-                view.setSelectedObject(obj);
-            } catch (CloneNotSupportedException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    private void scaleObject(int scaleRatio) {
-        if (view.getSelectedObject() == null) {
-            return;
         }
 
-        int width = view.getSelectedObject().getWidth();
-        int height = view.getSelectedObject().getHeight();
-        view.getSelectedObject().setWidth((int) (width * (1 + 0.2 * scaleRatio)));
-        view.getSelectedObject().setHeight((int) (height * (1 + 0.2 * scaleRatio)));
+        return obj;
     }
 
     private void moveSelectedObj(MouseEvent e) {
@@ -124,6 +91,37 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
         }
     }
 
+    private void resizeSelectedObj(MouseEvent e) {
+        GameObject obj = view.getSelectedObject();
+
+        if (obj == null || sellectedEdge == null) {
+            return;
+        }
+
+        Point p = getMousePos(e);
+        if (sellectedEdge == Edge.N || sellectedEdge == Edge.NE || sellectedEdge == Edge.NW) {
+            int temp = obj.getPos().getY() - p.y;
+            obj.setPos(new Pos(obj.getPos().getX(), obj.getPos().getY() - temp));
+            obj.setHeight(obj.getHeight() + temp);
+        }
+
+        if (sellectedEdge == Edge.S || sellectedEdge == Edge.SE || sellectedEdge == Edge.SW) {
+            int temp = p.y - obj.getPos().getY() - obj.getHeight();
+            obj.setHeight(obj.getHeight() + temp);
+        }
+
+        if (sellectedEdge == Edge.W || sellectedEdge == Edge.SW || sellectedEdge == Edge.NW) {
+            int temp = obj.getPos().getX() - p.x;
+            obj.setPos(new Pos(obj.getPos().getX() - temp, obj.getPos().getY()));
+            obj.setWidth(obj.getWidth() + temp);
+        }
+
+        if (sellectedEdge == Edge.E || sellectedEdge == Edge.NE || sellectedEdge == Edge.SE) {
+            int temp = p.x - obj.getPos().getX() - obj.getWidth();
+            obj.setWidth(obj.getWidth() + temp);
+        }
+    }
+
     @Override
     public void mousePressed(MouseEvent e) {
         Point mousePoint = getMousePos(e);
@@ -133,17 +131,16 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
 
         if (SwingUtilities.isLeftMouseButton(e)) {
             selectObject(e);
-        } else if (SwingUtilities.isRightMouseButton(e)) {
-            addObject(e);
-        } else if (SwingUtilities.isMiddleMouseButton(e)) {
-            addPlayer(e);
         }
+
+        sellectedEdge = getObjectEdge(view.getSelectedObject(), mousePoint);
 
         view.repaint();
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+        sellectedEdge = null;
 
         view.repaint();
     }
@@ -152,7 +149,15 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
     public void mouseDragged(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
             if (view.getSelectedObject() != null) {
-                moveSelectedObj(e);
+
+                Point p = getMousePos(e);
+                if (sellectedEdge != null) {
+                    resizeSelectedObj(e);
+                } else {
+                    moveSelectedObj(e);
+
+                }
+
             }
         }
 
@@ -160,11 +165,87 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
     }
 
     @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
-        super.mouseWheelMoved(e);
+    public void mouseMoved(MouseEvent e) {
+        super.mouseMoved(e);
 
-        scaleObject(e.getWheelRotation());
+        Point p = getMousePos(e);
 
-        view.repaint();
+        view.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+
+        GameObject obj = getObject(e);
+        Edge edge = getObjectEdge(obj, p);
+        view.setCursor(castEdgeToCursor(edge));
+    }
+
+    protected Edge getObjectEdge(GameObject obj, Point p) {
+
+        int margin = 8;
+
+        if (obj == null || p == null) {
+            return null;
+        }
+
+        if (p.y - obj.getPos().getY() < margin) {
+
+            if (p.x - obj.getPos().getX() < margin) {
+                return Edge.NW;
+            }
+
+            if (obj.getPos().getX() + obj.getWidth() - p.x < margin) {
+                return Edge.NE;
+            }
+
+            return Edge.N;
+        }
+
+        if (obj.getPos().getY() + obj.getHeight() - p.y < margin) {
+
+            if (p.x - obj.getPos().getX() < margin) {
+                return Edge.SW;
+            }
+
+            if (obj.getPos().getX() + obj.getWidth() - p.x < margin) {
+                return Edge.SE;
+            }
+
+            return Edge.S;
+        }
+
+        if (p.x - obj.getPos().getX() < margin) {
+            return Edge.W;
+        }
+
+        if (obj.getPos().getX() + obj.getWidth() - p.x < margin) {
+            return Edge.E;
+        }
+
+        return null;
+    }
+
+    protected Cursor castEdgeToCursor(Edge e) {
+        if (e == null) {
+            return new Cursor(Cursor.DEFAULT_CURSOR);
+        }
+
+        switch (e) {
+            case NW:
+                return new Cursor(Cursor.NW_RESIZE_CURSOR);
+            case N:
+                return new Cursor(Cursor.N_RESIZE_CURSOR);
+            case NE:
+                return new Cursor(Cursor.NE_RESIZE_CURSOR);
+            case E:
+                return new Cursor(Cursor.E_RESIZE_CURSOR);
+            case SE:
+                return new Cursor(Cursor.SE_RESIZE_CURSOR);
+            case S:
+                return new Cursor(Cursor.S_RESIZE_CURSOR);
+            case SW:
+                return new Cursor(Cursor.SW_RESIZE_CURSOR);
+            case W:
+                return new Cursor(Cursor.W_RESIZE_CURSOR);
+            default:
+                return new Cursor(Cursor.DEFAULT_CURSOR);
+        }
     }
 }
