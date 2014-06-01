@@ -451,6 +451,7 @@ public class CustomTabbedPane extends JTabbedPane {
         refreshImages();
         
         refreshObjects();
+        refreshCreatures();
         refreshSounds();
     }
     

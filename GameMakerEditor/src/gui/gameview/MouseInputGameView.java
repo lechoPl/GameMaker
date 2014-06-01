@@ -136,9 +136,10 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
         preY = mousePoint.y;
 
         if (SwingUtilities.isLeftMouseButton(e)) {
-            selectObject(e);
-        } else if (SwingUtilities.isRightMouseButton(e)) {
-            addObject(e);
+            if(e.getClickCount() == 1)
+                selectObject(e);
+            else if(e.getClickCount() == 2)
+                addObject(e);
         } else if (SwingUtilities.isMiddleMouseButton(e)) {
             addPlayer(e);
         }
