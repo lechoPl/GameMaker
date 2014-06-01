@@ -1,7 +1,6 @@
 package gui.controller;
 
 import gui.EditorGameView;
-import gui.properties.ObjectPropertiesPanel;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
@@ -44,8 +43,6 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
             if (obj != null) {
                 distanceToX = e.getX() - obj.getPos().getX();
                 distanceToY = e.getY() - obj.getPos().getY();
-                
-                view.getFrame().changePropertiesPanel(new ObjectPropertiesPanel(view.getFrame(), obj));
             }
         }
     }

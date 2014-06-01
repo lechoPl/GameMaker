@@ -33,6 +33,14 @@ public class DynamicObject
     public DynamicObject(Pos p, int width, int height) {
         super(p, width, height);
     }
+    
+     public DynamicObject(String objectName, String imageId, int width, int height) {
+        super();
+        this.objectName = objectName;
+        this.imageId = imageId;
+        this.width = width;
+        this.height = height;
+    }
 
     public PlayerState getObjectState() {
         return objectState;

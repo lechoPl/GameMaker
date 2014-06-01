@@ -14,7 +14,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import static logic.GameStructure.GAME_PATH;
+import logic.objects.DynamicObject;
 import logic.objects.GameObject;
+import logic.objects.StaticObject;
 import resources.GameResources;
 
 public class Game {
@@ -55,6 +57,7 @@ public class Game {
         try (ObjectOutputStream oos = new ObjectOutputStream(out)) {
             oos.writeObject(gameStructure);
             oos.writeObject(gameResources.getObjects());
+            oos.writeObject(gameResources.getCreatures());
             out.closeEntry();
         }
     }
@@ -80,7 +83,8 @@ public class Game {
                 FileInputStream fin = new FileInputStream(new File(Game.TEMP_FILE_NAME));
                 try (ObjectInputStream ois = new ObjectInputStream(fin)) {
                     gameStructure = (GameStructure) ois.readObject();
-                    gameResources.setObjects((HashMap<String, GameObject>) ois.readObject());
+                    gameResources.setObjects((HashMap<String, StaticObject>) ois.readObject());
+                    gameResources.setCreatures((HashMap<String, DynamicObject>) ois.readObject());
                 }
             } else if (entry.getName().startsWith(GameResources.IMAGES_PATH)) {
                 gameResources.loadImage(entry.getName(), Game.TEMP_FILE_NAME);
