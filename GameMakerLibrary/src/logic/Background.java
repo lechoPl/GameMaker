@@ -35,6 +35,18 @@ public class Background implements Serializable, IViewable {
 
         return result;
     }
+    
+    public GameObject getObject(int x, int y) {
+        for (GameObject temp : getObjectListByZindex()) {
+
+            if (temp.getPos().getX() < x && temp.getPos().getX() + temp.getWidth() > x
+                    && temp.getPos().getY() < y && temp.getPos().getY() + temp.getHeight() > y) {
+                return temp;
+            }
+        }
+
+        return null;
+    }
 
     public void addObject(GameObject obj) {
         objectList.add(obj);

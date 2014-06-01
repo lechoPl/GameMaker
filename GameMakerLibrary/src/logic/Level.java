@@ -3,6 +3,7 @@ package logic;
 import enums.CollisionType;
 import enums.PlayerState;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,7 +40,11 @@ public class Level implements Serializable, IViewable {
         objects = new ArrayList<>();
         mobs = new ArrayList<>();
     }
-
+    
+    public Dimension getSize() {
+        return new Dimension(levelWidth, levelHeight);
+    }
+    
     // setters and getters
     public void setName(String levelName) {
         this.levelName = levelName;
@@ -538,6 +543,7 @@ public class Level implements Serializable, IViewable {
         Level level = new Level("Sample level");
         level.setHeight(400);
         level.setWidth(400);
+        level.setBackgroudColor(new Color(30, 30, 30));
 
         SampleObject obj1 = new SampleObject(new Pos(40, 40), 40, 80, Color.GREEN);
         SampleObject obj2 = new SampleObject(new Pos(10, 380), 1800, 20, Color.RED);
@@ -548,6 +554,9 @@ public class Level implements Serializable, IViewable {
         level.addObject(obj2);
         level.addObject(obj3);
         level.addObject(obj4);
+        
+        SampleObject obj5 = new SampleObject(new Pos(50, 100), 100, 100, Color.WHITE);
+        level.levelBackground.addObject(obj5);
 
         DynamicObject mob1 = new DynamicObject(new Pos(20, 300), 50, 50);
         level.addMob(mob1);
