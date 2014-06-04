@@ -28,7 +28,7 @@ public class GameStructure implements IViewable, Serializable {
 
     // constructors
     public GameStructure() {
-        init("Untitled Game");
+        init("Untitled game");
     }
 
     public GameStructure(String gameName) {
@@ -37,10 +37,10 @@ public class GameStructure implements IViewable, Serializable {
 
     private void init(String gameName) {
         this.gameName = gameName;
+        
         this.levels = new LinkedList();
-
-        levels.add(new Level("Level1"));
-        levels.add(new Level("Level2"));
+        //levels.add(new Level("Level1"));
+        //levels.add(new Level("Level2"));
         
         this.screens = new LinkedList();
         screens.add(new Level("Main menu"));

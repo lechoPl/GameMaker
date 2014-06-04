@@ -179,6 +179,7 @@ public class EditorFrame extends JFrame implements IGameFrame {
     }
 
     public void refreshGamePreview() {
+        gamePreview.setGame(this.game);
         gamePreview.repaint();
     }
 
@@ -199,11 +200,14 @@ public class EditorFrame extends JFrame implements IGameFrame {
         //gamePreview.setGame(game);
 
         PlayerController pc = new PlayerController();
-        pc.setControlledObject(game.getGameStructure().getCurrentLevel().getPlayer());
+        if(game.getGameStructure().getCurrentLevel() != null)
+            pc.setControlledObject(game.getGameStructure().getCurrentLevel().getPlayer());
 
         game.setPlayerController(pc);
 
         refreshStructureTree();
+        refreshGamePreview();
+        refreshToolbox();
         changePropertiesPanel(new DefaultPropertiesPanel());
     }
 
