@@ -195,16 +195,17 @@ public class EditorFrame extends JFrame implements IGameFrame {
         saveGameItem.setEnabled(true);
 
         this.game = game;
+        if (game != null) {
+            setTitle(frameTitle + " - " + game.getGameStructure().getName());
+            //gamePreview.setGame(game);
 
-        setTitle(frameTitle + " - " + game.getGameStructure().getName());
-        //gamePreview.setGame(game);
+            PlayerController pc = new PlayerController();
+            if (game.getGameStructure().getCurrentLevel() != null) {
+                pc.setControlledObject(game.getGameStructure().getCurrentLevel().getPlayer());
+            }
 
-        PlayerController pc = new PlayerController();
-        if(game.getGameStructure().getCurrentLevel() != null)
-            pc.setControlledObject(game.getGameStructure().getCurrentLevel().getPlayer());
-
-        game.setPlayerController(pc);
-
+            game.setPlayerController(pc);
+        }
         refreshStructureTree();
         refreshGamePreview();
         refreshToolbox();

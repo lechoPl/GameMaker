@@ -12,8 +12,8 @@ public class LevelPreview extends GameView {
 
     protected GameObject selectedObject;
     protected GameObject objectToAdd;
-    protected boolean bgShow = false;
     protected boolean bgEdit = false;
+    protected boolean bgShow = true;
     protected boolean lvlShow = true;
 
     public final int margin = 50;

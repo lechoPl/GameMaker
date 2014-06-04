@@ -2,7 +2,6 @@ package gui.gameview;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +19,7 @@ public class EditorGameView extends JPanel implements Runnable {
     protected JPanel viewOptionsPanel;
 
     protected JCheckBox chb_editbg = new JCheckBox("Edit background");
-    protected JCheckBox chb_showBg = new JCheckBox("Show background");
+    protected JCheckBox chb_showBg = new JCheckBox("Show background", true);
     protected JCheckBox chb_showObjects = new JCheckBox("Show objects", true);
 
     protected Thread levelRefreshThread;
