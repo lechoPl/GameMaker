@@ -5,20 +5,19 @@ import javax.swing.JLabel;
 
 public class Property {
 
-    private JLabel label;
-    private JComponent field;
+    private String name;
+    private Object value;
 
-    public Property(JLabel label, JComponent component) {
-        this.label = label;
-        this.field = component;
-              
+    public Property(String name, Object value) {
+        this.name = name;
+        this.value = value;
     }
     
-    public JLabel getLabel() {
-        return this.label;
+    public String getName() {
+        return this.name;
     }
     
-    public JComponent getField() {
-        return this.field;
+    public Object getValue() {
+        return this.value;
     }
 }
