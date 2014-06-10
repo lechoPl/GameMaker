@@ -5,15 +5,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import logic.Game;
 import logic.Level;
 
 public class LevelPropertiesPanel extends AbstractPropertiesPanel {
 
-    private class LevelPropertiesActionListener implements ActionListener {
+    private class LevelPropertiesTableModelListener implements TableModelListener {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void tableChanged(TableModelEvent e) {
             EditorFrame frame = getFrame();
 
             String newName = (String) getTable().getValueAt(0, 1);
@@ -24,19 +26,18 @@ public class LevelPropertiesPanel extends AbstractPropertiesPanel {
 
             int newHeight = Integer.parseInt((String) getTable().getValueAt(2, 1));
             level.setHeight(newHeight);
-
+            
             frame.refreshStructureTree();
             frame.refreshGamePreview();
-
-            JOptionPane.showMessageDialog(frame, "Level properties have been successfully saved!");
         }
+        
     }
 
     private Level level;
-
+    
     @Override
-    public ActionListener getActionListener() {
-        return new LevelPropertiesActionListener();
+    public TableModelListener getTableModelListener() {
+        return new LevelPropertiesTableModelListener();
     }
 
     public LevelPropertiesPanel(EditorFrame frame, Level level) {

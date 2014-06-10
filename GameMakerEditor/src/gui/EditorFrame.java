@@ -1,14 +1,15 @@
 package gui;
 
-import gui.gameview.EditorGameView;
 import controller.PlayerController;
 import gui.controller.GameActions;
 import gui.controller.MenuActions;
+import gui.gameview.EditorGameView;
 import gui.properties.DefaultPropertiesPanel;
 import gui.structure.StructureTree;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import javax.swing.*;
 import logic.Game;
@@ -122,9 +123,12 @@ public class EditorFrame extends JFrame implements IGameFrame {
     }
 
     private void createStructureWindow() {
-        gameStructure.setLayout(new FlowLayout(FlowLayout.LEFT));
+        gameStructure.setLayout(new GridLayout(1, 1));
 
-        gameStructure.add(structureTree);
+        JScrollPane scrollPane = new JScrollPane(structureTree);
+        scrollPane.setAutoscrolls(true);
+        
+        gameStructure.add(scrollPane);
         structureTree.reload();
 
         verticalLeftPane.add(gameStructure);
@@ -157,7 +161,10 @@ public class EditorFrame extends JFrame implements IGameFrame {
     private void createPropertiesWindow() {
         gameProperties.setLayout(new GridLayout(1, 1));
         this.changePropertiesPanel(new DefaultPropertiesPanel());
-        verticalLeftPane.add(gameProperties);
+        
+        JScrollPane scrollPane = new JScrollPane(gameProperties);
+        
+        verticalLeftPane.add(scrollPane);
     }
 
     private void createToolboxWindow() {
@@ -176,7 +183,6 @@ public class EditorFrame extends JFrame implements IGameFrame {
 
     public void refreshStructureTree() {
         structureTree.reload();
-        changePropertiesPanel(new DefaultPropertiesPanel());
     }
 
     public void refreshGamePreview() {

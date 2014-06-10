@@ -6,40 +6,43 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.Vector;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 
 public abstract class AbstractPropertiesPanel extends JPanel {
-    
-    private class PropertiesTableCellRenderer implements TableCellRenderer
-    {
+
+    private class PropertiesTableCellRenderer implements TableCellRenderer {
+
         @Override
         public Component getTableCellRendererComponent(JTable table,
                 Object value, boolean isSelected, boolean hasFocus,
                 int row, int column) {
             JTextField editor = new JTextField();
-            
-            if(value != null)
-                editor.setText(value.toString());
 
-            if(column == 0)
+            if (value != null) {
+                editor.setText(value.toString());
+            }
+
+            if (column == 0) {
                 editor.setBackground(getParent().getBackground());
-            else
+            } else {
                 editor.setBackground(Color.WHITE);
-            
+            }
+
             editor.setBorder(null);
-            
+
             return editor;
         }
-        
+
     }
 
     protected EditorFrame frame;
@@ -73,12 +76,12 @@ public abstract class AbstractPropertiesPanel extends JPanel {
     public EditorFrame getFrame() {
         return this.frame;
     }
-    
+
     public JTable getTable() {
         return this.table;
     }
 
-    public abstract ActionListener getActionListener();
+    public abstract TableModelListener getTableModelListener();
 
     public void reload() {
         if (this instanceof DefaultPropertiesPanel) {
@@ -86,15 +89,15 @@ public abstract class AbstractPropertiesPanel extends JPanel {
         }
 
         this.removeAll();
-        
-        JPanel marginWest = new JPanel();
-        marginWest.setPreferredSize(new Dimension(12, 100));
-        this.add(marginWest, BorderLayout.WEST);
 
-        JPanel marginEast = new JPanel();
-        marginEast.setPreferredSize(new Dimension(12, 100));
-        this.add(marginEast, BorderLayout.EAST);
-        
+//        JPanel marginWest = new JPanel();
+//        marginWest.setPreferredSize(new Dimension(12, 100));
+//        this.add(marginWest, BorderLayout.WEST);
+//
+//        JPanel marginEast = new JPanel();
+//        marginEast.setPreferredSize(new Dimension(12, 100));
+//        this.add(marginEast, BorderLayout.EAST);
+
         JLabel nameLabel = new JLabel(this.getPanelName());
         nameLabel.setPreferredSize(new Dimension(200, 40));
         nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -105,28 +108,22 @@ public abstract class AbstractPropertiesPanel extends JPanel {
         columnNames.add("Value");
 
         Vector<Vector<Object>> data = new Vector<>();
-        for(Property p : properties) {
+        for (Property p : properties) {
             Vector<Object> rowVector = new Vector<>();
-            
+
             rowVector.add(p.getName());
             rowVector.add(p.getValue());
-            
+
             data.add(rowVector);
         }
-        
+
         table = new JTable(data, columnNames);
         table.setRowHeight(30);
         table.setBackground(this.getBackground());
         table.setDefaultRenderer(Object.class, new PropertiesTableCellRenderer());
         this.add(table, BorderLayout.CENTER);
 
-        JButton saveButton = new JButton("Save");
-        saveButton.setPreferredSize(new Dimension(500, 30));
-        saveButton.addActionListener(this.getActionListener());
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridBagLayout());
-        buttonPanel.add(saveButton);
-        this.add(buttonPanel, BorderLayout.SOUTH);
+        table.getModel().addTableModelListener(this.getTableModelListener());
 
         this.repaint();
         this.revalidate();

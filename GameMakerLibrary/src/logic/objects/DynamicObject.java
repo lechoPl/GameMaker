@@ -53,6 +53,14 @@ public class DynamicObject
         this.width = width;
         this.height = height;
     }
+     
+    public double getGravitation() {
+        return this.ay;
+    }
+    
+    public void setGravitation(double g) {
+        this.ay = g;
+    }
 
     public PlayerState getObjectState() {
         return objectState;
