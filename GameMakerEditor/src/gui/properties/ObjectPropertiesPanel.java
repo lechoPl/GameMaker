@@ -10,6 +10,7 @@ import javax.swing.event.TableModelListener;
 import logic.Game;
 import logic.Pos;
 import logic.objects.DynamicObject;
+import logic.objects.EndPoint;
 import logic.objects.GameObject;
 
 public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
@@ -42,11 +43,21 @@ public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
             if (object instanceof DynamicObject) {
                 DynamicObject dynamic = (DynamicObject) object;
 
-                double newSpeed = Double.parseDouble((String) getTable().getValueAt(6, 1));
-                dynamic.setMoveSpeed(newSpeed);
+                double newSpeedx = Double.parseDouble((String) getTable().getValueAt(6, 1));
+                dynamic.setMoveSpeed(newSpeedx);
                 
-                double newGrav = Double.parseDouble((String) getTable().getValueAt(7, 1));
+                double newSpeedy = Double.parseDouble((String) getTable().getValueAt(7, 1));
+                dynamic.setJumpSpeed(newSpeedy);
+                
+                double newGrav = Double.parseDouble((String) getTable().getValueAt(8, 1));
                 dynamic.setGravitation(newGrav);
+            }
+            
+            if(object instanceof EndPoint) {
+                EndPoint endpoint = (EndPoint) object;
+                
+                int newLevelid = Integer.parseInt((String)getTable().getValueAt(6, 1));
+                endpoint.setNextLevelId(newLevelid);
             }
 
             frame.refreshStructureTree();
@@ -108,10 +119,26 @@ public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
             Property speedxProperty = new Property(speedxName, speedxValue);
             properties.add(speedxProperty);
             
+            String speedyName = "Speed Y";
+            String speedyValue = Double.toString(dynamic.getJumpSpeed());
+            Property speedyProperty = new Property(speedyName, speedyValue);
+            properties.add(speedyProperty);
+            
             String gravName = "Gravitation";
             String gravValue = Double.toString(dynamic.getGravitation());
             Property gravProperty = new Property(gravName, gravValue);
             properties.add(gravProperty);
+        }
+        
+        if(object instanceof EndPoint) {
+            EndPoint endpoint = (EndPoint) object;
+            
+            String levelidName = "Next level ID";
+            String levelidValue = "";
+            if(endpoint.getNextLevelId() != null)
+                levelidValue = Integer.toString(endpoint.getNextLevelId());
+            Property levelidProperty = new Property(levelidName, levelidValue);
+            properties.add(levelidProperty);
         }
 
         this.setProperties(properties);
