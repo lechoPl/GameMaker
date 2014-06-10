@@ -126,6 +126,10 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
             view.getSelectedObject().setPos(new Pos(
                     mousePoint.x - distanceToX,
                     mousePoint.y - distanceToY));
+            
+            EditorFrame frame = view.getFrame();
+            GameObject obj = view.getSelectedObject();
+            frame.changePropertiesPanel(new ObjectPropertiesPanel(frame, obj));
         }
     }
 
