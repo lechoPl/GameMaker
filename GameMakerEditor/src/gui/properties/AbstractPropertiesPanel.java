@@ -127,7 +127,7 @@ public abstract class AbstractPropertiesPanel extends JPanel {
         buttonPanel.setLayout(new GridBagLayout());
         buttonPanel.add(saveButton);
         this.add(buttonPanel, BorderLayout.SOUTH);
-
+        
         this.repaint();
         this.revalidate();
     }

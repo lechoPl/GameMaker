@@ -24,7 +24,7 @@ public class LevelPropertiesPanel extends AbstractPropertiesPanel {
 
             int newHeight = Integer.parseInt((String) getTable().getValueAt(2, 1));
             level.setHeight(newHeight);
-
+            
             frame.refreshStructureTree();
             frame.refreshGamePreview();
 

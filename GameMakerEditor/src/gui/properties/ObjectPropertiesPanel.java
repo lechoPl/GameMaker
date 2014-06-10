@@ -24,6 +24,18 @@ public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
             int newPosx = Integer.parseInt((String)getTable().getValueAt(1, 1));
             object.setPos(new Pos(newPosx, object.getPos().getY()));
             
+            int newPosy = Integer.parseInt((String)getTable().getValueAt(2, 1));
+            object.setPos(new Pos(object.getPos().getX(), newPosy));
+            
+            int newWidth = Integer.parseInt((String)getTable().getValueAt(3, 1));
+            object.setWidth(newWidth);
+            
+            int newHeight = Integer.parseInt((String)getTable().getValueAt(4, 1));
+            object.setHeight(newHeight);
+            
+            int newZindex = Integer.parseInt((String)getTable().getValueAt(5, 1));
+            object.setZindex(newZindex);
+            
             frame.refreshStructureTree();
             frame.refreshGamePreview();
             
@@ -56,6 +68,26 @@ public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
         String posxValue = Integer.toString(object.getPos().getX());
         Property posxProperty = new Property(posxName, posxValue);
         properties.add(posxProperty);
+        
+        String posyName = "Position Y";
+        String posyValue = Integer.toString(object.getPos().getY());
+        Property posyProperty = new Property(posyName, posyValue);
+        properties.add(posyProperty);
+        
+        String widthName = "Width";
+        String widthValue = Integer.toString(object.getWidth());
+        Property widthProperty = new Property(widthName, widthValue);
+        properties.add(widthProperty);
+        
+        String heightName = "Height";
+        String heightValue = Integer.toString(object.getHeight());
+        Property heightProperty = new Property(heightName, heightValue);
+        properties.add(heightProperty);
+        
+        String zindexName = "Z-index";
+        String zindexValue = Integer.toString(object.getZindex());
+        Property zindexProperty = new Property(zindexName, zindexValue);
+        properties.add(zindexProperty);
         
         this.setProperties(properties);
         this.reload();

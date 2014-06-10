@@ -161,7 +161,7 @@ public class StructureTree extends JTree {
                 Object node = selPath.getLastPathComponent();
 
                 if (e.getButton() == MouseEvent.BUTTON1) {
-                    if (e.getClickCount() == 1) {
+                    if (e.getClickCount() == 2) {
                         if (node instanceof ObjectTreeNode) {
                             ObjectTreeNode objectNode = (ObjectTreeNode) node;
                             int level = objectNode.getLevelNumber();
