@@ -42,7 +42,7 @@ public class ClientFrame extends JFrame implements IGameFrame {
         createGameContent();
         
         //set size to game in gameContent
-        refreshFameSize();
+        refreshFrameSize();
         
         validate();
 
@@ -104,11 +104,11 @@ public class ClientFrame extends JFrame implements IGameFrame {
 
             gameContent.setGame(game);
 
-            refreshFameSize();
+            refreshFrameSize();
         }
     }
 
-    public void refreshFameSize() {
+    public void refreshFrameSize() {
         Game game = gameContent.getGame();
 
         if (game != null && game.getGameStructure() != null) {
