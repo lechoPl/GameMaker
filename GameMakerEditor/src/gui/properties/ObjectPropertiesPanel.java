@@ -9,6 +9,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import logic.Game;
 import logic.Pos;
+import logic.objects.DynamicObject;
 import logic.objects.GameObject;
 
 public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
@@ -19,76 +20,100 @@ public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
         public void tableChanged(TableModelEvent e) {
             EditorFrame frame = getFrame();
             Game game = frame.getGame();
-            
-            String newName = (String)getTable().getValueAt(0, 1);
+
+            String newName = (String) getTable().getValueAt(0, 1);
             object.setObjectName(newName);
-            
-            int newPosx = Integer.parseInt((String)getTable().getValueAt(1, 1));
+
+            int newPosx = Integer.parseInt((String) getTable().getValueAt(1, 1));
             object.setPos(new Pos(newPosx, object.getPos().getY()));
-            
-            int newPosy = Integer.parseInt((String)getTable().getValueAt(2, 1));
+
+            int newPosy = Integer.parseInt((String) getTable().getValueAt(2, 1));
             object.setPos(new Pos(object.getPos().getX(), newPosy));
-            
-            int newWidth = Integer.parseInt((String)getTable().getValueAt(3, 1));
+
+            int newWidth = Integer.parseInt((String) getTable().getValueAt(3, 1));
             object.setWidth(newWidth);
-            
-            int newHeight = Integer.parseInt((String)getTable().getValueAt(4, 1));
+
+            int newHeight = Integer.parseInt((String) getTable().getValueAt(4, 1));
             object.setHeight(newHeight);
-            
-            int newZindex = Integer.parseInt((String)getTable().getValueAt(5, 1));
+
+            int newZindex = Integer.parseInt((String) getTable().getValueAt(5, 1));
             object.setZindex(newZindex);
-            
+
+            if (object instanceof DynamicObject) {
+                DynamicObject dynamic = (DynamicObject) object;
+
+                double newSpeed = Double.parseDouble((String) getTable().getValueAt(6, 1));
+                dynamic.setMoveSpeed(newSpeed);
+                
+                double newGrav = Double.parseDouble((String) getTable().getValueAt(7, 1));
+                dynamic.setGravitation(newGrav);
+            }
+
             frame.refreshStructureTree();
             frame.refreshGamePreview();
         }
     }
-    
+
     private GameObject object;
-    
+
     @Override
     public TableModelListener getTableModelListener() {
         return new ObjectPropertiesTableModelListener();
     }
-    
+
     public ObjectPropertiesPanel(EditorFrame frame, GameObject object) {
         super();
-        
+
         this.object = object;
         this.setPanelName("Object properties");
         this.setFrame(frame);
-        
+
         LinkedList<Property> properties = new LinkedList<>();
-        
+
         String nameName = "Name";
         String nameValue = object.getObjectName();
         Property nameProperty = new Property(nameName, nameValue);
         properties.add(nameProperty);
-        
+
         String posxName = "Position X";
         String posxValue = Integer.toString(object.getPos().getX());
         Property posxProperty = new Property(posxName, posxValue);
         properties.add(posxProperty);
-        
+
         String posyName = "Position Y";
         String posyValue = Integer.toString(object.getPos().getY());
         Property posyProperty = new Property(posyName, posyValue);
         properties.add(posyProperty);
-        
+
         String widthName = "Width";
         String widthValue = Integer.toString(object.getWidth());
         Property widthProperty = new Property(widthName, widthValue);
         properties.add(widthProperty);
-        
+
         String heightName = "Height";
         String heightValue = Integer.toString(object.getHeight());
         Property heightProperty = new Property(heightName, heightValue);
         properties.add(heightProperty);
-        
+
         String zindexName = "Z-index";
         String zindexValue = Integer.toString(object.getZindex());
         Property zindexProperty = new Property(zindexName, zindexValue);
         properties.add(zindexProperty);
-        
+
+        if (object instanceof DynamicObject) {
+            DynamicObject dynamic = (DynamicObject) object;
+
+            String speedxName = "Speed X";
+            String speedxValue = Double.toString(dynamic.getMoveSpeed());
+            Property speedxProperty = new Property(speedxName, speedxValue);
+            properties.add(speedxProperty);
+            
+            String gravName = "Gravitation";
+            String gravValue = Double.toString(dynamic.getGravitation());
+            Property gravProperty = new Property(gravName, gravValue);
+            properties.add(gravProperty);
+        }
+
         this.setProperties(properties);
         this.reload();
     }
