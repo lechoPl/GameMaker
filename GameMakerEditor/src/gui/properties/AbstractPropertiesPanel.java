@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import java.util.Vector;
@@ -89,13 +90,13 @@ public abstract class AbstractPropertiesPanel extends JPanel {
 
         this.removeAll();
 
-        JPanel marginWest = new JPanel();
-        marginWest.setPreferredSize(new Dimension(12, 100));
-        this.add(marginWest, BorderLayout.WEST);
-
-        JPanel marginEast = new JPanel();
-        marginEast.setPreferredSize(new Dimension(12, 100));
-        this.add(marginEast, BorderLayout.EAST);
+//        JPanel marginWest = new JPanel();
+//        marginWest.setPreferredSize(new Dimension(12, 100));
+//        this.add(marginWest, BorderLayout.WEST);
+//
+//        JPanel marginEast = new JPanel();
+//        marginEast.setPreferredSize(new Dimension(12, 100));
+//        this.add(marginEast, BorderLayout.EAST);
 
         JLabel nameLabel = new JLabel(this.getPanelName());
         nameLabel.setPreferredSize(new Dimension(200, 40));

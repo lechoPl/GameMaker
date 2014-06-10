@@ -123,7 +123,6 @@ public class EditorFrame extends JFrame implements IGameFrame {
     }
 
     private void createStructureWindow() {
-        //gameStructure.setLayout(new FlowLayout(FlowLayout.LEFT));
         gameStructure.setLayout(new GridLayout(1, 1));
 
         JScrollPane scrollPane = new JScrollPane(structureTree);
@@ -162,7 +161,10 @@ public class EditorFrame extends JFrame implements IGameFrame {
     private void createPropertiesWindow() {
         gameProperties.setLayout(new GridLayout(1, 1));
         this.changePropertiesPanel(new DefaultPropertiesPanel());
-        verticalLeftPane.add(gameProperties);
+        
+        JScrollPane scrollPane = new JScrollPane(gameProperties);
+        
+        verticalLeftPane.add(scrollPane);
     }
 
     private void createToolboxWindow() {
