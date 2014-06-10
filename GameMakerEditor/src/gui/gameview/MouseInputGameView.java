@@ -128,6 +128,27 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
                     mousePoint.y - distanceToY));
         }
     }
+    
+    private void addObject(MouseEvent e) {
+        GameStructure gameStructure = view.getGame().getGameStructure();
+        Point mousePoint = getMousePos(e);
+
+        if (gameStructure != null && gameStructure.getCurrentLevel() != null && view.getObjectToAdd() != null) {
+            GameObject obj;
+            try {
+                obj = view.getObjectToAdd().copy();
+                obj.setPos(new Pos(mousePoint.x, mousePoint.y));
+                if(obj instanceof DynamicObject)
+                    gameStructure.getCurrentLevel().addMob((DynamicObject) obj);
+                else
+                    gameStructure.getCurrentLevel().addObject((StaticObject) obj);
+                view.setSelectedObject(obj);
+                view.getFrame().refreshStructureTree();
+            } catch (CloneNotSupportedException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
 
     private void resizeSelectedObj(MouseEvent e) {
         GameObject obj = view.getSelectedObject();
@@ -170,8 +191,8 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
 
         selectObject(e);
         
-        if (SwingUtilities.isMiddleMouseButton(e)) {
-            addPlayer(e);
+        if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
+            addObject(e);
         } else if (SwingUtilities.isRightMouseButton(e)) {
             pMenu.show(e.getComponent(), e.getX(), e.getY(), getMousePos(e), freshSelect);
         }
