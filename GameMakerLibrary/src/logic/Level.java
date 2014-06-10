@@ -81,6 +81,10 @@ public class Level implements Serializable, IViewable {
     public ArrayList<GameObject> getAllObjects() {
         return objects;
     }
+    
+    public ArrayList<DynamicObject> getAllMobs() {
+        return mobs;
+    }
 
     public void addObject(GameObject obj) {
         objects.add(obj);
