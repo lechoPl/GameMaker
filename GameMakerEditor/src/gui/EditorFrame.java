@@ -88,7 +88,7 @@ public class EditorFrame extends JFrame implements IGameFrame {
         createToolboxWindow();
 
         refreshStructureTree();
-
+        
         validate();
     }
 
@@ -143,7 +143,7 @@ public class EditorFrame extends JFrame implements IGameFrame {
         pc.setControlledObject(game.getGameStructure().getCurrentLevel().getPlayer());
 
         game.setPlayerController(pc);
-        gamePreview = new EditorGameView(game);
+        gamePreview = new EditorGameView(game, this);
 
         Dimension windowSize = this.getSize();
         Dimension size = new Dimension(
@@ -176,9 +176,11 @@ public class EditorFrame extends JFrame implements IGameFrame {
 
     public void refreshStructureTree() {
         structureTree.reload();
+        changePropertiesPanel(new DefaultPropertiesPanel());
     }
 
     public void refreshGamePreview() {
+        gamePreview.setGame(this.game);
         gamePreview.repaint();
     }
 
@@ -194,16 +196,20 @@ public class EditorFrame extends JFrame implements IGameFrame {
         saveGameItem.setEnabled(true);
 
         this.game = game;
+        if (game != null) {
+            setTitle(frameTitle + " - " + game.getGameStructure().getName());
+            //gamePreview.setGame(game);
 
-        setTitle(frameTitle + " - " + game.getGameStructure().getName());
-        //gamePreview.setGame(game);
+            PlayerController pc = new PlayerController();
+            if (game.getGameStructure().getCurrentLevel() != null) {
+                pc.setControlledObject(game.getGameStructure().getCurrentLevel().getPlayer());
+            }
 
-        PlayerController pc = new PlayerController();
-        pc.setControlledObject(game.getGameStructure().getCurrentLevel().getPlayer());
-
-        game.setPlayerController(pc);
-
+            game.setPlayerController(pc);
+        }
         refreshStructureTree();
+        refreshGamePreview();
+        refreshToolbox();
         changePropertiesPanel(new DefaultPropertiesPanel());
     }
 
@@ -224,4 +230,7 @@ public class EditorFrame extends JFrame implements IGameFrame {
         gamePreview.setObjectToAdd(obj);
     }
 
+    public void setSelectedObject(GameObject obj) {
+        gamePreview.setSelectedObject(obj);
+    }
 }

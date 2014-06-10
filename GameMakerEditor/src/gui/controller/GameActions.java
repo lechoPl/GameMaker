@@ -2,14 +2,19 @@ package gui.controller;
 
 import gui.EditorFrame;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 import logic.Game;
 import logic.Level;
+import logic.objects.GameObject;
 
 public class GameActions {
 
     public static int selectedLevel = -1;
+    
+    public static int selectedObject = -1;
+    public static int selectedObjectLevel = -1;
     
     public static class NewLevelAction extends AbstractAction {
 
@@ -64,6 +69,37 @@ public class GameActions {
                 frame.refreshStructureTree();
                 frame.refreshGamePreview();
                 JOptionPane.showMessageDialog(frame, "Selected level has been successfully deleted!");
+            }
+        }
+    }
+
+    public static class DeleteObjectAction extends AbstractAction {
+
+        private EditorFrame frame;
+        
+        public DeleteObjectAction(EditorFrame frame) {
+            super();
+            this.frame = frame;
+        }
+        
+        public DeleteObjectAction(EditorFrame frame, String label) {
+            super(label);
+            this.frame = frame;
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (selectedObject >= 0 && selectedObjectLevel >= 0) {
+                Game game = frame.getGame();
+                
+                Level level = game.getGameStructure().getLevels().get(selectedObjectLevel);
+                
+                GameObject objectToDelete = level.getObject(selectedObject);
+                level.deleteObject(objectToDelete);
+                
+                frame.refreshStructureTree();
+                frame.refreshGamePreview();
+                JOptionPane.showMessageDialog(frame, "Selected object has been successfully deleted!");
             }
         }
     }

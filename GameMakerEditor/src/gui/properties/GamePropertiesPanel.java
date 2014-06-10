@@ -4,9 +4,7 @@ import gui.EditorFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import logic.Game;
 
 public class GamePropertiesPanel extends AbstractPropertiesPanel {
@@ -18,7 +16,7 @@ public class GamePropertiesPanel extends AbstractPropertiesPanel {
             EditorFrame frame = getFrame();
             Game game = frame.getGame();
 
-            String newName = nameField.getText();
+            String newName = (String)getTable().getValueAt(0, 1);
             game.getGameStructure().setName(newName);
 
             frame.refreshStructureTree();
@@ -27,9 +25,6 @@ public class GamePropertiesPanel extends AbstractPropertiesPanel {
         }
 
     }
-
-    private JLabel nameLabel;
-    private JTextField nameField;
 
     @Override
     public ActionListener getActionListener() {
@@ -46,10 +41,9 @@ public class GamePropertiesPanel extends AbstractPropertiesPanel {
 
         LinkedList<Property> properties = new LinkedList<Property>();
 
-        nameLabel = new JLabel("Name");
-        nameField = new JTextField();
-        nameField.setText(game.getGameStructure().getName());
-        Property nameProperty = new Property(nameLabel, nameField);
+        String nameName = "Name";
+        String nameValue = game.getGameStructure().getName();
+        Property nameProperty = new Property(nameName, nameValue);
         properties.add(nameProperty);
 
         this.setProperties(properties);
