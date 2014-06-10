@@ -104,6 +104,11 @@ public class Level implements Serializable, IViewable {
                 return temp;
             }
         }
+        
+        if (getPlayer().getPos().getX() < x && getPlayer().getPos().getX() + getPlayer().getWidth() > x
+                    && getPlayer().getPos().getY() < y && getPlayer().getPos().getY() + getPlayer().getHeight() > y) {
+                return getPlayer();
+        }
 
         return null;
     }

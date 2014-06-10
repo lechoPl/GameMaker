@@ -21,6 +21,11 @@ public class LevelPreview extends GameView {
     private void initControler() {
         MouseInputGameView mouseList = new MouseInputGameView(this);
 
+        System.out.println("init");
+        
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+        
         this.addMouseListener(mouseList);
         this.addMouseMotionListener(mouseList);
         this.addMouseWheelListener(mouseList);
@@ -79,6 +84,11 @@ public class LevelPreview extends GameView {
 
     public boolean getViewLevel() {
         return lvlShow;
+    }
+    
+    private void setFocusOnPanel() {
+        setFocusable(true);
+        requestFocusInWindow();
     }
 
     public void refresh() {
@@ -148,5 +158,4 @@ public class LevelPreview extends GameView {
         }
 
     }
-
 }
