@@ -149,6 +149,8 @@ public class StructureTree extends JTree {
                         GameActions.selectedObject = id;
                         GameActions.selectedObjectLevel = objectNode.getLevelNumber();
                         objectPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                    } else if(node.toString().equals("Levels")){
+                        gamePopupMenu.show(e.getComponent(), e.getX(), e.getY());
                     }
                 }
             }
