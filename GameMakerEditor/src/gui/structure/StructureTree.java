@@ -259,6 +259,7 @@ public class StructureTree extends JTree {
         }
 
         i = 0;
+        
         for (Level level : game.getGameStructure().getScreens()) {
             ScreenTreeNode screenNode = new ScreenTreeNode(i, level.getName());
             screensTreeNode.add(screenNode);
@@ -271,7 +272,7 @@ public class StructureTree extends JTree {
         DefaultTreeModel model = new DefaultTreeModel(gameNode);
         model.setAsksAllowsChildren(true);
         this.setModel(model);
-
+        
         backgroundColor = this.getParent().getBackground();
         this.setBackground(backgroundColor);
     }

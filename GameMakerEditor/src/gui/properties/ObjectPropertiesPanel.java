@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
 import logic.Game;
+import logic.Pos;
 import logic.objects.GameObject;
 
 public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
@@ -19,6 +20,9 @@ public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
             
             String newName = (String)getTable().getValueAt(0, 1);
             object.setObjectName(newName);
+            
+            int newPosx = Integer.parseInt((String)getTable().getValueAt(1, 1));
+            object.setPos(new Pos(newPosx, object.getPos().getY()));
             
             frame.refreshStructureTree();
             frame.refreshGamePreview();
