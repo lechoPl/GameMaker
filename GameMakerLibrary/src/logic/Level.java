@@ -40,11 +40,11 @@ public class Level implements Serializable, IViewable {
         objects = new ArrayList<>();
         mobs = new ArrayList<>();
     }
-    
+
     public Dimension getSize() {
         return new Dimension(levelWidth, levelHeight);
     }
-    
+
     // setters and getters
     public void setName(String levelName) {
         this.levelName = levelName;
@@ -76,6 +76,10 @@ public class Level implements Serializable, IViewable {
 
     public Background getBackground() {
         return this.levelBackground;
+    }
+
+    public ArrayList<GameObject> getAllObjects() {
+        return objects;
     }
 
     public void addObject(GameObject obj) {
@@ -554,7 +558,7 @@ public class Level implements Serializable, IViewable {
         level.addObject(obj2);
         level.addObject(obj3);
         level.addObject(obj4);
-        
+
         SampleObject obj5 = new SampleObject(new Pos(50, 100), 100, 100, Color.WHITE);
         level.levelBackground.addObject(obj5);
 

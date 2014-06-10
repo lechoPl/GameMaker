@@ -7,15 +7,26 @@ import gui.properties.GamePropertiesPanel;
 import gui.properties.LevelPropertiesPanel;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JTree;
+import javax.swing.Timer;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import logic.Game;
 import logic.Level;
+import logic.objects.AnimatedDynamicObject;
+import logic.objects.AnimatedStaticObject;
+import logic.objects.DynamicObject;
+import logic.objects.GameObject;
+import logic.objects.SampleObject;
+import logic.objects.StaticObject;
 
 public class StructureTree extends JTree {
 
@@ -28,6 +39,7 @@ public class StructureTree extends JTree {
         @Override
         public Component getTreeCellRendererComponent(JTree pTree, Object pValue, boolean pIsSelected, boolean pIsExpanded, boolean pIsLeaf, int pRow, boolean pHasFocus) {
             DefaultMutableTreeNode node = (DefaultMutableTreeNode) pValue;
+            
 
             super.getTreeCellRendererComponent(pTree, pValue, pIsSelected, pIsExpanded, pIsLeaf, pRow, pHasFocus);
 
@@ -38,10 +50,43 @@ public class StructureTree extends JTree {
         }
     }
 
-    private class StructureTreeMouseListener implements MouseListener {
+    private class StructureTreeMouseListener extends MouseAdapter implements ActionListener {
 
+        private int clickInterval = 200;
+        
+        MouseEvent lastEvent;
+        Timer timer;
+        
+        public StructureTreeMouseListener() {
+            timer = new Timer(clickInterval, this);
+        }
+        
+        @Override
+        public void actionPerformed(ActionEvent e){
+            timer.stop();
+            singleClick(lastEvent);
+        }
+        
+        
         @Override
         public void mouseClicked(MouseEvent e) {
+            if(e.getClickCount() > 2)
+                return;
+            
+            lastEvent = e;
+            
+            if(timer.isRunning())
+            {
+                timer.stop();
+                doubleClick(lastEvent);
+            }
+            else
+            {
+                timer.restart();
+            }
+        }
+        
+        public void singleClick(MouseEvent e) {
             TreePath selPath = getPathForLocation(e.getX(), e.getY());
 
             if (selPath != null) {
@@ -62,18 +107,27 @@ public class StructureTree extends JTree {
                         } else {
                             frame.changePropertiesPanel(new DefaultPropertiesPanel());
                         }
-                    } else if (e.getClickCount() == 2) {
+                        
                         if (node instanceof LevelTreeNode) {
                             LevelTreeNode levelNode = (LevelTreeNode) node;
                             int nr = levelNode.getLevelNumber();
                             Level newLevel = frame.getGame().getGameStructure().getLevels().get(nr);
                             frame.getGame().getGameStructure().setCurrentLevel(newLevel);
-                            frame.refreshGamePreview();
+                            frame.setSelectedObject(null);
                         } else if (node instanceof ScreenTreeNode) {
                             ScreenTreeNode screenNode = (ScreenTreeNode) node;
                             Level level = frame.getGame().getGameStructure().getScreens().get(screenNode.getId());
                             frame.getGame().getGameStructure().setCurrentLevel(level);
-                            frame.refreshGamePreview();
+                        } else if(node instanceof ObjectTreeNode) {
+                            ObjectTreeNode objectNode = (ObjectTreeNode) node;
+                            
+                            int nr = objectNode.getLevelNumber();
+                            Level newLevel = frame.getGame().getGameStructure().getLevels().get(nr);
+                            frame.getGame().getGameStructure().setCurrentLevel(newLevel);
+                            
+                            int id = objectNode.getObjectId();
+                            GameObject newObject = newLevel.getObject(id);
+                            frame.setSelectedObject(newObject);
                         }
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -89,6 +143,9 @@ public class StructureTree extends JTree {
                 }
             }
         }
+        
+        public void doubleClick(MouseEvent e){}
+
 
         @Override
         public void mousePressed(MouseEvent e) {
@@ -141,6 +198,42 @@ public class StructureTree extends JTree {
             LevelTreeNode levelNode = new LevelTreeNode(i, level.getName());
             levelsTreeNode.add(levelNode);
 
+            DefaultMutableTreeNode sampleObjectsTreeNode = new DefaultMutableTreeNode("Sample objects");
+            DefaultMutableTreeNode objectsTreeNode = new DefaultMutableTreeNode("Objects");
+            DefaultMutableTreeNode animatedObjectsTreeNode = new DefaultMutableTreeNode("Animated objects");
+            DefaultMutableTreeNode mobsTreeNode = new DefaultMutableTreeNode("Mobs");
+            DefaultMutableTreeNode animatedMobsTreeNode = new DefaultMutableTreeNode("Animated mobs", true);
+            levelNode.add(sampleObjectsTreeNode);
+            levelNode.add(objectsTreeNode);
+            levelNode.add(animatedObjectsTreeNode);
+            levelNode.add(mobsTreeNode);
+            levelNode.add(animatedMobsTreeNode);
+            
+            for(GameObject object : level.getAllObjects()) {
+                String objectName = object.getObjectName();
+                if(objectName == null || objectName.isEmpty())
+                    objectName = "untitled object";
+                
+                ObjectTreeNode objectNode = new ObjectTreeNode(object.getId(), i, objectName);
+                
+                if(object instanceof SampleObject)
+                    sampleObjectsTreeNode.add(objectNode);
+                else if(object instanceof StaticObject)
+                {
+                    if(object instanceof AnimatedStaticObject)
+                        animatedObjectsTreeNode.add(objectNode);
+                    else
+                        objectsTreeNode.add(objectNode);
+                }
+                else if(object instanceof DynamicObject)
+                {
+                    if(object instanceof AnimatedDynamicObject)
+                        animatedMobsTreeNode.add(objectNode);
+                    else
+                        mobsTreeNode.add(objectNode);
+                }
+            }
+            
             i++;
         }
         
@@ -155,6 +248,7 @@ public class StructureTree extends JTree {
         gameNode.add(levelsTreeNode);
         gameNode.add(screensTreeNode);
         DefaultTreeModel model = new DefaultTreeModel(gameNode);
+        model.setAsksAllowsChildren(true);
         this.setModel(model);
 
         backgroundColor = this.getParent().getBackground();

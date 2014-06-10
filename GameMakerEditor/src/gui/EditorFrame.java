@@ -88,7 +88,7 @@ public class EditorFrame extends JFrame implements IGameFrame {
         createToolboxWindow();
 
         refreshStructureTree();
-
+        
         validate();
     }
 
@@ -229,4 +229,7 @@ public class EditorFrame extends JFrame implements IGameFrame {
         gamePreview.setObjectToAdd(obj);
     }
 
+    public void setSelectedObject(GameObject obj) {
+        gamePreview.setSelectedObject(obj);
+    }
 }
