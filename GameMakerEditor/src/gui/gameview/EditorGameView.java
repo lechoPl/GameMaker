@@ -1,8 +1,8 @@
 package gui.gameview;
 
+import gui.EditorFrame;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Graphics;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,14 +20,14 @@ public class EditorGameView extends JPanel implements Runnable {
     protected JPanel viewOptionsPanel;
 
     protected JCheckBox chb_editbg = new JCheckBox("Edit background");
-    protected JCheckBox chb_showBg = new JCheckBox("Show background");
+    protected JCheckBox chb_showBg = new JCheckBox("Show background", true);
     protected JCheckBox chb_showObjects = new JCheckBox("Show objects", true);
 
     protected Thread levelRefreshThread;
+    
+    public EditorGameView(Game g, EditorFrame frame) {
 
-    public EditorGameView(Game g) {
-
-        levelPreview = new LevelPreview(g);
+        levelPreview = new LevelPreview(g, frame);
         scrollPane = new JScrollPane(levelPreview);
 
         initViewOptionPanel();

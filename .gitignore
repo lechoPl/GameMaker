@@ -1,4 +1,6 @@
 *.class
+GameMakerEditor/game_maker_temp_file
+GameMakerClient/game_maker_temp_file
 
 # Package Files #
 *.jar

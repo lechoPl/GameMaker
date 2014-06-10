@@ -4,18 +4,15 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.imageio.ImageIO;
-import static logic.GameStructure.GAME_PATH;
-import logic.objects.AnimatedDynamicObject;
 import logic.objects.DynamicObject;
-import logic.objects.GameObject;
 import logic.objects.StaticObject;
 
 public class GameResources {
+
     public static final String IMAGE_EXTENSION = "png";
 
     public static final String IMAGES_PATH = "data/images/";
@@ -125,15 +122,15 @@ public class GameResources {
     public HashMap<String, StaticObject> getObjects() {
         return objects;
     }
-    
+
     public void setObjects(HashMap<String, StaticObject> objects) {
         this.objects = objects;
     }
-    
+
     public HashMap<String, DynamicObject> getCreatures() {
         return creatures;
     }
-    
+
     public void setCreatures(HashMap<String, DynamicObject> creatures) {
         this.creatures = creatures;
     }
@@ -141,7 +138,7 @@ public class GameResources {
     public void addStaticObject(StaticObject object, String name) {
         objects.put(name, object);
     }
-    
+
     public void addDynamicObject(DynamicObject object, String name) {
         creatures.put(name, object);
     }

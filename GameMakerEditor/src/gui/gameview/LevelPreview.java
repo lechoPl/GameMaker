@@ -1,5 +1,6 @@
 package gui.gameview;
 
+import gui.EditorFrame;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -12,15 +13,22 @@ public class LevelPreview extends GameView {
 
     protected GameObject selectedObject;
     protected GameObject objectToAdd;
-    protected boolean bgShow = false;
     protected boolean bgEdit = false;
+    protected boolean bgShow = true;
     protected boolean lvlShow = true;
 
     public final int margin = 50;
+    
+    private EditorFrame frame;
 
     private void initControler() {
         MouseInputGameView mouseList = new MouseInputGameView(this);
 
+        System.out.println("init");
+        
+        this.setFocusable(true);
+        this.requestFocusInWindow();
+        
         this.addMouseListener(mouseList);
         this.addMouseMotionListener(mouseList);
         this.addMouseWheelListener(mouseList);
@@ -32,8 +40,9 @@ public class LevelPreview extends GameView {
         initControler();
     }
 
-    public LevelPreview(Game game) {
+    public LevelPreview(Game game, EditorFrame frame) {
         this.game = game;
+        this.frame = frame;
         setPreferredSize(game.getGameStructure().getWindowSize());
 
         refresh();
@@ -79,6 +88,10 @@ public class LevelPreview extends GameView {
 
     public boolean getViewLevel() {
         return lvlShow;
+    }
+    
+    public EditorFrame getFrame() {
+        return this.frame;
     }
 
     public void refresh() {
@@ -148,5 +161,4 @@ public class LevelPreview extends GameView {
         }
 
     }
-
 }

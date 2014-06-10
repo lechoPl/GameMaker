@@ -15,7 +15,6 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import static logic.GameStructure.GAME_PATH;
 import logic.objects.DynamicObject;
-import logic.objects.GameObject;
 import logic.objects.StaticObject;
 import resources.GameResources;
 

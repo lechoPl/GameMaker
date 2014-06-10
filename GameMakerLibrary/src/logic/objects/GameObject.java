@@ -58,7 +58,7 @@ public abstract class GameObject implements IViewable, Serializable, Cloneable {
     }
     
     public String getObjectName() {
-        return imageId;
+        return objectName;
     }
     
     public void setObjectName(String objectName){
