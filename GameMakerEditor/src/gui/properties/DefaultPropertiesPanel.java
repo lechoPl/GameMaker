@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import javax.swing.JLabel;
 import static javax.swing.SwingConstants.CENTER;
+import javax.swing.event.TableModelListener;
 
 public class DefaultPropertiesPanel extends AbstractPropertiesPanel {
 
@@ -16,9 +17,9 @@ public class DefaultPropertiesPanel extends AbstractPropertiesPanel {
 
         this.add(textLabel);
     }
-
+    
     @Override
-    public ActionListener getActionListener() {
+    public TableModelListener getTableModelListener() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 }
