@@ -143,7 +143,7 @@ public class EditorFrame extends JFrame implements IGameFrame {
         pc.setControlledObject(game.getGameStructure().getCurrentLevel().getPlayer());
 
         game.setPlayerController(pc);
-        gamePreview = new EditorGameView(game);
+        gamePreview = new EditorGameView(game, this);
 
         Dimension windowSize = this.getSize();
         Dimension size = new Dimension(
@@ -176,6 +176,7 @@ public class EditorFrame extends JFrame implements IGameFrame {
 
     public void refreshStructureTree() {
         structureTree.reload();
+        changePropertiesPanel(new DefaultPropertiesPanel());
     }
 
     public void refreshGamePreview() {

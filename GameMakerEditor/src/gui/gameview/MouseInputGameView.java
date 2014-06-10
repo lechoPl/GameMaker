@@ -1,5 +1,8 @@
 package gui.gameview;
 
+import gui.EditorFrame;
+import gui.properties.DefaultPropertiesPanel;
+import gui.properties.ObjectPropertiesPanel;
 import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
@@ -50,6 +53,12 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
             Point mousePoint = getMousePos(e);
 
             GameObject obj = getObject(e);
+            EditorFrame frame = view.getFrame();
+            
+            if(obj == null)
+                frame.changePropertiesPanel(new DefaultPropertiesPanel());
+            else
+                frame.changePropertiesPanel(new ObjectPropertiesPanel(frame, obj));
 
             view.setSelectedObject(obj);
             if (obj != null) {

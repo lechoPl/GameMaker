@@ -5,6 +5,7 @@ import gui.controller.GameActions;
 import gui.properties.DefaultPropertiesPanel;
 import gui.properties.GamePropertiesPanel;
 import gui.properties.LevelPropertiesPanel;
+import gui.properties.ObjectPropertiesPanel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Toolkit;
@@ -100,6 +101,12 @@ public class StructureTree extends JTree {
                             ScreenTreeNode screenNode = (ScreenTreeNode) node;
                             Level level = frame.getGame().getGameStructure().getScreens().get(screenNode.getId());
                             frame.changePropertiesPanel(new LevelPropertiesPanel(frame, level));
+                        } else if (node instanceof ObjectTreeNode) {
+                            ObjectTreeNode objectNode = (ObjectTreeNode) node;
+                            int level = objectNode.getLevelNumber();
+                            int id = objectNode.getObjectId();
+                            GameObject object = frame.getGame().getGameStructure().getLevels().get(level).getObject(id);
+                            frame.changePropertiesPanel(new ObjectPropertiesPanel(frame, object));
                         } else {
                             frame.changePropertiesPanel(new DefaultPropertiesPanel());
                         }
@@ -135,10 +142,10 @@ public class StructureTree extends JTree {
 
                         GameActions.selectedLevel = nr;
                         levelPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-                    } else if(node instanceof ObjectTreeNode) {
+                    } else if (node instanceof ObjectTreeNode) {
                         ObjectTreeNode objectNode = (ObjectTreeNode) node;
                         int id = objectNode.getObjectId();
-                        
+
                         GameActions.selectedObject = id;
                         GameActions.selectedObjectLevel = objectNode.getLevelNumber();
                         objectPopupMenu.show(e.getComponent(), e.getX(), e.getY());
@@ -206,8 +213,8 @@ public class StructureTree extends JTree {
             DefaultMutableTreeNode sampleObjectsTreeNode = new DefaultMutableTreeNode("Sample objects");
             DefaultMutableTreeNode objectsTreeNode = new DefaultMutableTreeNode("Objects");
             DefaultMutableTreeNode animatedObjectsTreeNode = new DefaultMutableTreeNode("Animated objects");
-            DefaultMutableTreeNode mobsTreeNode = new DefaultMutableTreeNode("Mobs");
-            DefaultMutableTreeNode animatedMobsTreeNode = new DefaultMutableTreeNode("Animated mobs", true);
+            DefaultMutableTreeNode mobsTreeNode = new DefaultMutableTreeNode("Creatures");
+            DefaultMutableTreeNode animatedMobsTreeNode = new DefaultMutableTreeNode("Animated creatures", true);
             levelNode.add(sampleObjectsTreeNode);
             levelNode.add(objectsTreeNode);
             levelNode.add(animatedObjectsTreeNode);

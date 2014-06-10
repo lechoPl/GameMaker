@@ -9,33 +9,31 @@ import logic.Game;
 import logic.Level;
 
 public class LevelPropertiesPanel extends AbstractPropertiesPanel {
-    
+
     private class LevelPropertiesActionListener implements ActionListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
             EditorFrame frame = getFrame();
-            Game game = frame.getGame();
-            
-            String newName = (String)getTable().getValueAt(0, 1);
+
+            String newName = (String) getTable().getValueAt(0, 1);
             level.setName(newName);
-            
-            int newWidth = Integer.parseInt((String)getTable().getValueAt(1, 1));
+
+            int newWidth = Integer.parseInt((String) getTable().getValueAt(1, 1));
             level.setWidth(newWidth);
-            
-            int newHeight = Integer.parseInt((String)getTable().getValueAt(2, 1));
+
+            int newHeight = Integer.parseInt((String) getTable().getValueAt(2, 1));
             level.setHeight(newHeight);
-            
+
             frame.refreshStructureTree();
             frame.refreshGamePreview();
-            
+
             JOptionPane.showMessageDialog(frame, "Level properties have been successfully saved!");
         }
-        
     }
-    
+
     private Level level;
-    
+
     @Override
     public ActionListener getActionListener() {
         return new LevelPropertiesActionListener();
@@ -48,25 +46,23 @@ public class LevelPropertiesPanel extends AbstractPropertiesPanel {
         this.setPanelName("Level properties");
         this.setFrame(frame);
 
-        Game game = this.getFrame().getGame();
-
         LinkedList<Property> properties = new LinkedList<Property>();
 
         String nameName = "Name";
         String nameValue = level.getName();
         Property nameProperty = new Property(nameName, nameValue);
         properties.add(nameProperty);
-        
+
         String widthName = "Width";
         String widthValue = Integer.toString(level.getWidth());
         Property widthProperty = new Property(widthName, widthValue);
         properties.add(widthProperty);
-        
+
         String heightName = "Height";
         String heightValue = Integer.toString(level.getHeight());
         Property heightProperty = new Property(heightName, heightValue);
         properties.add(heightProperty);
-        
+
         this.setProperties(properties);
         this.reload();
     }

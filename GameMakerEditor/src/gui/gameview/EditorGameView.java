@@ -1,5 +1,6 @@
 package gui.gameview;
 
+import gui.EditorFrame;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
@@ -23,10 +24,10 @@ public class EditorGameView extends JPanel implements Runnable {
     protected JCheckBox chb_showObjects = new JCheckBox("Show objects", true);
 
     protected Thread levelRefreshThread;
+    
+    public EditorGameView(Game g, EditorFrame frame) {
 
-    public EditorGameView(Game g) {
-
-        levelPreview = new LevelPreview(g);
+        levelPreview = new LevelPreview(g, frame);
         scrollPane = new JScrollPane(levelPreview);
 
         initViewOptionPanel();
