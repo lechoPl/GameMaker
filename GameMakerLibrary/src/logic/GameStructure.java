@@ -52,6 +52,15 @@ public class GameStructure implements IViewable, Serializable {
         return levels;
     }
     
+    public Level getLevel(int id) {
+        for(Level level : levels) {
+            if(level.getId() == id)
+                return level;
+        }
+        
+        return null;
+    }
+    
     public LinkedList<Level> getScreens() {
         return screens;
     }

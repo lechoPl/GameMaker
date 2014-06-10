@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import logic.Game;
 import logic.Level;
+import logic.objects.EndPoint;
 import logic.objects.GameObject;
 import view.GameView;
 
@@ -18,17 +19,17 @@ public class LevelPreview extends GameView {
     protected boolean lvlShow = true;
 
     public final int margin = 50;
-    
+
     private EditorFrame frame;
 
     private void initControler() {
         MouseInputGameView mouseList = new MouseInputGameView(this);
 
         System.out.println("init");
-        
+
         this.setFocusable(true);
         this.requestFocusInWindow();
-        
+
         this.addMouseListener(mouseList);
         this.addMouseMotionListener(mouseList);
         this.addMouseWheelListener(mouseList);
@@ -89,7 +90,7 @@ public class LevelPreview extends GameView {
     public boolean getViewLevel() {
         return lvlShow;
     }
-    
+
     public EditorFrame getFrame() {
         return this.frame;
     }
@@ -128,6 +129,32 @@ public class LevelPreview extends GameView {
             }
 
             if (lvlShow) {
+                for (EndPoint obj : currentLevel.getAllEndPoints()) {
+                    g.setColor(Color.BLACK);
+                    g.drawRect(
+                            obj.getPos().getX() - 1,
+                            obj.getPos().getY() - 1,
+                            obj.getWidth() + 2,
+                            obj.getHeight() + 2);
+                    g.drawRect(
+                            obj.getPos().getX() + 1,
+                            obj.getPos().getY() + 1,
+                            obj.getWidth() - 2,
+                            obj.getHeight() - 2);
+
+                    g.setColor(Color.ORANGE);
+                    g.drawRect(
+                            obj.getPos().getX(),
+                            obj.getPos().getY(),
+                            obj.getWidth(),
+                            obj.getHeight());
+                    g.drawLine(
+                            obj.getPos().getX(),
+                            obj.getPos().getY() + obj.getHeight() / 10,
+                            obj.getPos().getX() + obj.getWidth() / 10,
+                            obj.getPos().getY());
+                }
+
                 for (GameObject obj : currentLevel.getAllObjectsByZindex()) {
                     obj.render(g, game.getGameResources());
                 }

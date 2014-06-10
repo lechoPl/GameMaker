@@ -11,6 +11,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import logic.Game;
 import logic.Level;
+import logic.objects.EndPoint;
 import view.Camera;
 import view.GameView;
 
@@ -70,8 +71,21 @@ public class GameClientView extends JPanel implements Runnable {
 
             //update game state
             double deltaInSecods = (double) delta / 10000000.0;
-            this.getGame().getGameStructure().getCurrentLevel().update(deltaInSecods);
-
+            EndPoint endPoint = this.getGame().getGameStructure().getCurrentLevel().checkEndPoint();
+            if (endPoint != null) {
+                if (endPoint.getNextLevelId() != null) {
+                    Level oldLevel = this.getGame().getGameStructure().getCurrentLevel();
+                    Level newLevel = this.getGame().getGameStructure().getLevel(endPoint.getNextLevelId());
+                    newLevel.getPlayer().setLives(oldLevel.getPlayer().getLives());
+                    this.getGame().getGameStructure().setCurrentLevel(newLevel);
+                    this.getGame().getGameStructure().getPlayerController().setControlledObject(newLevel.getPlayer());
+                } else {
+                    System.out.println("end game!");
+                    System.exit(0);
+                }
+            } else {
+                this.getGame().getGameStructure().getCurrentLevel().update(deltaInSecods);
+            }
             //update game view
             gamePanel.repaint();
 
@@ -148,10 +162,10 @@ public class GameClientView extends JPanel implements Runnable {
 
             int xTranslate = 0;
             int yTranslate = 0;
-            
+
             // hide objects when they cross level size
-            if (game.getGameStructure() != null &&
-                    game.getGameStructure().getCurrentLevel() != null) {
+            if (game.getGameStructure() != null
+                    && game.getGameStructure().getCurrentLevel() != null) {
 
                 Dimension size = this.getPreferredSize();
                 int lvlWidth = game.getGameStructure().getCurrentLevel().getWidth();
@@ -170,6 +184,12 @@ public class GameClientView extends JPanel implements Runnable {
                 g.fillRect(-xTranslate, lvlHeight, size.width, yTranslate);
                 g.fillRect(-xTranslate, -yTranslate, xTranslate, size.height);
                 g.fillRect(lvlWidth, -yTranslate, xTranslate, size.height);
+
+                if (game.getGameStructure().getCurrentLevel().getPlayer() != null) {
+                    g.setColor(Color.RED);
+                    String lives = "Player lives: " + game.getGameStructure().getCurrentLevel().getPlayer().getLives();
+                    g.drawChars(lives.toCharArray(), 0, lives.length(), 10, 20);
+                }
             }
 
             if (showFPS) {
@@ -182,7 +202,10 @@ public class GameClientView extends JPanel implements Runnable {
             Game gameTemp = new Game();
             gameTemp.getGameStructure().setBgDefaultColor(Color.GRAY);
 
-            Level level = Level.getSampleLevel();
+            Level level1 = Level.getSampleLevel();
+            gameTemp.getGameStructure().addNewLevel(level1);
+
+            Level level = Level.getSampleLevel(level1.getId());
             gameTemp.getGameStructure().addNewLevel(level);
             gameTemp.getGameStructure().setCurrentLevel(level);
 

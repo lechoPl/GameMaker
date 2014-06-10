@@ -10,12 +10,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import logic.objects.DynamicObject;
+import logic.objects.EndPoint;
 import logic.objects.GameObject;
 import logic.objects.SampleObject;
 import resources.GameResources;
 import view.IViewable;
 
 public class Level implements Serializable, IViewable {
+
+    protected static int IdCount = 0;
+    protected final int id;
 
     // fields
     private String levelName;
@@ -30,15 +34,24 @@ public class Level implements Serializable, IViewable {
     //private Background levelFronground; // player show lives etc.
     private ArrayList<GameObject> objects;     //should be dictionary or hashmap to beter get objects
     private ArrayList<DynamicObject> mobs;
+    private ArrayList<EndPoint> endPoints;
     private DynamicObject player;
 
     // constructors
     public Level(String levelName) {
+        id = IdCount;
+        IdCount++;
+
         this.levelName = levelName;
 
         levelBackground = new Background();
         objects = new ArrayList<>();
         mobs = new ArrayList<>();
+        endPoints = new ArrayList<>();
+    }
+
+    public int getId() {
+        return id;
     }
 
     public Dimension getSize() {
@@ -81,9 +94,13 @@ public class Level implements Serializable, IViewable {
     public ArrayList<GameObject> getAllObjects() {
         return objects;
     }
-    
+
     public ArrayList<DynamicObject> getAllMobs() {
         return mobs;
+    }
+
+    public ArrayList<EndPoint> getAllEndPoints() {
+        return endPoints;
     }
 
     public void addObject(GameObject obj) {
@@ -94,6 +111,10 @@ public class Level implements Serializable, IViewable {
         mobs.add(obj);
     }
 
+    public void addEndPoint(EndPoint ep) {
+        endPoints.add(ep);
+    }
+
     public void deleteObject(GameObject obj) {
         if (objects.contains(obj)) {
             objects.remove(obj);
@@ -101,6 +122,10 @@ public class Level implements Serializable, IViewable {
 
         if (mobs.contains(obj)) {
             mobs.remove(obj);
+        }
+
+        if (endPoints.contains(obj)) {
+            endPoints.remove(obj);
         }
     }
 
@@ -112,10 +137,18 @@ public class Level implements Serializable, IViewable {
                 return temp;
             }
         }
-        
+
         if (getPlayer() != null && getPlayer().getPos().getX() < x && getPlayer().getPos().getX() + getPlayer().getWidth() > x
-                    && getPlayer().getPos().getY() < y && getPlayer().getPos().getY() + getPlayer().getHeight() > y) {
-                return getPlayer();
+                && getPlayer().getPos().getY() < y && getPlayer().getPos().getY() + getPlayer().getHeight() > y) {
+            return getPlayer();
+        }
+
+        for (EndPoint temp : getAllEndPoints()) {
+
+            if (temp.getPos().getX() < x && temp.getPos().getX() + temp.getWidth() > x
+                    && temp.getPos().getY() < y && temp.getPos().getY() + temp.getHeight() > y) {
+                return temp;
+            }
         }
 
         return null;
@@ -279,6 +312,39 @@ public class Level implements Serializable, IViewable {
         if (player != null) {
             player.render(g, gameResources);
         }
+    }
+
+    public EndPoint checkEndPoint() {
+        if(player == null)
+            return null;
+        
+        int objX1 = player.getPos().getX();
+        int objY1 = player.getPos().getY();
+        int objX2 = objX1 + player.getWidth();
+        int objY2 = objY1 + player.getHeight();
+
+        for (EndPoint obj : getAllEndPoints()) {
+            int tempX1 = obj.getPos().getX();
+            int tempY1 = obj.getPos().getY();
+            int tempX2 = tempX1 + obj.getWidth();
+            int tempY2 = tempY1 + obj.getHeight();
+            
+            if (tempY2 <= objY1 || tempY1 >= objY2) {
+                continue;
+            }
+            if (tempX2 <= objX1 || tempX1 >= objX2) {
+                continue;
+            }
+            
+            if (objY2 > tempY1 && objY1 < tempY1) {
+                return obj;
+            }
+            if (objY1 < tempY2 && objY2 > tempY2) {
+                return obj;
+            }
+        }
+        
+        return null;
     }
 
     /**
@@ -552,7 +618,7 @@ public class Level implements Serializable, IViewable {
         }
     }
 
-    static public Level getSampleLevel() {
+    static public Level getSampleLevel(int nextLvlId) {
         Level level = new Level("Sample level");
         level.setHeight(400);
         level.setWidth(400);
@@ -573,9 +639,43 @@ public class Level implements Serializable, IViewable {
 
         DynamicObject mob1 = new DynamicObject(new Pos(20, 300), 50, 50);
         level.addMob(mob1);
+        
+        DynamicObject player = new DynamicObject(new Pos(300, 80), 50, 50);
+        player.setLives(3);
+        level.setPlayer(player);
 
-        level.setPlayer(new DynamicObject(new Pos(300, 80), 50, 50));
+        EndPoint ep = new EndPoint(new Pos(50, 50), 100, 100);
+        ep.setNextLevelId(nextLvlId);
+        level.addEndPoint(ep);
 
+        return level;
+    }
+    
+    
+    static public Level getSampleLevel() {
+        Level level = new Level("Sample level2");
+        level.setHeight(400);
+        level.setWidth(400);
+        level.setBackgroudColor(new Color(30, 30, 30));
+
+        SampleObject obj1 = new SampleObject(new Pos(150, 40), 40, 80, Color.GREEN);
+        SampleObject obj2 = new SampleObject(new Pos(10, 380), 1800, 20, Color.RED);
+        SampleObject obj3 = new SampleObject(new Pos(200, 350), 50, 20, Color.RED);
+        SampleObject obj4 = new SampleObject(new Pos(240, 300), 50, 20, Color.RED);
+
+        level.addObject(obj1);
+        level.addObject(obj2);
+        level.addObject(obj3);
+        level.addObject(obj4);
+
+        DynamicObject mob1 = new DynamicObject(new Pos(20, 300), 50, 50);
+        level.addMob(mob1);
+
+        level.setPlayer(new DynamicObject(new Pos(100, 40), 50, 50));
+
+        EndPoint ep = new EndPoint(new Pos(50, 50), 100, 100);
+        level.addEndPoint(ep);
+        
         return level;
     }
 }
