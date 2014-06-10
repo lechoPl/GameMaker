@@ -5,16 +5,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import logic.Game;
 import logic.Pos;
 import logic.objects.GameObject;
 
 public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
 
-    private class ObjectPropertiesActionListener implements ActionListener {
+    private class ObjectPropertiesTableModelListener implements TableModelListener {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void tableChanged(TableModelEvent e) {
             EditorFrame frame = getFrame();
             Game game = frame.getGame();
             
@@ -38,16 +40,14 @@ public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
             
             frame.refreshStructureTree();
             frame.refreshGamePreview();
-            
-            JOptionPane.showMessageDialog(frame, "Object properties have been successfully updated!");
         }
     }
     
     private GameObject object;
     
     @Override
-    public ActionListener getActionListener() {
-        return new ObjectPropertiesActionListener();
+    public TableModelListener getTableModelListener() {
+        return new ObjectPropertiesTableModelListener();
     }
     
     public ObjectPropertiesPanel(EditorFrame frame, GameObject object) {

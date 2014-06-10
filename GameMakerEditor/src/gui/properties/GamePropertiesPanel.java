@@ -5,14 +5,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
 import javax.swing.JOptionPane;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import logic.Game;
 
 public class GamePropertiesPanel extends AbstractPropertiesPanel {
-
-    private class GamePropertiesActionListener implements ActionListener {
+    
+    private class GamePropertiesTableModelListener implements TableModelListener {
 
         @Override
-        public void actionPerformed(ActionEvent e) {
+        public void tableChanged(TableModelEvent e) {
             EditorFrame frame = getFrame();
             Game game = frame.getGame();
 
@@ -20,15 +22,13 @@ public class GamePropertiesPanel extends AbstractPropertiesPanel {
             game.getGameStructure().setName(newName);
 
             frame.refreshStructureTree();
-
-            JOptionPane.showMessageDialog(frame, "Game properties have been successfully saved!");
         }
-
+        
     }
-
+    
     @Override
-    public ActionListener getActionListener() {
-        return new GamePropertiesActionListener();
+    public TableModelListener getTableModelListener() {
+        return new GamePropertiesTableModelListener();
     }
 
     public GamePropertiesPanel(EditorFrame frame) {

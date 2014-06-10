@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 
 public abstract class AbstractPropertiesPanel extends JPanel {
@@ -78,7 +79,7 @@ public abstract class AbstractPropertiesPanel extends JPanel {
         return this.table;
     }
 
-    public abstract ActionListener getActionListener();
+    public abstract TableModelListener getTableModelListener();
 
     public void reload() {
         if (this instanceof DefaultPropertiesPanel) {
@@ -120,13 +121,7 @@ public abstract class AbstractPropertiesPanel extends JPanel {
         table.setDefaultRenderer(Object.class, new PropertiesTableCellRenderer());
         this.add(table, BorderLayout.CENTER);
 
-        JButton saveButton = new JButton("Save");
-        saveButton.setPreferredSize(new Dimension(500, 30));
-        saveButton.addActionListener(this.getActionListener());
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setLayout(new GridBagLayout());
-        buttonPanel.add(saveButton);
-        this.add(buttonPanel, BorderLayout.SOUTH);
+        table.getModel().addTableModelListener(this.getTableModelListener());
         
         this.repaint();
         this.revalidate();

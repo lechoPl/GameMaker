@@ -176,7 +176,6 @@ public class EditorFrame extends JFrame implements IGameFrame {
 
     public void refreshStructureTree() {
         structureTree.reload();
-        changePropertiesPanel(new DefaultPropertiesPanel());
     }
 
     public void refreshGamePreview() {
