@@ -237,7 +237,9 @@ public class StructureTree extends JTree {
         int i = 0;
 
         for (Level level : game.getGameStructure().getLevels()) {
-            LevelTreeNode levelNode = new LevelTreeNode(i, level.getName());
+            
+            String levelNodeName = level.getName() + " (id: " + Integer.toString(level.getId()) + ")";
+            LevelTreeNode levelNode = new LevelTreeNode(i, levelNodeName);
             levelsTreeNode.add(levelNode);
             
             DefaultMutableTreeNode sampleObjectsTreeNode = new DefaultMutableTreeNode("Sample objects");
