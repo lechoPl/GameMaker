@@ -110,6 +110,7 @@ public class MousePopupMenu extends JPopupMenu {
                 game.getGameStructure().getCurrentLevel().addObject(obj);
                 
                 preview.setSelectedObject(obj);
+                preview.getFrame().refreshStructureTree();
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(MousePopupMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -131,6 +132,7 @@ public class MousePopupMenu extends JPopupMenu {
                 game.getGameStructure().getCurrentLevel().addMob(obj);
                 
                 preview.setSelectedObject(obj);
+                preview.getFrame().refreshStructureTree();
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(MousePopupMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -153,6 +155,7 @@ public class MousePopupMenu extends JPopupMenu {
                 game.getGameStructure().getPlayerController().setControlledObject(obj);
                 
                 preview.setSelectedObject(obj);
+                preview.getFrame().refreshStructureTree();
             } catch (CloneNotSupportedException ex) {
                 Logger.getLogger(MousePopupMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -170,6 +173,8 @@ public class MousePopupMenu extends JPopupMenu {
             if(preview.getSelectedObject() != null) {
                 game.getGameStructure().getCurrentLevel().deleteObject(preview.getSelectedObject());
                 preview.setSelectedObject(null);
+                
+                preview.getFrame().refreshStructureTree();
             }
         }
     }
