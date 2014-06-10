@@ -71,6 +71,7 @@ public class GameClientView extends JPanel implements Runnable {
 
             //update game state
             double deltaInSecods = (double) delta / 10000000.0;
+
             EndPoint endPoint = this.getGame().getGameStructure().getCurrentLevel().checkEndPoint();
             if (endPoint != null) {
                 if (endPoint.getNextLevelId() != null) {
@@ -80,10 +81,10 @@ public class GameClientView extends JPanel implements Runnable {
                     this.getGame().getGameStructure().setCurrentLevel(newLevel);
                     this.getGame().getGameStructure().getPlayerController().setControlledObject(newLevel.getPlayer());
                 } else {
-                    System.out.println("end game!");
-                    System.exit(0);
+                    gamePanel.setEndGame(true);
+                    gamePanel.setEndGameText("YOU WIN!!!");
                 }
-            } else {
+            } else if(!gamePanel.getEndGame()){
                 this.getGame().getGameStructure().getCurrentLevel().update(deltaInSecods);
             }
             //update game view
@@ -123,6 +124,8 @@ public class GameClientView extends JPanel implements Runnable {
     private class CustomGameView extends GameView {
 
         protected boolean showFPS = false;
+        protected boolean endGame = false;
+        protected String endGameText = "";
 
         public CustomGameView() {
 
@@ -147,10 +150,24 @@ public class GameClientView extends JPanel implements Runnable {
 
                 this.addKeyListener(game.getPlayerController());
             }
+
+            endGame = false;
         }
 
         public void setShowFPS(boolean val) {
             showFPS = val;
+        }
+
+        public void setEndGame(boolean val) {
+            endGame = val;
+        }
+        
+        public boolean getEndGame() {
+            return endGame;
+        }
+
+        public void setEndGameText(String s) {
+            endGameText = s;
         }
 
         @Override
@@ -189,6 +206,24 @@ public class GameClientView extends JPanel implements Runnable {
                     g.setColor(Color.RED);
                     String lives = "Player lives: " + game.getGameStructure().getCurrentLevel().getPlayer().getLives();
                     g.drawChars(lives.toCharArray(), 0, lives.length(), 10, 20);
+                }
+
+                if (endGame) {
+                    int popupWidth
+                            = g.getFontMetrics().charsWidth(endGameText.toCharArray(), 0, endGameText.length());
+                    int popupHeight = g.getFontMetrics().getHeight();
+                    int margin = 5;
+                    g.setColor(Color.BLACK);
+                    g.fillRect((lvlWidth + popupWidth + 2 * margin) / 2,
+                            (lvlHeight + popupHeight + 2 * margin) / 2,
+                            popupWidth + margin * 2,
+                            popupHeight + margin * 2);
+
+                    g.setColor(Color.WHITE);
+                    g.drawChars(
+                            endGameText.toCharArray(), 0, endGameText.length(),
+                            (lvlWidth + popupWidth) / 2 + margin,
+                            (lvlHeight + popupHeight) / 2 + margin + popupHeight);
                 }
             }
 

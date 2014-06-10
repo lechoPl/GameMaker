@@ -36,6 +36,7 @@ public class Level implements Serializable, IViewable {
     private ArrayList<DynamicObject> mobs;
     private ArrayList<EndPoint> endPoints;
     private DynamicObject player;
+    private Pos playerStartPos;
 
     // constructors
     public Level(String levelName) {
@@ -49,7 +50,7 @@ public class Level implements Serializable, IViewable {
         mobs = new ArrayList<>();
         endPoints = new ArrayList<>();
     }
-
+    
     public int getId() {
         return id;
     }
@@ -285,6 +286,7 @@ public class Level implements Serializable, IViewable {
 
     public void setPlayer(DynamicObject p) {
         player = p;
+        playerStartPos = new Pos(p.getPos().getX(), p.getPos().getY());
     }
 
     public Color getBackGroudColor() {
@@ -412,6 +414,9 @@ public class Level implements Serializable, IViewable {
                         throw new UnsupportedOperationException("Wrong collision type: " + result.type + " " + result.pos);
                 }
             }
+        } else if(player.getLives() > 0) {
+            player.setPos(playerStartPos);
+            player.raise();
         }
 
         //move mobs
@@ -673,7 +678,7 @@ public class Level implements Serializable, IViewable {
 
         level.setPlayer(new DynamicObject(new Pos(100, 40), 50, 50));
 
-        EndPoint ep = new EndPoint(new Pos(50, 50), 100, 100);
+        EndPoint ep = new EndPoint(new Pos(150, 150), 100, 100);
         level.addEndPoint(ep);
         
         return level;
