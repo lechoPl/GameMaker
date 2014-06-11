@@ -50,7 +50,7 @@ public class Level implements Serializable, IViewable {
         mobs = new ArrayList<>();
         endPoints = new ArrayList<>();
     }
-    
+
     public int getId() {
         return id;
     }
@@ -317,9 +317,10 @@ public class Level implements Serializable, IViewable {
     }
 
     public EndPoint checkEndPoint() {
-        if(player == null)
+        if (player == null) {
             return null;
-        
+        }
+
         int objX1 = player.getPos().getX();
         int objY1 = player.getPos().getY();
         int objX2 = objX1 + player.getWidth();
@@ -330,14 +331,14 @@ public class Level implements Serializable, IViewable {
             int tempY1 = obj.getPos().getY();
             int tempX2 = tempX1 + obj.getWidth();
             int tempY2 = tempY1 + obj.getHeight();
-            
+
             if (tempY2 <= objY1 || tempY1 >= objY2) {
                 continue;
             }
             if (tempX2 <= objX1 || tempX1 >= objX2) {
                 continue;
             }
-            
+
             if (objY2 > tempY1 && objY1 < tempY1) {
                 return obj;
             }
@@ -345,7 +346,7 @@ public class Level implements Serializable, IViewable {
                 return obj;
             }
         }
-        
+
         return null;
     }
 
@@ -414,8 +415,11 @@ public class Level implements Serializable, IViewable {
                         throw new UnsupportedOperationException("Wrong collision type: " + result.type + " " + result.pos);
                 }
             }
-        } else if(player.getLives() > 0) {
+        } else if (player.getLives() > 0) {
             player.setPos(playerStartPos);
+            player.setYSpeedValue(0);
+            player.moveStop();
+            player.setJumpAllowed(false);
             player.raise();
         }
 
@@ -644,7 +648,7 @@ public class Level implements Serializable, IViewable {
 
         DynamicObject mob1 = new DynamicObject(new Pos(20, 300), 50, 50);
         level.addMob(mob1);
-        
+
         DynamicObject player = new DynamicObject(new Pos(300, 80), 50, 50);
         player.setLives(3);
         level.setPlayer(player);
@@ -655,8 +659,7 @@ public class Level implements Serializable, IViewable {
 
         return level;
     }
-    
-    
+
     static public Level getSampleLevel() {
         Level level = new Level("Sample level2");
         level.setHeight(400);
@@ -680,7 +683,7 @@ public class Level implements Serializable, IViewable {
 
         EndPoint ep = new EndPoint(new Pos(150, 150), 100, 100);
         level.addEndPoint(ep);
-        
+
         return level;
     }
 }

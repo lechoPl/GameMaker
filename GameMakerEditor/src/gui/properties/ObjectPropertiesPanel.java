@@ -56,8 +56,12 @@ public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
             if(object instanceof EndPoint) {
                 EndPoint endpoint = (EndPoint) object;
                 
-                int newLevelid = Integer.parseInt((String)getTable().getValueAt(6, 1));
-                endpoint.setNextLevelId(newLevelid);
+                String id = (String)getTable().getValueAt(6, 1);
+                
+                if(id != null && !id.isEmpty()) {
+                    int newLevelid = Integer.parseInt((String)getTable().getValueAt(6, 1));
+                    endpoint.setNextLevelId(newLevelid);
+                }
             }
 
             frame.refreshStructureTree();

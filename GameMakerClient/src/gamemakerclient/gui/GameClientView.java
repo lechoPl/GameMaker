@@ -11,6 +11,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import logic.Game;
 import logic.Level;
+import logic.objects.DynamicObject;
 import logic.objects.EndPoint;
 import view.Camera;
 import view.GameView;
@@ -74,7 +75,8 @@ public class GameClientView extends JPanel implements Runnable {
 
             EndPoint endPoint = this.getGame().getGameStructure().getCurrentLevel().checkEndPoint();
             if (endPoint != null) {
-                if (endPoint.getNextLevelId() != null) {
+                if (endPoint.getNextLevelId() != null
+                        && this.getGame().getGameStructure().getLevel(endPoint.getNextLevelId()) != null) {
                     Level oldLevel = this.getGame().getGameStructure().getCurrentLevel();
                     Level newLevel = this.getGame().getGameStructure().getLevel(endPoint.getNextLevelId());
                     newLevel.getPlayer().setLives(oldLevel.getPlayer().getLives());
@@ -84,8 +86,14 @@ public class GameClientView extends JPanel implements Runnable {
                     gamePanel.setEndGame(true);
                     gamePanel.setEndGameText("YOU WIN!!!");
                 }
-            } else if(!gamePanel.getEndGame()){
-                this.getGame().getGameStructure().getCurrentLevel().update(deltaInSecods);
+            } else if (!gamePanel.getEndGame()) {
+                DynamicObject player = this.getGame().getGameStructure().getCurrentLevel().getPlayer();
+                if (player.getLives() <= 0) {
+                    gamePanel.setEndGame(true);
+                    gamePanel.setEndGameText("GAME OVER");
+                } else {
+                    this.getGame().getGameStructure().getCurrentLevel().update(deltaInSecods);
+                }
             }
             //update game view
             gamePanel.repaint();
@@ -161,7 +169,7 @@ public class GameClientView extends JPanel implements Runnable {
         public void setEndGame(boolean val) {
             endGame = val;
         }
-        
+
         public boolean getEndGame() {
             return endGame;
         }
@@ -214,16 +222,16 @@ public class GameClientView extends JPanel implements Runnable {
                     int popupHeight = g.getFontMetrics().getHeight();
                     int margin = 5;
                     g.setColor(Color.BLACK);
-                    g.fillRect((lvlWidth + popupWidth + 2 * margin) / 2,
-                            (lvlHeight + popupHeight + 2 * margin) / 2,
+                    g.fillRect((lvlWidth - popupWidth - 2 * margin) / 2,
+                            (lvlHeight - popupHeight - 2 * margin) / 2,
                             popupWidth + margin * 2,
                             popupHeight + margin * 2);
 
                     g.setColor(Color.WHITE);
                     g.drawChars(
                             endGameText.toCharArray(), 0, endGameText.length(),
-                            (lvlWidth + popupWidth) / 2 + margin,
-                            (lvlHeight + popupHeight) / 2 + margin + popupHeight);
+                            (lvlWidth - popupWidth - 2 * margin) / 2 + margin,
+                            (lvlHeight - popupHeight - 2 * margin) / 2 + popupHeight);
                 }
             }
 
