@@ -139,7 +139,6 @@ public class EditorFrame extends JFrame implements IGameFrame {
     private void createGamePreviewPanel() {
         //region only for tests
         Level level = Level.getSampleLevel();
-
         game.getGameStructure().addNewLevel(level);
         game.getGameStructure().setCurrentLevel(level);
 

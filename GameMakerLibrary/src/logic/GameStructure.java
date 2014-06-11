@@ -15,9 +15,8 @@ public class GameStructure implements IViewable, Serializable {
 
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
-    
-    public static int OBJ_ID_COUNT = 0;
-    public static int LEVEL_ID_COUNT = 0;
+
+    public int LEVEL_ID_COUNT = 0;
 
     // fields
     private String gameName;
@@ -26,7 +25,7 @@ public class GameStructure implements IViewable, Serializable {
     protected Level currentLevel = null;
     private LinkedList<Level> levels;
     private LinkedList<Level> screens;
-    
+
     private PlayerController playerContorller;
 
     // constructors
@@ -40,11 +39,11 @@ public class GameStructure implements IViewable, Serializable {
 
     private void init(String gameName) {
         this.gameName = gameName;
-        
+
         this.levels = new LinkedList();
         //levels.add(new Level("Level1"));
         //levels.add(new Level("Level2"));
-        
+
         this.screens = new LinkedList();
         screens.add(new Level("Main menu"));
         screens.add(new Level("Start screen"));
@@ -54,16 +53,17 @@ public class GameStructure implements IViewable, Serializable {
     public LinkedList<Level> getLevels() {
         return levels;
     }
-    
+
     public Level getLevel(int id) {
-        for(Level level : levels) {
-            if(level.getId() == id)
+        for (Level level : levels) {
+            if (level.getId() == id) {
                 return level;
+            }
         }
-        
+
         return null;
     }
-    
+
     public LinkedList<Level> getScreens() {
         return screens;
     }
@@ -76,7 +76,9 @@ public class GameStructure implements IViewable, Serializable {
         return currentLevel;
     }
 
-    public void addNewLevel(Level lvl) {
+    public synchronized void addNewLevel(Level lvl) {
+        LEVEL_ID_COUNT++;
+        lvl.setId(LEVEL_ID_COUNT);
         levels.add(lvl);
     }
 
@@ -99,7 +101,7 @@ public class GameStructure implements IViewable, Serializable {
     public Color getBgDefaultColor() {
         return bgDafaultColor;
     }
-    
+
     public PlayerController getPlayerController() {
         return playerContorller;
     }
