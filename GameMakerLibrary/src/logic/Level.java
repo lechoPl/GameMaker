@@ -137,6 +137,11 @@ public class Level implements Serializable, IViewable {
         if (endPoints.contains(obj)) {
             endPoints.remove(obj);
         }
+        
+        levelBackground.deleteObject(obj);
+        
+        if(player == obj)
+            player = null;
     }
 
     public GameObject getObject(int x, int y) {
@@ -634,8 +639,8 @@ public class Level implements Serializable, IViewable {
 
     static public Level getSampleLevel(int nextLvlId) {
         Level level = new Level("Sample level");
-        level.setHeight(400);
-        level.setWidth(400);
+        level.setHeight(1400);
+        level.setWidth(1400);
         level.setBackgroudColor(new Color(30, 30, 30));
 
         SampleObject obj1 = new SampleObject(new Pos(40, 40), 40, 80, Color.GREEN);
@@ -651,7 +656,7 @@ public class Level implements Serializable, IViewable {
         SampleObject obj5 = new SampleObject(new Pos(50, 100), 100, 100, Color.WHITE);
         level.levelBackground.addObject(obj5);
 
-        DynamicObject mob1 = new DynamicObject(new Pos(20, 300), 50, 50);
+        DynamicObject mob1 = new DynamicObject(new Pos(1000, 300), 50, 50);
         level.addMob(mob1);
 
         DynamicObject player = new DynamicObject(new Pos(300, 80), 50, 50);

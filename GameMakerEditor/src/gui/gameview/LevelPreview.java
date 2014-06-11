@@ -112,8 +112,6 @@ public class LevelPreview extends GameView {
 
     @Override
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-
         g.clearRect(0, 0, getSize().width, getSize().height);
 
         g.translate(margin, margin);
@@ -126,6 +124,16 @@ public class LevelPreview extends GameView {
 
             if (bgShow && currentLevel.getBackground() != null) {
                 currentLevel.getBackground().render(g, game.getGameResources());
+            }
+            
+            if(!bgEdit) {
+                Color c = currentLevel.getBackGroudColor();
+                if (c != null) {
+                    g.setColor(new Color(c.getRed(), c.getGreen(), c.getBlue(), 150));
+                } else {
+                    g.setColor(new Color(0,0,0, 150));
+                }
+                g.fillRect(0, 0, currentLevel.getWidth(), currentLevel.getHeight());
             }
 
             if (lvlShow) {

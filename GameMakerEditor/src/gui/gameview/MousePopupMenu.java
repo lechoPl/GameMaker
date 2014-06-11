@@ -1,11 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gui.gameview;
 
-import gui.CustomTabbedPane;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -20,13 +14,8 @@ import logic.Game;
 import logic.Pos;
 import logic.objects.DynamicObject;
 import logic.objects.EndPoint;
-import logic.objects.GameObject;
 import logic.objects.StaticObject;
 
-/**
- *
- * @author Pawel
- */
 public class MousePopupMenu extends JPopupMenu {
 
     private Game game;
@@ -65,7 +54,7 @@ public class MousePopupMenu extends JPopupMenu {
             menuAddCreature.setActionCommand(entry.getKey());
             creaturesSectionMenu.add(menuAddCreature);
         }
-        
+
         JMenu playerSectionMenu = new JMenu("Player");
         for (Entry<String, DynamicObject> entry : game.getGameResources().getCreatures().entrySet()) {
             JMenuItem menuAddPlayer = new JMenuItem(entry.getKey());
@@ -77,16 +66,16 @@ public class MousePopupMenu extends JPopupMenu {
         addMenu.add(objectsSectionMenu);
         addMenu.add(creaturesSectionMenu);
         addMenu.add(playerSectionMenu);
-        
+
         JMenuItem menuAddEndPoint = new JMenuItem("End point");
         menuAddEndPoint.addActionListener(addEndPointAction);
         addMenu.add(menuAddEndPoint);
-        
+
         add(addMenu);
-        
-        if(freshSelect) {
+
+        if (freshSelect) {
             ObjectRemoveAction objectRemoveAction = new ObjectRemoveAction();
-            
+
             JMenuItem deleteMenu = new JMenuItem("Delete");
             deleteMenu.addActionListener(objectRemoveAction);
             add(deleteMenu);
@@ -113,12 +102,12 @@ public class MousePopupMenu extends JPopupMenu {
             try {
                 obj = (StaticObject) game.getGameResources().getObjects().get(e.getActionCommand()).copy();
                 obj.setPos(pos);
-                if(preview.bgEdit) {
+                if (preview.bgEdit) {
                     game.getGameStructure().getCurrentLevel().getBackground().addObject(obj);
                 } else {
                     game.getGameStructure().getCurrentLevel().addObject(obj);
                 }
-                
+
                 preview.setSelectedObject(obj);
                 preview.getFrame().refreshStructureTree();
             } catch (CloneNotSupportedException ex) {
@@ -140,7 +129,7 @@ public class MousePopupMenu extends JPopupMenu {
                 obj = (DynamicObject) game.getGameResources().getCreatures().get(e.getActionCommand()).copy();
                 obj.setPos(pos);
                 game.getGameStructure().getCurrentLevel().addMob(obj);
-                
+
                 preview.setSelectedObject(obj);
                 preview.getFrame().refreshStructureTree();
             } catch (CloneNotSupportedException ex) {
@@ -148,7 +137,7 @@ public class MousePopupMenu extends JPopupMenu {
             }
         }
     }
-    
+
     private class AddPlayerAction extends AbstractAction {
 
         public AddPlayerAction() {
@@ -163,7 +152,7 @@ public class MousePopupMenu extends JPopupMenu {
                 obj.setPos(pos);
                 game.getGameStructure().getCurrentLevel().setPlayer(obj);
                 game.getGameStructure().getPlayerController().setControlledObject(obj);
-                
+
                 preview.setSelectedObject(obj);
                 preview.getFrame().refreshStructureTree();
             } catch (CloneNotSupportedException ex) {
@@ -171,7 +160,7 @@ public class MousePopupMenu extends JPopupMenu {
             }
         }
     }
-    
+
     private class ObjectRemoveAction extends AbstractAction {
 
         public ObjectRemoveAction() {
@@ -180,15 +169,15 @@ public class MousePopupMenu extends JPopupMenu {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(preview.getSelectedObject() != null) {
+            if (preview.getSelectedObject() != null) {
                 game.getGameStructure().getCurrentLevel().deleteObject(preview.getSelectedObject());
                 preview.setSelectedObject(null);
-                
+
                 preview.getFrame().refreshStructureTree();
             }
         }
     }
-    
+
     private class AddEndPointAction extends AbstractAction {
 
         public AddEndPointAction() {
