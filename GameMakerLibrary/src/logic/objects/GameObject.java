@@ -1,13 +1,12 @@
 package logic.objects;
 
 import java.io.Serializable;
+import logic.GameStructure;
 import logic.Pos;
 import view.IViewable;
 
 public abstract class GameObject implements IViewable, Serializable, Cloneable {
-
-    protected static int IdCount = 0;
-    protected final int id;
+    protected int id;
     
     protected String objectName;
     protected String imageId;
@@ -19,8 +18,8 @@ public abstract class GameObject implements IViewable, Serializable, Cloneable {
     protected int zindex = 0;
 
     GameObject() {
-        id = IdCount;
-        IdCount++;
+        id = GameStructure.OBJ_ID_COUNT;
+        GameStructure.OBJ_ID_COUNT++;
 
         position = new Pos(0, 0);
         width = 0;
@@ -28,8 +27,8 @@ public abstract class GameObject implements IViewable, Serializable, Cloneable {
     }
 
     GameObject(Pos p) {
-        id = IdCount;
-        IdCount++;
+        id = GameStructure.OBJ_ID_COUNT;
+        GameStructure.OBJ_ID_COUNT++;
 
         position = p;
         width = 0;
@@ -37,8 +36,8 @@ public abstract class GameObject implements IViewable, Serializable, Cloneable {
     }
 
     GameObject(Pos p, int width, int height) {
-        id = IdCount;
-        IdCount++;
+        id = GameStructure.OBJ_ID_COUNT;
+        GameStructure.OBJ_ID_COUNT++;
 
         position = p;
         this.width = width;
@@ -90,7 +89,9 @@ public abstract class GameObject implements IViewable, Serializable, Cloneable {
     }
     
     public GameObject copy() throws CloneNotSupportedException {
-        return (GameObject) clone();
+        GameObject o = (GameObject) clone();
+        o.setId();
+        return o;
     }
     
     public int getZindex() {
@@ -99,5 +100,10 @@ public abstract class GameObject implements IViewable, Serializable, Cloneable {
     
     public void setZindex(int val) {
         zindex = val;
+    }
+    
+    public void setId() {
+        id = GameStructure.OBJ_ID_COUNT;
+        GameStructure.OBJ_ID_COUNT++;
     }
 }

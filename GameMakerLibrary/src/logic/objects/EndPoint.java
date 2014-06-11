@@ -1,5 +1,6 @@
 package logic.objects;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import logic.Pos;
 import resources.GameResources;
@@ -31,6 +32,8 @@ public class EndPoint extends GameObject {
 
     @Override
     public void render(Graphics g, GameResources gameResources) {
+        g.setColor(Color.PINK);
+        g.fillRect(this.getPos().getX(), this.getPos().getY(), this.width, height);
         //default nothig! visable only in editor
     }
 

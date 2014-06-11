@@ -213,7 +213,7 @@ public class GameClientView extends JPanel implements Runnable {
                 if (game.getGameStructure().getCurrentLevel().getPlayer() != null) {
                     g.setColor(Color.RED);
                     String lives = "Player lives: " + game.getGameStructure().getCurrentLevel().getPlayer().getLives();
-                    g.drawChars(lives.toCharArray(), 0, lives.length(), 10, 20);
+                    g.drawChars(lives.toCharArray(), 0, lives.length(), 15 - Camera.getTranslateX(), 20 - Camera.getTranslateY());
                 }
 
                 if (endGame) {
@@ -222,22 +222,22 @@ public class GameClientView extends JPanel implements Runnable {
                     int popupHeight = g.getFontMetrics().getHeight();
                     int margin = 5;
                     g.setColor(Color.BLACK);
-                    g.fillRect((lvlWidth - popupWidth - 2 * margin) / 2,
-                            (lvlHeight - popupHeight - 2 * margin) / 2,
+                    g.fillRect(((lvlWidth - popupWidth - 2 * margin) / 2) - Camera.getTranslateX(),
+                           ((lvlHeight - popupHeight - 2 * margin) / 2) - Camera.getTranslateY(),
                             popupWidth + margin * 2,
                             popupHeight + margin * 2);
 
                     g.setColor(Color.WHITE);
                     g.drawChars(
                             endGameText.toCharArray(), 0, endGameText.length(),
-                            (lvlWidth - popupWidth - 2 * margin) / 2 + margin,
-                            (lvlHeight - popupHeight - 2 * margin) / 2 + popupHeight);
+                            lvlWidth / 2 - Camera.getTranslateX(),
+                            lvlHeight / 2 - Camera.getTranslateY());
                 }
             }
 
             if (showFPS) {
                 g.setColor(Color.RED);
-                g.drawString("FPS: " + currentFPS, 5 - xTranslate, 15 - yTranslate);
+                g.drawString("FPS: " + currentFPS, 15 - Camera.getTranslateX(), 35 - Camera.getTranslateY());
             }
         }
 

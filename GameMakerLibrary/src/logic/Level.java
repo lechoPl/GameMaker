@@ -18,7 +18,6 @@ import view.IViewable;
 
 public class Level implements Serializable, IViewable {
 
-    protected static int IdCount = 0;
     protected final int id;
 
     // fields
@@ -40,8 +39,8 @@ public class Level implements Serializable, IViewable {
 
     // constructors
     public Level(String levelName) {
-        id = IdCount;
-        IdCount++;
+        id = GameStructure.LEVEL_ID_COUNT;
+        GameStructure.LEVEL_ID_COUNT++;
 
         this.levelName = levelName;
 
@@ -338,13 +337,9 @@ public class Level implements Serializable, IViewable {
             if (tempX2 <= objX1 || tempX1 >= objX2) {
                 continue;
             }
-
-            if (objY2 > tempY1 && objY1 < tempY1) {
-                return obj;
-            }
-            if (objY1 < tempY2 && objY2 > tempY2) {
-                return obj;
-            }
+            
+            return obj;
+            
         }
 
         return null;

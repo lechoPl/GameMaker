@@ -141,7 +141,6 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
                 if (obj instanceof DynamicObject) {
                     gameStructure.getCurrentLevel().addMob((DynamicObject) obj);
                 } else {
-                    gameStructure.getCurrentLevel().addObject((StaticObject) obj);
                     if (view.bgEdit) {
                         view.getGame().getGameStructure().getCurrentLevel().getBackground().addObject(obj);
                     } else {
@@ -200,6 +199,7 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
         selectObject(e);
 
         if (SwingUtilities.isLeftMouseButton(e) && e.getClickCount() == 2) {
+            System.out.print("klik");
             addObject(e);
         } else if (SwingUtilities.isRightMouseButton(e)) {
             pMenu.show(e.getComponent(), e.getX(), e.getY(), getMousePos(e), freshSelect);
