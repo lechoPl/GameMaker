@@ -1,6 +1,7 @@
 package gui.properties;
 
 import gui.EditorFrame;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.LinkedList;
@@ -26,6 +27,16 @@ public class LevelPropertiesPanel extends AbstractPropertiesPanel {
 
             int newHeight = Integer.parseInt((String) getTable().getValueAt(2, 1));
             level.setHeight(newHeight);
+            
+            String rgb = (String)getTable().getValueAt(3, 1);
+            String r = rgb.substring(1, 3);
+            String g = rgb.substring(3, 5);
+            String b = rgb.substring(5, 7);
+            int ir = Integer.parseInt(r, 16);
+            int ig = Integer.parseInt(g, 16);
+            int ib = Integer.parseInt(b, 16);
+            Color c = new Color(ir, ig, ib);
+            level.setBackgroudColor(c);
             
             frame.refreshStructureTree();
             frame.refreshGamePreview();
@@ -63,6 +74,12 @@ public class LevelPropertiesPanel extends AbstractPropertiesPanel {
         String heightValue = Integer.toString(level.getHeight());
         Property heightProperty = new Property(heightName, heightValue);
         properties.add(heightProperty);
+        
+        String bgName = "Background";
+        Color c = level.getBackGroudColor();
+        String bgValue = String.format("#%02X%02X%02X", c.getRed(), c.getGreen(), c.getBlue());
+        Property bgProperty = new Property(bgName, bgValue);
+        properties.add(bgProperty);
 
         this.setProperties(properties);
         this.reload();
