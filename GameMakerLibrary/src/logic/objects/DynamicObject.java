@@ -127,8 +127,7 @@ public class DynamicObject
     }
 
     public void raise() {
-        if (isKilled && lives > 1) {
-            lives -= 1;
+        if (isKilled && lives > 0) {
             isKilled = false;
         }
     }

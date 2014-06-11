@@ -19,6 +19,7 @@ import javax.swing.JPopupMenu;
 import logic.Game;
 import logic.Pos;
 import logic.objects.DynamicObject;
+import logic.objects.EndPoint;
 import logic.objects.GameObject;
 import logic.objects.StaticObject;
 
@@ -47,6 +48,7 @@ public class MousePopupMenu extends JPopupMenu {
         AddCreatureAction addCreatureAction = new AddCreatureAction();
         AddObjectAction addObjectAction = new AddObjectAction();
         AddPlayerAction addPlayerAction = new AddPlayerAction();
+        AddEndPointAction addEndPointAction = new AddEndPointAction();
 
         JMenu objectsSectionMenu = new JMenu("Object");
         for (Entry<String, StaticObject> entry : game.getGameResources().getObjects().entrySet()) {
@@ -75,6 +77,10 @@ public class MousePopupMenu extends JPopupMenu {
         addMenu.add(objectsSectionMenu);
         addMenu.add(creaturesSectionMenu);
         addMenu.add(playerSectionMenu);
+        
+        JMenuItem menuAddEndPoint = new JMenuItem("End point");
+        menuAddEndPoint.addActionListener(addEndPointAction);
+        addMenu.add(menuAddEndPoint);
         
         add(addMenu);
         
@@ -107,7 +113,11 @@ public class MousePopupMenu extends JPopupMenu {
             try {
                 obj = (StaticObject) game.getGameResources().getObjects().get(e.getActionCommand()).copy();
                 obj.setPos(pos);
-                game.getGameStructure().getCurrentLevel().addObject(obj);
+                if(preview.bgEdit) {
+                    game.getGameStructure().getCurrentLevel().getBackground().addObject(obj);
+                } else {
+                    game.getGameStructure().getCurrentLevel().addObject(obj);
+                }
                 
                 preview.setSelectedObject(obj);
                 preview.getFrame().refreshStructureTree();
@@ -176,6 +186,22 @@ public class MousePopupMenu extends JPopupMenu {
                 
                 preview.getFrame().refreshStructureTree();
             }
+        }
+    }
+    
+    private class AddEndPointAction extends AbstractAction {
+
+        public AddEndPointAction() {
+            super();
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            EndPoint endPoint = new EndPoint(pos);
+            game.getGameStructure().getCurrentLevel().addEndPoint(endPoint);
+
+            preview.setSelectedObject(endPoint);
+            preview.getFrame().refreshStructureTree();
         }
     }
 }

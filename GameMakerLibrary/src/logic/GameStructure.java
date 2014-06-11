@@ -15,6 +15,9 @@ public class GameStructure implements IViewable, Serializable {
 
     private static final int WIDTH = 800;
     private static final int HEIGHT = 600;
+    
+    public static int OBJ_ID_COUNT = 0;
+    public static int LEVEL_ID_COUNT = 0;
 
     // fields
     private String gameName;

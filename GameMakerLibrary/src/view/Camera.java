@@ -6,7 +6,16 @@ import logic.GameStructure;
 import logic.objects.GameObject;
 
 public class Camera {
-
+    private static int xTranslate, yTranslate;
+    
+    public static int getTranslateX() {
+        return xTranslate;
+    }
+    
+    public static int getTranslateY() {
+        return yTranslate;
+    }
+    
     public static void setCamera(Graphics g, GameStructure game) {
         if (game == null) {
             return;
@@ -14,8 +23,8 @@ public class Camera {
 
         if (game.getCurrentLevel() != null) {
 
-            int xTranslate = 0;
-            int yTranslate = 0;
+            xTranslate = 0;
+            yTranslate = 0;
 
             int lvlWidth = game.getCurrentLevel().getWidth();
             int lvlHeight = game.getCurrentLevel().getHeight();

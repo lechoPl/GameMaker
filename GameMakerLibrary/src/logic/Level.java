@@ -18,7 +18,6 @@ import view.IViewable;
 
 public class Level implements Serializable, IViewable {
 
-    protected static int IdCount = 0;
     protected final int id;
 
     // fields
@@ -36,11 +35,12 @@ public class Level implements Serializable, IViewable {
     private ArrayList<DynamicObject> mobs;
     private ArrayList<EndPoint> endPoints;
     private DynamicObject player;
+    private Pos playerStartPos;
 
     // constructors
     public Level(String levelName) {
-        id = IdCount;
-        IdCount++;
+        id = GameStructure.LEVEL_ID_COUNT;
+        GameStructure.LEVEL_ID_COUNT++;
 
         this.levelName = levelName;
 
@@ -285,6 +285,7 @@ public class Level implements Serializable, IViewable {
 
     public void setPlayer(DynamicObject p) {
         player = p;
+        playerStartPos = new Pos(p.getPos().getX(), p.getPos().getY());
     }
 
     public Color getBackGroudColor() {
@@ -315,9 +316,10 @@ public class Level implements Serializable, IViewable {
     }
 
     public EndPoint checkEndPoint() {
-        if(player == null)
+        if (player == null) {
             return null;
-        
+        }
+
         int objX1 = player.getPos().getX();
         int objY1 = player.getPos().getY();
         int objX2 = objX1 + player.getWidth();
@@ -328,7 +330,7 @@ public class Level implements Serializable, IViewable {
             int tempY1 = obj.getPos().getY();
             int tempX2 = tempX1 + obj.getWidth();
             int tempY2 = tempY1 + obj.getHeight();
-            
+
             if (tempY2 <= objY1 || tempY1 >= objY2) {
                 continue;
             }
@@ -336,14 +338,10 @@ public class Level implements Serializable, IViewable {
                 continue;
             }
             
-            if (objY2 > tempY1 && objY1 < tempY1) {
-                return obj;
-            }
-            if (objY1 < tempY2 && objY2 > tempY2) {
-                return obj;
-            }
+            return obj;
+            
         }
-        
+
         return null;
     }
 
@@ -412,6 +410,12 @@ public class Level implements Serializable, IViewable {
                         throw new UnsupportedOperationException("Wrong collision type: " + result.type + " " + result.pos);
                 }
             }
+        } else if (player.getLives() > 0) {
+            player.setPos(playerStartPos);
+            player.setYSpeedValue(0);
+            player.moveStop();
+            player.setJumpAllowed(false);
+            player.raise();
         }
 
         //move mobs
@@ -639,7 +643,7 @@ public class Level implements Serializable, IViewable {
 
         DynamicObject mob1 = new DynamicObject(new Pos(20, 300), 50, 50);
         level.addMob(mob1);
-        
+
         DynamicObject player = new DynamicObject(new Pos(300, 80), 50, 50);
         player.setLives(3);
         level.setPlayer(player);
@@ -650,8 +654,7 @@ public class Level implements Serializable, IViewable {
 
         return level;
     }
-    
-    
+
     static public Level getSampleLevel() {
         Level level = new Level("Sample level2");
         level.setHeight(400);
@@ -673,9 +676,9 @@ public class Level implements Serializable, IViewable {
 
         level.setPlayer(new DynamicObject(new Pos(100, 40), 50, 50));
 
-        EndPoint ep = new EndPoint(new Pos(50, 50), 100, 100);
+        EndPoint ep = new EndPoint(new Pos(150, 150), 100, 100);
         level.addEndPoint(ep);
-        
+
         return level;
     }
 }
