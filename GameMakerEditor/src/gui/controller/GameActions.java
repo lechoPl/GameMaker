@@ -36,7 +36,6 @@ public class GameActions {
             Level newLevel = new Level("New level");
             game.getGameStructure().addNewLevel(newLevel);
             frame.refreshStructureTree();
-            JOptionPane.showMessageDialog(frame, "New level has been successfully added!");
         }
     }
 

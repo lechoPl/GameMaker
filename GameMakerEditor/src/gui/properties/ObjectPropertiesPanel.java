@@ -51,6 +51,11 @@ public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
                 
                 double newGrav = Double.parseDouble((String) getTable().getValueAt(8, 1));
                 dynamic.setGravitation(newGrav);
+                
+                if(isPlayer) {
+                    int newLives = Integer.parseInt((String) getTable().getValueAt(9, 1));
+                    dynamic.setLives(newLives);
+                }
             }
             
             if(object instanceof EndPoint) {
@@ -69,6 +74,7 @@ public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
         }
     }
 
+    private boolean isPlayer;
     private GameObject object;
 
     @Override
@@ -76,12 +82,13 @@ public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
         return new ObjectPropertiesTableModelListener();
     }
 
-    public ObjectPropertiesPanel(EditorFrame frame, GameObject object) {
+    public ObjectPropertiesPanel(EditorFrame frame, GameObject object, boolean isPlayer) {
         super();
 
         this.object = object;
         this.setPanelName("Object properties");
         this.setFrame(frame);
+        this.isPlayer = isPlayer;
 
         LinkedList<Property> properties = new LinkedList<>();
 
@@ -132,6 +139,13 @@ public class ObjectPropertiesPanel extends AbstractPropertiesPanel {
             String gravValue = Double.toString(dynamic.getGravitation());
             Property gravProperty = new Property(gravName, gravValue);
             properties.add(gravProperty);
+            
+            if(this.isPlayer) {
+                String livesName = "Lives";
+                String livesValue = Integer.toString(dynamic.getLives());
+                Property livesProperty = new Property(livesName, livesValue);
+                properties.add(livesProperty);
+            }
         }
         
         if(object instanceof EndPoint) {

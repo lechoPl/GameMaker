@@ -3,6 +3,7 @@ package gui.gameview;
 import gui.EditorFrame;
 import gui.properties.DefaultPropertiesPanel;
 import gui.properties.ObjectPropertiesPanel;
+import gui.properties.PlayerPropertiesPanel;
 import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -326,8 +327,10 @@ public class MouseInputGameView extends MouseInputAdapter implements MouseWheelL
 
         if (obj == null) {
             frame.changePropertiesPanel(new DefaultPropertiesPanel());
+        } else if (obj == view.getFrame().getGame().getGameStructure().getCurrentLevel().getPlayer()) {
+            frame.changePropertiesPanel(new PlayerPropertiesPanel(frame, obj));
         } else {
-            frame.changePropertiesPanel(new ObjectPropertiesPanel(frame, obj));
+            frame.changePropertiesPanel(new ObjectPropertiesPanel(frame, obj, false));
         }
     }
 }

@@ -2,13 +2,9 @@ package gui.properties;
 
 import gui.EditorFrame;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.LinkedList;
-import javax.swing.JOptionPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import logic.Game;
 import logic.Level;
 
 public class LevelPropertiesPanel extends AbstractPropertiesPanel {
@@ -80,20 +76,14 @@ public class LevelPropertiesPanel extends AbstractPropertiesPanel {
         
         String bgName = "Background";
         Color c = level.getBackGroudColor();
-<<<<<<< HEAD
-        String bgValue = String.format("#%02X%02X%02X", c.getRed(), c.getGreen(), c.getBlue());
-        Property bgProperty = new Property(bgName, bgValue);
-        properties.add(bgProperty);
 
-=======
         String bgValue = "";
         if(c != null) {
             bgValue = String.format("#%02X%02X%02X", c.getRed(), c.getGreen(), c.getBlue());
         }
         Property bgProperty = new Property(bgName, bgValue);
         properties.add(bgProperty);
-        
->>>>>>> ce99b590b540a439008793635845284c2c5a9280
+
         this.setProperties(properties);
         this.reload();
     }

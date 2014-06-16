@@ -6,6 +6,7 @@ import gui.properties.DefaultPropertiesPanel;
 import gui.properties.GamePropertiesPanel;
 import gui.properties.LevelPropertiesPanel;
 import gui.properties.ObjectPropertiesPanel;
+import gui.properties.PlayerPropertiesPanel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Toolkit;
@@ -106,7 +107,12 @@ public class StructureTree extends JTree {
                             int level = objectNode.getLevelNumber();
                             int id = objectNode.getObjectId();
                             GameObject object = frame.getGame().getGameStructure().getLevels().get(level).getObject(id);
-                            frame.changePropertiesPanel(new ObjectPropertiesPanel(frame, object));
+                            frame.changePropertiesPanel(new ObjectPropertiesPanel(frame, object, false));
+                        } else if (node instanceof PlayerTreeNode) {
+                            PlayerTreeNode playerNode = (PlayerTreeNode) node;
+                            int level = playerNode.getLevelNumber();
+                            DynamicObject player = frame.getGame().getGameStructure().getLevels().get(level).getPlayer();
+                            frame.changePropertiesPanel(new PlayerPropertiesPanel(frame, player));
                         } else {
                             frame.changePropertiesPanel(new DefaultPropertiesPanel());
                         }
@@ -131,6 +137,15 @@ public class StructureTree extends JTree {
                             int id = objectNode.getObjectId();
                             GameObject newObject = newLevel.getObject(id);
                             frame.setSelectedObject(newObject);
+                        } else if(node instanceof PlayerTreeNode) {
+                            PlayerTreeNode playerNode = (PlayerTreeNode) node;
+                            
+                            int nr = playerNode.getLevelNumber();
+                            Level newLevel = frame.getGame().getGameStructure().getLevels().get(nr);
+                            frame.getGame().getGameStructure().setCurrentLevel(newLevel);
+                            
+                            GameObject player = newLevel.getPlayer();
+                            frame.setSelectedObject(player);
                         }
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
@@ -169,7 +184,12 @@ public class StructureTree extends JTree {
                             int level = objectNode.getLevelNumber();
                             int id = objectNode.getObjectId();
                             GameObject object = frame.getGame().getGameStructure().getLevels().get(level).getObject(id);
-                            frame.changePropertiesPanel(new ObjectPropertiesPanel(frame, object));
+                            frame.changePropertiesPanel(new ObjectPropertiesPanel(frame, object, false));
+                        } else if(node instanceof PlayerTreeNode) {
+                            PlayerTreeNode playerNode = (PlayerTreeNode) node;
+                            int level = playerNode.getLevelNumber();
+                            DynamicObject player = frame.getGame().getGameStructure().getLevels().get(level).getPlayer();
+                            frame.changePropertiesPanel(new PlayerPropertiesPanel(frame, player));
                         }
 
                         if (node instanceof ObjectTreeNode) {
@@ -182,6 +202,15 @@ public class StructureTree extends JTree {
                             int id = objectNode.getObjectId();
                             GameObject newObject = newLevel.getObject(id);
                             frame.setSelectedObject(newObject);
+                        } else if(node instanceof PlayerTreeNode) {
+                            PlayerTreeNode playerNode = (PlayerTreeNode) node;
+                            
+                            int nr = playerNode.getLevelNumber();
+                            Level newLevel = frame.getGame().getGameStructure().getLevels().get(nr);
+                            frame.getGame().getGameStructure().setCurrentLevel(newLevel);
+                            
+                            GameObject player = newLevel.getPlayer();
+                            frame.setSelectedObject(player);
                         }
                     }
                 }
@@ -241,6 +270,16 @@ public class StructureTree extends JTree {
             String levelNodeName = level.getName() + " (id: " + Integer.toString(level.getId()) + ")";
             LevelTreeNode levelNode = new LevelTreeNode(i, levelNodeName);
             levelsTreeNode.add(levelNode);
+            
+            DynamicObject player = level.getPlayer();
+            if(player != null) {
+                String playerName = player.getObjectName();
+                if(playerName == null || playerName.isEmpty())
+                    playerName = "untitled player";
+                
+                PlayerTreeNode playerNode = new PlayerTreeNode(i, playerName);
+                levelNode.add(playerNode);
+            }
             
             DefaultMutableTreeNode sampleObjectsTreeNode = new DefaultMutableTreeNode("Sample objects");
             DefaultMutableTreeNode objectsTreeNode = new DefaultMutableTreeNode("Objects");
