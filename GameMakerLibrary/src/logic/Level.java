@@ -18,7 +18,8 @@ import view.IViewable;
 
 public class Level implements Serializable, IViewable {
 
-    protected final int id;
+    public int OBJ_ID_COUNT = 0;
+    protected int id;
 
     // fields
     private String levelName;
@@ -39,8 +40,7 @@ public class Level implements Serializable, IViewable {
 
     // constructors
     public Level(String levelName) {
-        id = GameStructure.LEVEL_ID_COUNT;
-        GameStructure.LEVEL_ID_COUNT++;
+        id = -1;
 
         this.levelName = levelName;
 
@@ -48,6 +48,10 @@ public class Level implements Serializable, IViewable {
         objects = new ArrayList<>();
         mobs = new ArrayList<>();
         endPoints = new ArrayList<>();
+    }
+
+    public void setId(int val) {
+        id = val;
     }
 
     public int getId() {
@@ -103,15 +107,21 @@ public class Level implements Serializable, IViewable {
         return endPoints;
     }
 
-    public void addObject(GameObject obj) {
+    public synchronized void addObject(GameObject obj) {
+        OBJ_ID_COUNT++;
+        obj.setId(OBJ_ID_COUNT);
         objects.add(obj);
     }
 
-    public void addMob(DynamicObject obj) {
+    public synchronized void addMob(DynamicObject obj) {
+        OBJ_ID_COUNT++;
+        obj.setId(OBJ_ID_COUNT);
         mobs.add(obj);
     }
 
-    public void addEndPoint(EndPoint ep) {
+    public synchronized void addEndPoint(EndPoint ep) {
+        OBJ_ID_COUNT++;
+        ep.setId(OBJ_ID_COUNT);
         endPoints.add(ep);
     }
 
@@ -127,6 +137,11 @@ public class Level implements Serializable, IViewable {
         if (endPoints.contains(obj)) {
             endPoints.remove(obj);
         }
+        
+        levelBackground.deleteObject(obj);
+        
+        if(player == obj)
+            player = null;
     }
 
     public GameObject getObject(int x, int y) {
@@ -337,9 +352,9 @@ public class Level implements Serializable, IViewable {
             if (tempX2 <= objX1 || tempX1 >= objX2) {
                 continue;
             }
-            
+
             return obj;
-            
+
         }
 
         return null;
@@ -624,8 +639,8 @@ public class Level implements Serializable, IViewable {
 
     static public Level getSampleLevel(int nextLvlId) {
         Level level = new Level("Sample level");
-        level.setHeight(400);
-        level.setWidth(400);
+        level.setHeight(1400);
+        level.setWidth(1400);
         level.setBackgroudColor(new Color(30, 30, 30));
 
         SampleObject obj1 = new SampleObject(new Pos(40, 40), 40, 80, Color.GREEN);
@@ -641,7 +656,7 @@ public class Level implements Serializable, IViewable {
         SampleObject obj5 = new SampleObject(new Pos(50, 100), 100, 100, Color.WHITE);
         level.levelBackground.addObject(obj5);
 
-        DynamicObject mob1 = new DynamicObject(new Pos(20, 300), 50, 50);
+        DynamicObject mob1 = new DynamicObject(new Pos(1000, 300), 50, 50);
         level.addMob(mob1);
 
         DynamicObject player = new DynamicObject(new Pos(300, 80), 50, 50);

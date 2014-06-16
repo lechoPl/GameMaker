@@ -8,8 +8,6 @@ import gui.properties.DefaultPropertiesPanel;
 import gui.structure.StructureTree;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import javax.swing.*;
 import logic.Game;
@@ -89,7 +87,7 @@ public class EditorFrame extends JFrame implements IGameFrame {
         createToolboxWindow();
 
         refreshStructureTree();
-        
+
         validate();
     }
 
@@ -127,7 +125,7 @@ public class EditorFrame extends JFrame implements IGameFrame {
 
         JScrollPane scrollPane = new JScrollPane(structureTree);
         scrollPane.setAutoscrolls(true);
-        
+
         gameStructure.add(scrollPane);
         structureTree.reload();
 
@@ -139,7 +137,6 @@ public class EditorFrame extends JFrame implements IGameFrame {
     private void createGamePreviewPanel() {
         //region only for tests
         Level level = Level.getSampleLevel();
-
         game.getGameStructure().addNewLevel(level);
         game.getGameStructure().setCurrentLevel(level);
 
@@ -161,9 +158,9 @@ public class EditorFrame extends JFrame implements IGameFrame {
     private void createPropertiesWindow() {
         gameProperties.setLayout(new GridLayout(1, 1));
         this.changePropertiesPanel(new DefaultPropertiesPanel());
-        
+
         JScrollPane scrollPane = new JScrollPane(gameProperties);
-        
+
         verticalLeftPane.add(scrollPane);
     }
 

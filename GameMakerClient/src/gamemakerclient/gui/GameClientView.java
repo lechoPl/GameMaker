@@ -155,8 +155,17 @@ public class GameClientView extends JPanel implements Runnable {
                 for (KeyListener oldKeyList : this.getKeyListeners()) {
                     this.removeKeyListener(oldKeyList);
                 }
-
-                this.addKeyListener(game.getPlayerController());
+                
+                Level firstLevel = game.getGameStructure().getLevels().getFirst();
+                for(Level lvl : game.getGameStructure().getLevels()) {
+                    if(lvl.getId() < firstLevel.getId()) {
+                        firstLevel = lvl;
+                    }    
+                }
+                game.getGameStructure().setCurrentLevel(firstLevel);
+                PlayerController pc = game.getPlayerController();
+                pc.setControlledObject(firstLevel.getPlayer());
+                this.addKeyListener(pc);
             }
 
             endGame = false;
@@ -203,12 +212,12 @@ public class GameClientView extends JPanel implements Runnable {
                 if (size.height > lvlHeight) {
                     yTranslate = (size.height - lvlHeight) / 2;
                 }
-
+                
                 g.setColor(game.getGameStructure().getBgDefaultColor());
-                g.fillRect(-xTranslate, -yTranslate, size.width, yTranslate);
-                g.fillRect(-xTranslate, lvlHeight, size.width, yTranslate);
-                g.fillRect(-xTranslate, -yTranslate, xTranslate, size.height);
-                g.fillRect(lvlWidth, -yTranslate, xTranslate, size.height);
+                g.fillRect(-Camera.getTranslateX(), -Camera.getTranslateY(), size.width, Camera.getTranslateY());
+                g.fillRect(-Camera.getTranslateX(), lvlHeight, size.width, Camera.getTranslateY());
+                g.fillRect(-Camera.getTranslateX(), -Camera.getTranslateY(), Camera.getTranslateX(), size.height);
+                g.fillRect(lvlWidth, -Camera.getTranslateY(), Camera.getTranslateX(), size.height);
 
                 if (game.getGameStructure().getCurrentLevel().getPlayer() != null) {
                     g.setColor(Color.RED);
@@ -222,16 +231,16 @@ public class GameClientView extends JPanel implements Runnable {
                     int popupHeight = g.getFontMetrics().getHeight();
                     int margin = 5;
                     g.setColor(Color.BLACK);
-                    g.fillRect(((lvlWidth - popupWidth - 2 * margin) / 2) - Camera.getTranslateX(),
-                           ((lvlHeight - popupHeight - 2 * margin) / 2) - Camera.getTranslateY(),
+                    g.fillRect(((game.getGameStructure().getWindowSize().width - popupWidth - 2 * margin) / 2) - Camera.getTranslateX(),
+                           ((game.getGameStructure().getWindowSize().height - popupHeight - 2 * margin) / 2) - Camera.getTranslateY(),
                             popupWidth + margin * 2,
                             popupHeight + margin * 2);
 
                     g.setColor(Color.WHITE);
                     g.drawChars(
                             endGameText.toCharArray(), 0, endGameText.length(),
-                            lvlWidth / 2 - Camera.getTranslateX(),
-                            lvlHeight / 2 - Camera.getTranslateY());
+                            (game.getGameStructure().getWindowSize().width - popupWidth) / 2 - Camera.getTranslateX(),
+                            game.getGameStructure().getWindowSize().height / 2 - Camera.getTranslateY() + margin);
                 }
             }
 
