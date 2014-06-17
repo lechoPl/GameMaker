@@ -142,4 +142,13 @@ public class GameResources {
     public void addDynamicObject(DynamicObject object, String name) {
         creatures.put(name, object);
     }
+    
+    public void removeObject(String objectName) {
+        objects.remove(objectName);
+        creatures.remove(objectName);
+    }
+    
+    public void removeImage(String imageName) {
+        images.remove(imageName);
+    }
 }

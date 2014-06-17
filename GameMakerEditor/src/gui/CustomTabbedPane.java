@@ -36,6 +36,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import logic.objects.AnimatedDynamicObject;
 import logic.objects.AnimatedStaticObject;
@@ -67,9 +68,15 @@ public class CustomTabbedPane extends JTabbedPane {
     private JPopupMenu pMenu = new JPopupMenu("Menu");
     private JDialog addItemDialog = new JDialog();
     
+    private JMenuItem removeMenuItem = new JMenuItem("Remove");
+    private String objectToRemove;
+    
     private GridBagConstraints gridBagConstraints = new GridBagConstraints();
     
     private int gridWidth = 0;
+    private final JFileChooser finder = new JFileChooser();
+    
+    private MouseListener popupListener = new PopupListener();
     
     private ObjectMouseListener objectMouseListener = new ObjectMouseListener();
 
@@ -77,8 +84,6 @@ public class CustomTabbedPane extends JTabbedPane {
         super();
         
         this.frame = frame;
-        
-        MouseListener popupListener = new PopupListener();
         
         imagesPanel.addMouseListener(popupListener);
         addTab("Images", imagesScroll);
@@ -169,6 +174,10 @@ public class CustomTabbedPane extends JTabbedPane {
         sectionsMenu.add(menuAddSound);
         
         pMenu.add(sectionsMenu);
+        
+        removeMenuItem.addActionListener(dialogAction);
+        removeMenuItem.setActionCommand("remove_object");
+        pMenu.add(removeMenuItem);
     }
     
     public void showAddImageDialog() {
@@ -184,7 +193,6 @@ public class CustomTabbedPane extends JTabbedPane {
         
         final JTextField imagePathTextField = new JTextField();
         imagePathTextField.setBounds(150, 60, 120, 25);
-        imagePathTextField.setEditable(false);
         addItemDialog.add(imagePathTextField);
 
         final JButton addButton = new JButton("Add");
@@ -437,7 +445,6 @@ public class CustomTabbedPane extends JTabbedPane {
     }
 
     private String showFindImageDialog() {
-        final JFileChooser finder = new JFileChooser();
         finder.setFileFilter(new FileNameExtensionFilter("Image file", "png"));
         int returnVal = finder.showOpenDialog(null);
         if (returnVal == javax.swing.JFileChooser.APPROVE_OPTION) {
@@ -514,6 +521,7 @@ public class CustomTabbedPane extends JTabbedPane {
 
         private void maybeShowPopup(MouseEvent e) {
             if (e.isPopupTrigger()) {
+                removeMenuItem.setVisible(false);
                 pMenu.show(e.getComponent(),
                            e.getX(), e.getY());
             }
@@ -546,6 +554,10 @@ public class CustomTabbedPane extends JTabbedPane {
                     break;
                 case("sound"):
                     break;
+                case("remove_object"):
+                    frame.getGame().getGameResources().removeObject(objectToRemove);
+                    refreshItems();
+                    break;
                 default:
                     break;
             }
@@ -572,8 +584,15 @@ public class CustomTabbedPane extends JTabbedPane {
 
         @Override
         public void mouseClicked(MouseEvent e) {
-            frame.setObjectToAdd(((ToolbarObject) e.getSource()).getObject());
-            selectObject((ToolbarObject) e.getSource());
+            if(SwingUtilities.isLeftMouseButton(e)) {
+                frame.setObjectToAdd(((ToolbarObject) e.getSource()).getObject());
+                selectObject((ToolbarObject) e.getSource());
+            } else if(SwingUtilities.isRightMouseButton(e)) {
+                removeMenuItem.setVisible(true);
+                objectToRemove = ((ToolbarObject) e.getSource()).getObject().getObjectName();
+                pMenu.show(e.getComponent(),
+                           e.getX(), e.getY());
+            }
         }
 
         @Override
