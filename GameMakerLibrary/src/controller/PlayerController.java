@@ -80,12 +80,13 @@ public class PlayerController extends KeyAdapter implements Serializable {
         }
 
         /* olny for test, remove it later */
+        /*
         if (ke.getKeyCode() == upKey) {
             keySatuses[3] = val;
         }
         if (ke.getKeyCode() == downKey) {
             keySatuses[4] = val;
-        }
+        }*/
     }
 
     public synchronized void pull() {

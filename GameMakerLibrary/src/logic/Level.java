@@ -368,7 +368,7 @@ public class Level implements Serializable, IViewable {
     public void update(double deltaTime) {
         Collision result;
 
-        if (!player.isKilled()) {
+        if (player != null && !player.isKilled()) {
             result = checkCollisionX(player, deltaTime, getAllObjectsByPosX());
             if (result == null) {
                 player.updateX(deltaTime);
@@ -425,7 +425,7 @@ public class Level implements Serializable, IViewable {
                         throw new UnsupportedOperationException("Wrong collision type: " + result.type + " " + result.pos);
                 }
             }
-        } else if (player.getLives() > 0) {
+        } else if (player != null && player.getLives() > 0) {
             player.setPos(playerStartPos);
             player.setYSpeedValue(0);
             player.moveStop();
@@ -643,6 +643,7 @@ public class Level implements Serializable, IViewable {
         level.setWidth(1400);
         level.setBackgroudColor(new Color(30, 30, 30));
 
+        /*
         SampleObject obj1 = new SampleObject(new Pos(40, 40), 40, 80, Color.GREEN);
         SampleObject obj2 = new SampleObject(new Pos(10, 380), 1800, 20, Color.RED);
         SampleObject obj3 = new SampleObject(new Pos(200, 350), 50, 20, Color.RED);
@@ -665,7 +666,7 @@ public class Level implements Serializable, IViewable {
 
         EndPoint ep = new EndPoint(new Pos(50, 50), 100, 100);
         ep.setNextLevelId(nextLvlId);
-        level.addEndPoint(ep);
+        level.addEndPoint(ep);*/
 
         return level;
     }
@@ -676,6 +677,7 @@ public class Level implements Serializable, IViewable {
         level.setWidth(400);
         level.setBackgroudColor(new Color(30, 30, 30));
 
+        /*
         SampleObject obj1 = new SampleObject(new Pos(150, 40), 40, 80, Color.GREEN);
         SampleObject obj2 = new SampleObject(new Pos(10, 380), 1800, 20, Color.RED);
         SampleObject obj3 = new SampleObject(new Pos(200, 350), 50, 20, Color.RED);
@@ -693,7 +695,7 @@ public class Level implements Serializable, IViewable {
 
         EndPoint ep = new EndPoint(new Pos(150, 150), 100, 100);
         level.addEndPoint(ep);
-
+*/
         return level;
     }
 }

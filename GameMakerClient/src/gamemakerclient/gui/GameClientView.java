@@ -88,7 +88,7 @@ public class GameClientView extends JPanel implements Runnable {
                 }
             } else if (!gamePanel.getEndGame()) {
                 DynamicObject player = this.getGame().getGameStructure().getCurrentLevel().getPlayer();
-                if (player.getLives() <= 0) {
+                if (player != null && player.getLives() <= 0) {
                     gamePanel.setEndGame(true);
                     gamePanel.setEndGameText("GAME OVER");
                 } else {
