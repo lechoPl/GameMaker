@@ -137,11 +137,12 @@ public class Level implements Serializable, IViewable {
         if (endPoints.contains(obj)) {
             endPoints.remove(obj);
         }
-        
+
         levelBackground.deleteObject(obj);
-        
-        if(player == obj)
+
+        if (player == obj) {
             player = null;
+        }
     }
 
     public GameObject getObject(int x, int y) {
@@ -397,6 +398,7 @@ public class Level implements Serializable, IViewable {
             result = checkCollisionY(player, deltaTime, getAllObjectsByPosY());
             if (result == null) {
                 player.updateY(deltaTime);
+                player.setJumpAllowed(false);
             } else {
                 switch (result.type) {
                     case UP:
@@ -410,6 +412,7 @@ public class Level implements Serializable, IViewable {
                         break;
                     case DOWN:
                         player.setJumpAllowed(true);
+                        player.setYSpeedValue(1);
                         player.setPos(new Pos(player.getPos().getX(), result.pos - player.getHeight()));
 
                         if (result.obj == null) {
@@ -490,6 +493,7 @@ public class Level implements Serializable, IViewable {
                         break;
                     case DOWN:
                         mob.setJumpAllowed(true);
+                        mob.setYSpeedValue(1);
                         mob.setPos(new Pos(mob.getPos().getX(), result.pos - mob.getHeight()));
 
                         if (result.obj == null) {
@@ -517,6 +521,12 @@ public class Level implements Serializable, IViewable {
         int objX2 = objX1 + obj.getWidth();
         int objY2 = objY1 + obj.getHeight();
 
+        int objX1Org = obj.getPos().getX();
+        int objX2Org = objX1Org + obj.getWidth();
+
+        int minX = objX1Org < objX1 ? objX1Org : objX1;
+        int maxX = objX2Org < objX2 ? objX2 : objX2Org;
+
         for (GameObject tempObj : listObjects) {
             int tempX1 = tempObj.getPos().getX();
             int tempY1 = tempObj.getPos().getY();
@@ -540,11 +550,12 @@ public class Level implements Serializable, IViewable {
                 continue;
             }
 
-            if (objX2 > tempX1 && objX1 < tempX1) {
-                return new Collision(CollisionType.FRONT, tempX1, tempObj);
-            }
-            if (objX1 < tempX2 && objX2 > tempX2) {
-                return new Collision(CollisionType.BACK, tempX2, tempObj);
+            if (tempX2 > minX || tempX1 < maxX) {
+                if (objX1 > objX1Org) {
+                    return new Collision(CollisionType.FRONT, tempX1, tempObj);
+                } else {
+                    return new Collision(CollisionType.BACK, tempX2, tempObj);
+                }
             }
         }
 
@@ -566,11 +577,16 @@ public class Level implements Serializable, IViewable {
      * @return
      */
     public Collision checkCollisionY(DynamicObject obj, double deltaTime, ArrayList<GameObject> listObjects) {
-
         int objX1 = obj.getPos().getX();
         int objY1 = obj.getNextYPosition(deltaTime);
         int objX2 = objX1 + obj.getWidth();
         int objY2 = objY1 + obj.getHeight();
+
+        int objY1Org = obj.getPos().getY();
+        int objY2Org = objY1Org + obj.getHeight();
+
+        int minY = objY1Org < objY1 ? objY1Org : objY1;
+        int maxY = objY2Org < objY2 ? objY2 : objY2Org;
 
         for (GameObject tempObj : listObjects) {
             int tempX1 = tempObj.getPos().getX();
@@ -588,18 +604,19 @@ public class Level implements Serializable, IViewable {
                 }
             }
 
-            if (tempY2 <= objY1 || tempY1 >= objY2) {
+            if (tempY2 <= minY || tempY1 >= maxY) {
                 continue;
             }
             if (tempX2 <= objX1 || tempX1 >= objX2) {
                 continue;
             }
 
-            if (objY2 > tempY1 && objY1 < tempY1) {
-                return new Collision(CollisionType.DOWN, tempY1, tempObj);
-            }
-            if (objY1 < tempY2 && objY2 > tempY2) {
-                return new Collision(CollisionType.UP, tempY2, tempObj);
+            if (tempY2 > minY || tempY1 < maxY) {
+                if (objY1 > objY1Org) {
+                    return new Collision(CollisionType.DOWN, tempY1, tempObj);
+                } else {
+                    return new Collision(CollisionType.UP, tempY2, tempObj);
+                }
             }
         }
 
@@ -644,30 +661,29 @@ public class Level implements Serializable, IViewable {
         level.setBackgroudColor(new Color(30, 30, 30));
 
         /*
-        SampleObject obj1 = new SampleObject(new Pos(40, 40), 40, 80, Color.GREEN);
-        SampleObject obj2 = new SampleObject(new Pos(10, 380), 1800, 20, Color.RED);
-        SampleObject obj3 = new SampleObject(new Pos(200, 350), 50, 20, Color.RED);
-        SampleObject obj4 = new SampleObject(new Pos(240, 300), 50, 20, Color.RED);
+         SampleObject obj1 = new SampleObject(new Pos(40, 40), 40, 80, Color.GREEN);
+         SampleObject obj2 = new SampleObject(new Pos(10, 380), 1800, 20, Color.RED);
+         SampleObject obj3 = new SampleObject(new Pos(200, 350), 50, 20, Color.RED);
+         SampleObject obj4 = new SampleObject(new Pos(240, 300), 50, 20, Color.RED);
 
-        level.addObject(obj1);
-        level.addObject(obj2);
-        level.addObject(obj3);
-        level.addObject(obj4);
+         level.addObject(obj1);
+         level.addObject(obj2);
+         level.addObject(obj3);
+         level.addObject(obj4);
 
-        SampleObject obj5 = new SampleObject(new Pos(50, 100), 100, 100, Color.WHITE);
-        level.levelBackground.addObject(obj5);
+         SampleObject obj5 = new SampleObject(new Pos(50, 100), 100, 100, Color.WHITE);
+         level.levelBackground.addObject(obj5);
 
-        DynamicObject mob1 = new DynamicObject(new Pos(1000, 300), 50, 50);
-        level.addMob(mob1);
+         DynamicObject mob1 = new DynamicObject(new Pos(1000, 300), 50, 50);
+         level.addMob(mob1);
 
-        DynamicObject player = new DynamicObject(new Pos(300, 80), 50, 50);
-        player.setLives(3);
-        level.setPlayer(player);
+         DynamicObject player = new DynamicObject(new Pos(300, 80), 50, 50);
+         player.setLives(3);
+         level.setPlayer(player);
 
-        EndPoint ep = new EndPoint(new Pos(50, 50), 100, 100);
-        ep.setNextLevelId(nextLvlId);
-        level.addEndPoint(ep);*/
-
+         EndPoint ep = new EndPoint(new Pos(50, 50), 100, 100);
+         ep.setNextLevelId(nextLvlId);
+         level.addEndPoint(ep);*/
         return level;
     }
 
@@ -678,24 +694,24 @@ public class Level implements Serializable, IViewable {
         level.setBackgroudColor(new Color(30, 30, 30));
 
         /*
-        SampleObject obj1 = new SampleObject(new Pos(150, 40), 40, 80, Color.GREEN);
-        SampleObject obj2 = new SampleObject(new Pos(10, 380), 1800, 20, Color.RED);
-        SampleObject obj3 = new SampleObject(new Pos(200, 350), 50, 20, Color.RED);
-        SampleObject obj4 = new SampleObject(new Pos(240, 300), 50, 20, Color.RED);
+         SampleObject obj1 = new SampleObject(new Pos(150, 40), 40, 80, Color.GREEN);
+         SampleObject obj2 = new SampleObject(new Pos(10, 380), 1800, 20, Color.RED);
+         SampleObject obj3 = new SampleObject(new Pos(200, 350), 50, 20, Color.RED);
+         SampleObject obj4 = new SampleObject(new Pos(240, 300), 50, 20, Color.RED);
 
-        level.addObject(obj1);
-        level.addObject(obj2);
-        level.addObject(obj3);
-        level.addObject(obj4);
+         level.addObject(obj1);
+         level.addObject(obj2);
+         level.addObject(obj3);
+         level.addObject(obj4);
 
-        DynamicObject mob1 = new DynamicObject(new Pos(20, 300), 50, 50);
-        level.addMob(mob1);
+         DynamicObject mob1 = new DynamicObject(new Pos(20, 300), 50, 50);
+         level.addMob(mob1);
 
-        level.setPlayer(new DynamicObject(new Pos(100, 40), 50, 50));
+         level.setPlayer(new DynamicObject(new Pos(100, 40), 50, 50));
 
-        EndPoint ep = new EndPoint(new Pos(150, 150), 100, 100);
-        level.addEndPoint(ep);
-*/
+         EndPoint ep = new EndPoint(new Pos(150, 150), 100, 100);
+         level.addEndPoint(ep);
+         */
         return level;
     }
 }
