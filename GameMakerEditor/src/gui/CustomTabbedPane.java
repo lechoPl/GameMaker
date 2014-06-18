@@ -135,11 +135,6 @@ public class CustomTabbedPane extends JTabbedPane {
         menuAddImage.setActionCommand("image");
         sectionsMenu.add(menuAddImage);
         
-        JMenuItem menuAddBackground = new JMenuItem("Background");
-        menuAddBackground.addActionListener(dialogAction);
-        menuAddBackground.setActionCommand("background");
-        sectionsMenu.add(menuAddBackground);
-        
         JMenu objectsSectionMenu = new JMenu("Object");
         
         JMenuItem menuAddSimpleObject = new JMenuItem("Simple");
@@ -268,7 +263,7 @@ public class CustomTabbedPane extends JTabbedPane {
             addItemDialog.dispose();
             addItemDialog = new JDialog();
             addItemDialog.setLayout(null);
-            addItemDialog.setSize(300, 250);
+            addItemDialog.setSize(300, 200);
             addItemDialog.setTitle("Add new object");
 
             JLabel idLabel = new JLabel("Object name: ");
@@ -329,9 +324,9 @@ public class CustomTabbedPane extends JTabbedPane {
                 }
             });
             
-            addButton.setBounds(20, 140, 120, 25);
+            addButton.setBounds(20, 100, 120, 25);
             addItemDialog.add(addButton);
-            cancelButton.setBounds(150, 140, 120, 25);
+            cancelButton.setBounds(150, 100, 120, 25);
             addItemDialog.add(cancelButton);
 
             addItemDialog.validate();
@@ -537,8 +532,6 @@ public class CustomTabbedPane extends JTabbedPane {
             switch(e.getActionCommand()) {
                 case("image"):
                     showAddImageDialog();
-                    break;
-                case("background"):
                     break;
                 case("simple_object"):
                     showAddSimpleObjectDialog(false);

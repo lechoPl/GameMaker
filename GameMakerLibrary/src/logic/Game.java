@@ -77,7 +77,6 @@ public class Game {
             dest.flush();
             dest.close();
 
-            System.out.println("Name = " + entry.getName().toString());
             if (entry.getName().endsWith(GAME_PATH)) {
                 FileInputStream fin = new FileInputStream(new File(Game.TEMP_FILE_NAME));
                 try (ObjectInputStream ois = new ObjectInputStream(fin)) {

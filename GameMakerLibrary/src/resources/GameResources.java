@@ -60,7 +60,6 @@ public class GameResources {
     }
 
     private String getImageId(String fileName) {
-        System.out.println(fileName + ", " + IMAGES_PATH.length() + ", " + (fileName.length() - IMAGE_EXTENSION.length()));
         return fileName.subSequence(IMAGES_PATH.length(), fileName.length() - IMAGE_EXTENSION.length() - 1).toString();
     }
 
