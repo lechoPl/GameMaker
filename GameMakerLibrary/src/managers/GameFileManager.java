@@ -62,4 +62,8 @@ public class GameFileManager {
     public String getFilePath() {
         return gameFilePath;
     }
+    
+    public void setFilePath(String path) {
+        this.gameFilePath = path;
+    }
 }

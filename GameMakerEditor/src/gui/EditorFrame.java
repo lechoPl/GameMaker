@@ -9,6 +9,8 @@ import gui.structure.StructureTree;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.io.IOException;
+import java.util.logging.Logger;
 import javax.swing.*;
 import logic.Game;
 import logic.Level;
@@ -193,6 +195,18 @@ public class EditorFrame extends JFrame implements IGameFrame {
 
     public void refreshToolbox() {
         customTabbedPane.refreshItems();
+    }
+    
+    public void loadGame(String filePath) {
+        try {
+            gameFileManager.setFilePath(filePath);
+            
+            setGame(new Game(filePath));
+        } catch (IOException ex) {
+            Logger.getLogger(EditorFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(EditorFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
     }
 
     public void setGame(Game game) {

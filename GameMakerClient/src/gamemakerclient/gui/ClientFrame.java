@@ -3,6 +3,9 @@ package gamemakerclient.gui;
 import gamemakerclient.gui.controller.MenuActions;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
 import logic.Game;
 import managers.GameFileManager;
@@ -94,6 +97,24 @@ public class ClientFrame extends JFrame implements IGameFrame {
     private void createGameContent() {
         gameContent = new GameClientView();
         this.add(gameContent, BorderLayout.CENTER);
+    }
+    
+    public synchronized void openGame(String filePath) {
+        try {
+            Game game = new Game(filePath);
+            
+            if (game != null && game.getGameStructure() != null) {
+                this.setTitle(game.getGameStructure().getName());
+                
+                gameContent.setGame(game);
+                
+                refreshFrameSize();
+            }
+        } catch (IOException ex) {
+            System.out.println("Error occured while loading sample game!");
+        } catch (ClassNotFoundException ex) {
+            System.out.println("Error occured while loading sample game!");
+        }
     }
 
     public synchronized void openGame() {
